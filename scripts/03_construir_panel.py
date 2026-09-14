@@ -149,10 +149,10 @@ def ronda_2017(avisos):
     d = INTERIM / "2017"
     cui = leer(d / "Base_Cuidador_Principal_ELPI_III(STATA)_241010.dta",
                ["folio", "idencuesta", "tipopersona", "espanel", "idregion",
-                "idcomuna", "h2", "h3", "fexp_enc0_2", "fexp_eva0_2"])
+                "idcomuna", "estrato", "h2", "h3", "fexp_enc0_2", "fexp_eva0_2"])
     eva = leer(d / "Base Evaluaciones ELPI III.dta",
                ["folio", "espanel", "sexo", "edad_mesesr", "idregion",
-                "idcomuna", "fexp_enc0_2", "fexp_eva0_2"])
+                "idcomuna", "estrato", "fexp_enc0_2", "fexp_eva0_2"])
     nyn = leer(d / "Base Niños y Niñas ELPI III (SPSS).sav", ["folio", "sexo", "edad"])
     fac = leer(d / "Factores de expansion longitudinales ELPI III (SPSS).sav")
     for df in (cui, eva, nyn, fac):
@@ -162,7 +162,7 @@ def ronda_2017(avisos):
     # nivel entrevista/hogar: una fila por folio; datos del niño desde su
     # fila de roster (tipopersona == 1 "Niño seleccionado(a)")
     hogar = cui.drop_duplicates("folio")[
-        ["folio", "idencuesta", "espanel", "idregion", "idcomuna",
+        ["folio", "idencuesta", "espanel", "idregion", "idcomuna", "estrato",
          "fexp_enc0_2", "fexp_eva0_2"]]
     nino = cui.loc[cui.tipopersona == 1, ["folio", "h2", "h3"]].rename(
         columns={"h2": "sexo", "h3": "edad_anios"})
@@ -181,14 +181,14 @@ def ronda_2017(avisos):
     base = hogar.assign(en_encuesta=1).merge(
         nino, on="folio", how="outer")
     base = base.merge(
-        eva[["folio", "sexo", "edad_mesesr", "idregion", "idcomuna",
+        eva[["folio", "sexo", "edad_mesesr", "idregion", "idcomuna", "estrato",
              "fexp_enc0_2", "fexp_eva0_2"]].assign(en_evaluaciones=1),
         on="folio", how="outer", suffixes=("", "_eva"))
     base = base.merge(nyn[["folio"]].assign(en_cuestionario_nino=1),
                       on="folio", how="outer")
 
     # completar con la base de evaluaciones lo que falte a nivel hogar
-    for c in ("sexo", "idregion", "idcomuna", "fexp_enc0_2", "fexp_eva0_2"):
+    for c in ("sexo", "idregion", "idcomuna", "estrato", "fexp_enc0_2", "fexp_eva0_2"):
         ce = f"{c}_eva"
         if ce in base.columns:
             base[c] = base[c].fillna(base[ce])
@@ -221,7 +221,7 @@ def ronda_2024(avisos):
     d = INTERIM / "2024"
     res = leer(d / "Base responsable principal Stata.dta",
                ["folio", "tipo_persona", "sexo", "edad", "cod_region", "cod_comuna",
-                "f_exp", "f_exp_1024", "f_exp_101224", "f_exp_101724",
+                "estrato", "f_exp", "f_exp_1024", "f_exp_101224", "f_exp_101724",
                 "f_exp_10121724"])
     ado = leer(d / "Base adolescentes Stata.dta", ["folio"])
     eva = leer(d / "Base evaluaciones Stata.dta", ["folio"])
@@ -229,7 +229,7 @@ def ronda_2024(avisos):
         df["folio"] = folio_int(df.folio)
 
     hogar = res.drop_duplicates("folio")[
-        ["folio", "cod_region", "cod_comuna", "f_exp", "f_exp_1024",
+        ["folio", "cod_region", "cod_comuna", "estrato", "f_exp", "f_exp_1024",
          "f_exp_101224", "f_exp_101724", "f_exp_10121724"]]
     # fila de roster del/de la adolescente seleccionado/a (tipo_persona == 1)
     nino = res.loc[res.tipo_persona == 1, ["folio", "sexo", "edad"]].rename(
@@ -260,7 +260,7 @@ def ronda_2024(avisos):
 
 COLS_LARGO = ["folio", "ronda", "en_encuesta", "en_evaluaciones",
               "en_cuestionario_nino", "sexo", "edad_anios", "edad_meses_eval",
-              "region", "comuna", "area",
+              "region", "comuna", "area", "estrato",
               "fexp_transversal_enc", "fexp_transversal_eval"]
 
 ETIQUETAS_LARGO = {
@@ -275,6 +275,7 @@ ETIQUETAS_LARGO = {
     "region": "Región (códigos vigentes en cada ronda)",
     "comuna": "Comuna (solo 2017 y 2024)",
     "area": "Área urbano/rural (solo 2010 y 2012)",
+    "estrato": "Estrato de diseño muestral - comuna de selección (solo 2017 y 2024)",
     "fexp_transversal_enc": "Factor de expansión transversal - entrevista/encuesta",
     "fexp_transversal_eval": "Factor de expansión transversal - evaluaciones",
 }

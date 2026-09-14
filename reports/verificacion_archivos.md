@@ -18,13 +18,24 @@ Generado por `scripts/02_verificar_archivos.py` el 2026-09-14.
 | `Historia_Laboral_2012.dta.zip` | `2012/Historia_Laboral_2012.dta` | 2,057,967 |
 | `Hogar_2012.dta.zip` | `2012/Hogar_2012.dta` | 10,912,239 |
 | `Base Evaluaciones ELPI III.dta.zip` | `2017/Base Evaluaciones ELPI III.dta` | 41,542,763 |
+| `Base Evaluaciones ELPI III.sav.zip` | `2017/Base Evaluaciones ELPI III.sav` | 7,024,591 |
 | `Base_Cuidador_Principal_ELPI_III(STATA)_241010.dta.zip` | `2017/Base_Cuidador_Principal_ELPI_III(STATA)_241010.dta` | 635,199,052 |
+| `Base_Cuidador_Principal_ELPI_III_(SPSS).sav.zip` | `2017/Base Cuidador Principal ELPI III (SPSS).sav` | 105,153,089 |
 | `Base_Niños_y_Niñas_ELPI_III_(SPSS).sav.zip` | `2017/Base Niños y Niñas ELPI III (SPSS).sav` | 2,998,000 |
 | `Base_Segundo_Cuidador_Principal_ELPI_III_(SPSS).sav.zip` | `2017/Base Segundo Cuidador Principal ELPI III (SPSS).sav` | 751,267 |
 | `Factores_de_expansion_longitudinales_ELPI_III_(SPSS).sav.zip` | `2017/Factores de expansion longitudinales ELPI III (SPSS).sav` | 808,953 |
+| `Base_adolescentes_R.rds.zip` | `2024/Base adolescentes R.rds` | 1,352,979 |
+| `Base_adolescentes_SPSS.sav.zip` | `2024/Base adolescentes SPSS.sav` | 4,507,202 |
 | `Base_adolescentes_Stata.dta.zip` | `2024/Base adolescentes Stata.dta` | 26,082,171 |
+| `Base_evaluaciones_R.rds.zip` | `2024/Base evaluaciones R.rds` | 1,271,720 |
+| `Base_evaluaciones_SPSS.sav.zip` | `2024/Base evaluaciones SPSS.sav` | 1,984,247 |
 | `Base_evaluaciones_Stata.dta.zip` | `2024/Base evaluaciones Stata.dta` | 10,823,802 |
+| `Base_responsable_principal_R.rds.zip` | `2024/Base responsable principal R.rds` | 3,555,495 |
+| `Base_responsable_principal_SPSS.sav.zip` | `2024/Base responsable principal SPSS.sav` | 33,626,358 |
 | `Base_responsable_principal_Stata.dta.zip` | `2024/Base responsable principal Stata.dta` | 192,087,594 |
+| `Base_Ninos_y_Ninas_ELPI_III.rar` | `2017/Base Niños y Niñas ELPI III.dta` | 17,875,402 |
+| `Base_Segundo_Cuidador_Principal_ELPI_III.rar` | `2017/Base Segundo Cuidador Principal ELPI III.dta` | 3,188,525 |
+| `factores_de_expansion_longitudinales_ELPI_III.rar` | `2017/factores de expansion longitudinales ELPI III.dta` | 561,613 |
 
 ## 2. Apertura de bases de microdatos
 
@@ -41,13 +52,24 @@ Generado por `scripts/02_verificar_archivos.py` el 2026-09-14.
 | 2012 | `Evaluaciones_2012.dta` | 14,438 | 204 | pyreadstat |
 | 2012 | `Historia_Laboral_2012.dta` | 44,862 | 25 | pyreadstat |
 | 2012 | `Hogar_2012.dta` | 76,977 | 86 | pyreadstat |
+| 2017 | `Base Cuidador Principal ELPI III (SPSS).sav` | 78,988 | 837 | pyreadstat |
 | 2017 | `Base Evaluaciones ELPI III.dta` | 15,827 | 258 | pyreadstat |
+| 2017 | `Base Evaluaciones ELPI III.sav` | 15,827 | 258 | pyreadstat |
 | 2017 | `Base Niños y Niñas ELPI III (SPSS).sav` | 10,698 | 153 | pyreadstat |
+| 2017 | `Base Niños y Niñas ELPI III.dta` | 10,698 | 153 | pyreadstat |
 | 2017 | `Base Segundo Cuidador Principal ELPI III (SPSS).sav` | 4,965 | 67 | pyreadstat |
+| 2017 | `Base Segundo Cuidador Principal ELPI III.dta` | 4,965 | 67 | pyreadstat |
 | 2017 | `Base_Cuidador_Principal_ELPI_III(STATA)_241010.dta` | 78,988 | 829 | pandas.read_stata |
 | 2017 | `Factores de expansion longitudinales ELPI III (SPSS).sav` | 17,307 | 8 | pyreadstat |
+| 2017 | `factores de expansion longitudinales ELPI III.dta` | 17,307 | 8 | pandas.read_stata |
+| 2024 | `Base adolescentes R.rds` | 10,003 | 217 | pyreadr |
+| 2024 | `Base adolescentes SPSS.sav` | 10,003 | 217 | pyreadstat |
 | 2024 | `Base adolescentes Stata.dta` | 10,003 | 217 | pyreadstat |
+| 2024 | `Base evaluaciones R.rds` | 10,003 | 134 | pyreadr |
+| 2024 | `Base evaluaciones SPSS.sav` | 10,003 | 134 | pyreadstat |
 | 2024 | `Base evaluaciones Stata.dta` | 10,003 | 134 | pyreadstat |
+| 2024 | `Base responsable principal R.rds` | 41,913 | 332 | pyreadr |
+| 2024 | `Base responsable principal SPSS.sav` | 41,913 | 332 | pyreadstat |
 | 2024 | `Base responsable principal Stata.dta` | 41,913 | 332 | pyreadstat |
 
 ## 3. Libro de códigos 2024 (xlsx)
@@ -57,16 +79,28 @@ Generado por `scripts/02_verificar_archivos.py` el 2026-09-14.
 ## 4. Documentos PDF (firma %PDF)
 
 - [ok] `2010/Encuesta_ELPI_2010.pdf` (2,107,264 bytes)
+- [ok] `2010/Informe_Resultados_Encuesta_2010.pdf` (339,047 bytes)
 - [ok] `2010/Manual_Usuario_Base_de_Datos_ELPI_2010.pdf` (815,011 bytes)
 - [ok] `2012/Cuestionario_ELPI_2012_Cuidador_Principal.pdf` (938,454 bytes)
+- [ok] `2012/Informe_Resultados_Encuesta_Hogares_2012.pdf` (849,070 bytes)
 - [ok] `2012/Manual_Usuario_Base_de_Datos_ELPI_2012.pdf` (867,518 bytes)
+- [ok] `2017/Desarrollo_de_Instrumentos_ELPI_III.pdf` (2,166,468 bytes)
+- [ok] `2017/Estandares_Metodologicos_ELPI_III.pdf` (1,097,082 bytes)
 - [ok] `2017/Libro de codigo Evaluaciones ELPI III.pdf` (526,394 bytes)
 - [ok] `2017/Libro_de_código_Cuidador_Principal_ELPI_III.pdf` (2,372,158 bytes)
 - [ok] `2017/Libro_de_código_Niños_y_Niñas_ELPI_III.pdf` (426,252 bytes)
 - [ok] `2017/Libro_de_código_Segundo_Cuidador_Principal_ELPI_III.pdf` (278,720 bytes)
 - [ok] `2017/Manual_de_usuario_2017_ELPI.pdf` (814,092 bytes)
+- [ok] `2017/Reporte_Metodologico_ELPI_III.pdf` (1,594,838 bytes)
+- [ok] `2017/Reporte_metodologico_Evaluaciones.pdf` (843,937 bytes)
+- [ok] `2024/Diseno_y_Muestra_ELPI.pdf` (603,199 bytes)
+- [ok] `2024/ELPI_2024_Informe_construccion_factores_de_expansion.pdf` (1,684,342 bytes)
+- [ok] `2024/ELPI_2024_Informe_estandarizacion_evaluaciones.pdf` (1,276,265 bytes)
+- [ok] `2024/ELPI_2024_Informe_metodologico.pdf` (3,639,800 bytes)
 - [ok] `2024/Ficha_tecnica_ELPI_2024.pdf` (149,400 bytes)
+- [ok] `2024/Proceso_de_Diseno_de_la_Encuesta_Longitudinal_de_Primera_Infancia  ELPI_cuarta_ronda.pdf` (785,606 bytes)
 - [ok] `2024/Uso_de_base_de_datos_ELPI_2024.pdf` (521,572 bytes)
+- [ok] `raw/WEB_Informacion_ELPI.pdf` (289,263 bytes)
 
 ## Resultado
 

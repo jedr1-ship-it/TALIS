@@ -43,14 +43,15 @@ generados por la plataforma y no sirven para un script reproducible.
 │   ├── 02_verificar_archivos.py  # extrae los .zip y verifica que todo abre
 │   └── 03_construir_panel.py     # enlaza a los niños/as y construye el panel
 ├── data/
-│   ├── raw/                      # descargas tal cual (committeadas; 68 MB)
+│   ├── raw/                      # descargas tal cual (committeadas; ~110 MB, 55 archivos)
 │   │   ├── 2010/ 2012/ 2017/ 2024/
 │   │   └── SHA256SUMS.txt        # manifiesto de integridad
-│   ├── interim/                  # extracción de los .zip (NO committeada; regenerable)
+│   ├── interim/                  # extracción de zip/rar (NO committeada; regenerable)
 │   └── processed/                # base panel (committeada)
 ├── reports/
 │   ├── verificacion_archivos.md  # informe de verificación (filas/columnas por base)
-│   └── panel_resumen.md          # verificaciones y conteos del panel
+│   ├── panel_resumen.md          # verificaciones y conteos del panel
+│   └── notas_metodologicas.md    # informes metodológicos: qué hay que tener en cuenta
 ├── requirements.txt
 └── README.md
 ```
@@ -70,21 +71,59 @@ exponencial (2 s, 4 s, 8 s, 16 s).
 
 ## Qué se descarga
 
-Formato preferente **Stata (.dta)**; para las tres bases de 2017 cuya versión
-Stata solo se publica en `.rar` se usa la versión **SPSS (.sav)** equivalente
-(mismo contenido, y el `.zip` se extrae sin herramientas propietarias).
+Se descargan **todos los formatos publicados** de cada base de microdatos
+(Stata `.dta`, SPSS `.sav` y, en 2024, R `.rds`), los libros de códigos /
+manuales y los informes metodológicos de cada ronda.
 
 | Ronda | Bases de microdatos | Libro de códigos / documentación de variables |
 |---|---|---|
-| 2010 | Hogar, Entrevistada, Evaluaciones, Cuidado infantil, Ítems de test | Manual de Usuario de la Base de Datos 2010 (no existe libro de códigos separado) + cuestionario |
-| 2012 | Hogar, Entrevistada, Evaluaciones, Cuidado infantil, Historia laboral, Ítems de test | Manual de Usuario de la Base de Datos 2012 (ídem) + cuestionario |
-| 2017 | Cuidador principal (versión corregida 2024-10-10), Evaluaciones, Niños y niñas, Segundo cuidador, Factores de expansión longitudinales | Libros de códigos de las 4 bases (PDF) + Manual de usuario 2017 |
-| 2024 | Responsable principal, Adolescentes, Evaluaciones | Libro de códigos 2024 (XLSX) + "Uso de base de datos ELPI 2024" + ficha técnica |
+| 2010 | Hogar, Entrevistada, Evaluaciones, Cuidado infantil, Ítems de test (Stata) | Manual de Usuario de la Base de Datos 2010 (no existe libro de códigos separado) + cuestionario + informe de resultados |
+| 2012 | Hogar, Entrevistada, Evaluaciones, Cuidado infantil, Historia laboral, Ítems de test (Stata) | Manual de Usuario de la Base de Datos 2012 (ídem) + cuestionario + informe de resultados |
+| 2017 | Cuidador principal, Evaluaciones, Niños y niñas, Segundo cuidador, Factores de expansión longitudinales (Stata y SPSS) | Libros de códigos de las 4 bases (PDF) + Manual de usuario + 4 informes metodológicos |
+| 2024 | Responsable principal, Adolescentes, Evaluaciones (Stata, SPSS y R) | Libro de códigos 2024 (XLSX) + "Uso de base de datos" + ficha técnica + 5 informes metodológicos/diseño |
+
+Notas sobre formatos:
+
+* Las versiones Stata 2017 de "Niños y Niñas", "Segundo Cuidador" y los
+  factores longitudinales se publican en `.rar`: el script 02 los extrae si
+  hay 7-Zip con códec RAR (`p7zip-full` + `7zip-rar`), `unar` o `unrar`; en
+  su defecto quedan las versiones SPSS equivalentes (contenido idéntico,
+  verificado: mismas filas y columnas).
+* **Cuidador Principal 2017**: la versión Stata enlazada oficialmente es la
+  re-publicación del 10-10-2024, que eliminó 8 identificadores del
+  establecimiento educacional aún presentes en la versión SPSS antigua;
+  para análisis use la versión Stata 241010 (detalle en
+  [`reports/notas_metodologicas.md`](reports/notas_metodologicas.md)).
 
 La verificación (informe en
 [`reports/verificacion_archivos.md`](reports/verificacion_archivos.md)) abre
-cada `.dta`/`.sav` con `pyreadstat`/`pandas`, el XLSX con `openpyxl` y
-comprueba la firma de los PDF. Las 19 bases de microdatos abren sin errores.
+cada `.dta`/`.sav` con `pyreadstat`/`pandas`, cada `.rds` con `pyreadr`, el
+XLSX con `openpyxl` y comprueba la firma de los PDF. Las 30 bases de
+microdatos (todas las bases en todos sus formatos) abren sin errores, y los
+formatos alternativos de una misma base coinciden en filas y columnas.
+
+## Informes metodológicos: qué hay que tener en cuenta
+
+Resumen completo en
+[`reports/notas_metodologicas.md`](reports/notas_metodologicas.md). Lo
+esencial:
+
+* **2024 siguió solo a la cohorte original 2010** (adolescentes 14-18); los
+  refrescos 2012 y 2017 no fueron seguidos, así que el panel de 4 rondas
+  solo existe para la cohorte 2010.
+* Cada factor de expansión longitudinal aplica a una submuestra concreta
+  (2017: panel encuestas n=9.196, evaluaciones n=7.671; 2024:
+  `f_exp_10121724` n=7.012); los NaN son de diseño. Los totales de
+  calibración 2024 usan un marco actualizado, no directamente contrastable
+  con expansiones de rondas anteriores.
+* Diseño para varianzas: `svyset folio [pw=f_exp], strata(estrato)`;
+  `estrato` solo está en las bases 2017 y 2024 (incluido en el panel largo).
+* **TVIP es el único test cognitivo presente en las 4 rondas**; BDI-ST2 y
+  Woodcock-Muñoz 2017 se estandarizaron con la propia muestra ELPI (no
+  comparables con normas externas); el PSI 2024 se aplicó fuera de su rango
+  normativo original.
+* Base Segundo Cuidador 2017: tasa de respuesta 27,3% — usar con cautela.
+* Códigos de región: 15 regiones hasta 2017, 16 en 2024 (Ñuble).
 
 ## Base panel (`data/processed/`)
 
@@ -109,7 +148,8 @@ Cómo se ubica al niño/a en cada ronda:
 * **`elpi_panel_ninos_largo.csv` / `.dta`** — formato largo: 58.518 filas
   (una por `folio` × ronda participada) con indicadores de participación por
   instrumento, sexo, edad (años y meses), región, comuna (2017/2024), área
-  urbano/rural (2010/2012) y factores de expansión transversales.
+  urbano/rural (2010/2012), estrato de diseño muestral (2017/2024) y
+  factores de expansión transversales.
 * **`elpi_panel_ninos_ancho.csv` / `.dta`** — formato ancho: 23.245 filas
   (una por niño/a) con flags de participación por ronda (`en_2010` …
   `en_eval_2024`), patrón de participación (`1111`, `1101`, …), muestra de
@@ -145,13 +185,16 @@ Cómo se ubica al niño/a en cada ronda:
 ## Política de tamaño (>100 MB) y qué está en git
 
 * Ningún archivo **committeado** supera los 100 MB: las descargas de
-  `data/raw/` suman ~68 MB (el mayor pesa 24,9 MB) y la base panel ~16 MB.
-* `data/interim/` (≈1,1 GB) **no se sube a git**: contiene la extracción de
-  los `.zip`, incluidas dos bases que superan los 100 MB
-  (`Base_Cuidador_Principal_ELPI_III(STATA)_241010.dta`, ~606 MB, y
-  `Base responsable principal Stata.dta`, ~184 MB). Se regenera por completo
-  con `python3 scripts/02_verificar_archivos.py` a partir de los `.zip`
-  committeados (o re-descargados con el script 01).
+  `data/raw/` suman ~110 MB en 55 archivos (el mayor pesa 24,9 MB) y la
+  base panel ~17 MB.
+* `data/interim/` (≈1,3 GB) **no se sube a git**: contiene la extracción de
+  los `.zip`/`.rar`, incluidas bases extraídas que superan los 100 MB
+  (`Base_Cuidador_Principal_ELPI_III(STATA)_241010.dta`, ~606 MB;
+  `Base responsable principal Stata.dta`, ~184 MB;
+  `Base Cuidador Principal ELPI III (SPSS).sav`, ~101 MB). Se regenera por
+  completo
+  con `python3 scripts/02_verificar_archivos.py` a partir de los archivos
+  committeados en `data/raw/` (o re-descargados con el script 01).
 
 ## Licencia y cita de los datos
 

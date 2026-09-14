@@ -3,3 +3,7 @@
 pandas>=2.0
 pyreadstat>=1.2
 openpyxl>=3.1
+pyreadr>=0.5      # lectura de las bases .rds (R) de 2024
+# Para extraer los .rar de Stata 2017 se necesita además 7-Zip o unar
+# (p. ej. apt-get install p7zip-full); si falta, el script 02 lo anota y
+# las versiones SPSS equivalentes cubren esas bases.

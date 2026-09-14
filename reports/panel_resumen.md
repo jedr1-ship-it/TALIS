@@ -39,5 +39,5 @@ Sin avisos.
 
 | Archivo | Filas | Columnas |
 |---|---:|---:|
-| `data/processed/elpi_panel_ninos_largo.csv/.dta` | 58,518 | 13 |
+| `data/processed/elpi_panel_ninos_largo.csv/.dta` | 58,518 | 14 |
 | `data/processed/elpi_panel_ninos_ancho.csv/.dta` | 23,245 | 29 |

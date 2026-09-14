@@ -22,10 +22,14 @@ la plataforma y no sirven para un script reproducible (ver README.md).
 Notas:
   * 2010 y 2012 no tienen "libro de códigos" separado: la documentación de
     variables está en el Manual de Usuario de la Base de Datos de cada ronda.
-  * 2017: las bases "Niños y Niñas", "Segundo Cuidador" y los factores de
-    expansión longitudinales en formato Stata solo se publican en .rar;
-    aquí se descarga la versión SPSS (.sav.zip), equivalente y legible sin
-    herramientas propietarias de descompresión.
+  * Se descargan TODOS los formatos publicados de cada base de microdatos
+    (Stata .dta, SPSS .sav y, en 2024, R .rds). En 2017 las bases "Niños y
+    Niñas", "Segundo Cuidador" y los factores de expansión longitudinales
+    solo se publican en .rar para Stata; extraer .rar requiere 7-Zip/unar
+    (el script 02 lo hace si detecta la herramienta), por lo que las
+    versiones SPSS (.sav.zip) siguen siendo la vía sin dependencias extra.
+  * Se descargan además los informes metodológicos de cada ronda
+    (categoría "metodologia").
   * Todas las URLs se registran tal como aparecen en el sitio; los espacios,
     paréntesis y caracteres acentuados se codifican (percent-encoding) al
     momento de la petición.
@@ -47,7 +51,8 @@ BASE = "https://observatorio.ministeriodesarrollosocial.gob.cl/storage/docs/elpi
 
 # (subruta_remota, subcarpeta_local, categoria)
 # categoria: "base" (base de datos), "codigo" (libro de códigos / manual de usuario),
-#            "doc" (documentación complementaria: cuestionario, ficha técnica)
+#            "doc" (documentación complementaria: cuestionario, ficha técnica),
+#            "metodologia" (informes metodológicos y de diseño)
 ARCHIVOS = [
     # ---------------- Ronda 1 - 2010 (formato Stata) ----------------
     ("2010/Hogar_2010.dta.zip",                          "2010", "base"),
@@ -57,6 +62,10 @@ ARCHIVOS = [
     ("2010/Evaluaciones2010_items_test.dta.zip",         "2010", "base"),
     ("2010/Manual_Usuario_Base_de_Datos_ELPI_2010.pdf",  "2010", "codigo"),
     ("2010/Encuesta_ELPI_2010.pdf",                      "2010", "doc"),
+    # 2010 no publica informe metodológico separado; el diseño y el trabajo de
+    # campo se documentan en el Manual de Usuario y en el informe de resultados:
+    ("2010/Informe_Resultados_Encuesta_2010.pdf",        "2010", "metodologia"),
+    ("WEB_Informacion_ELPI.pdf",                         ".",    "metodologia"),
 
     # ---------------- Ronda 2 - 2012 (formato Stata) ----------------
     ("2012/Hogar_2012.dta.zip",                          "2012", "base"),
@@ -67,30 +76,50 @@ ARCHIVOS = [
     ("2012/Evaluaciones2012_items_test.dta.zip",         "2012", "base"),
     ("2012/Manual_Usuario_Base_de_Datos_ELPI_2012.pdf",  "2012", "codigo"),
     ("2012/Cuestionario_ELPI_2012_Cuidador_Principal.pdf", "2012", "doc"),
+    ("2012/Informe_Resultados_Encuesta_Hogares_2012.pdf", "2012", "metodologia"),
 
     # ---------------- Ronda 3 - 2017 ----------------
     # Cuidador principal: versión Stata corregida publicada el 2024-10-10
     # (es la enlazada en la página oficial de la tercera ronda).
     ("2017/Base_Cuidador_Principal_ELPI_III(STATA)_241010.dta.zip", "2017", "base"),
+    ("2017/Base_Cuidador_Principal_ELPI_III_(SPSS).sav.zip",        "2017", "base"),
     ("2017/Base Evaluaciones ELPI III.dta.zip",                     "2017", "base"),
-    # Solo publicadas en .rar para Stata -> se usa la versión SPSS (.sav):
+    ("2017/Base Evaluaciones ELPI III.sav.zip",                     "2017", "base"),
     ("2017/Base_Niños_y_Niñas_ELPI_III_(SPSS).sav.zip",             "2017", "base"),
+    ("2017/Base_Ninos_y_Ninas_ELPI_III.rar",                        "2017", "base"),
     ("2017/Base_Segundo_Cuidador_Principal_ELPI_III_(SPSS).sav.zip","2017", "base"),
+    ("2017/Base_Segundo_Cuidador_Principal_ELPI_III.rar",           "2017", "base"),
     ("2017/Factores_de_expansion_longitudinales_ELPI_III_(SPSS).sav.zip", "2017", "base"),
+    ("2017/factores_de_expansion_longitudinales_ELPI_III.rar",      "2017", "base"),
     # Libros de códigos (uno por base) y manual de usuario:
     ("2017/Libro_de_código_Cuidador_Principal_ELPI_III.pdf",        "2017", "codigo"),
     ("2017/Libro_de_código_Niños_y_Niñas_ELPI_III.pdf",             "2017", "codigo"),
     ("2017/Libro_de_código_Segundo_Cuidador_Principal_ELPI_III.pdf","2017", "codigo"),
     ("2017/Libro de codigo Evaluaciones ELPI III.pdf",              "2017", "codigo"),
     ("2017/Manual_de_usuario_2017_ELPI.pdf",                        "2017", "codigo"),
+    ("2017/Reporte_Metodologico_ELPI_III.pdf",                      "2017", "metodologia"),
+    ("2017/Reporte_metodologico_Evaluaciones.pdf",                  "2017", "metodologia"),
+    ("2017/Estandares_Metodologicos_ELPI_III.pdf",                  "2017", "metodologia"),
+    ("2017/Desarrollo_de_Instrumentos_ELPI_III.pdf",                "2017", "metodologia"),
 
     # ---------------- Ronda 4 - 2024 (formato Stata) ----------------
     ("2024/Base_responsable_principal_Stata.dta.zip",    "2024", "base"),
+    ("2024/Base_responsable_principal_SPSS.sav.zip",     "2024", "base"),
+    ("2024/Base_responsable_principal_R.rds.zip",        "2024", "base"),
     ("2024/Base_adolescentes_Stata.dta.zip",             "2024", "base"),
+    ("2024/Base_adolescentes_SPSS.sav.zip",              "2024", "base"),
+    ("2024/Base_adolescentes_R.rds.zip",                 "2024", "base"),
     ("2024/Base_evaluaciones_Stata.dta.zip",             "2024", "base"),
+    ("2024/Base_evaluaciones_SPSS.sav.zip",              "2024", "base"),
+    ("2024/Base_evaluaciones_R.rds.zip",                 "2024", "base"),
     ("2024/260309_Libro_de_codigos_ELPI_2024.xlsx",      "2024", "codigo"),
     ("2024/Uso_de_base_de_datos_ELPI_2024.pdf",          "2024", "codigo"),
     ("2024/Ficha_tecnica_ELPI_2024.pdf",                 "2024", "doc"),
+    ("2024/ELPI_2024_Informe_metodologico.pdf",          "2024", "metodologia"),
+    ("2024/ELPI_2024_Informe_construccion_factores_de_expansion.pdf", "2024", "metodologia"),
+    ("2024/ELPI_2024_Informe_estandarizacion_evaluaciones.pdf", "2024", "metodologia"),
+    ("2024/Diseno_y_Muestra_ELPI.pdf",                   "2024", "metodologia"),
+    ("2024/Proceso_de_Diseno_de_la_Encuesta_Longitudinal_de_Primera_Infancia  ELPI_cuarta_ronda.pdf", "2024", "metodologia"),
 ]
 
 REINTENTOS = 4
