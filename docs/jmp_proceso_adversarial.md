@@ -87,28 +87,79 @@ el estándar honesto de inferencia para cualquier intento futuro
 
 ---
 
-## Candidato 2: DiD de Chile Crece Contigo a largo plazo — EN EVALUACIÓN (ronda 2)
+## Candidato 2: DiD de Chile Crece Contigo a largo plazo — SOBREVIVE (condicional)
 
-Propuesto por el revisor institucional como el diseño que absorbe por
-construcción la estacionalidad que mató al candidato 1 (EF de mes calendario
-de nacimiento; identificación por la interacción cohorte × timing comunal
-del despliegue 2007-2008).
+Propuesto por el revisor institucional: la estacionalidad que mató al
+candidato 1 se absorbe por construcción (EF de mes calendario de
+nacimiento); la identificación es la interacción cohorte × timing comunal
+del despliegue 2007-2008. Pitch: **primera evaluación de un sistema
+nacional integrado de primera infancia con outcomes de adolescencia y
+salud mental (15+ años después)**.
 
-**Factibilidad verificada en los datos (previa a la ronda 2)**
+### Ronda 2: ataques y resolución
 
-- Primera etapa observable: recepción de la "Guía de la gestación y el
-  nacimiento" de ChCC (f29a, ELPI 2012) por trimestre de nacimiento del
-  niño/a: 2-6% (nacidos 2006-2007) → 14,9% (2008T1) → 25,0% (2008T4) →
-  30,9% (2009T1) → ~33% (2009T2-T3). El despliegue del programa dibujado
-  en los datos.
-- Geografía: `estrato` (comuna de selección de la muestra) tiene 116
-  códigos comunales únicos — no 33 como sugería el reporte metodológico —
-  más comuna de residencia en 2017 y 2024.
-- Pieza externa pendiente: listado oficial de comunas piloto 2007 y fechas
-  de incorporación comunal (en verificación por el revisor institucional).
+1. **"El gradiente de f29a es recuerdo, no rollout"** (R1, confirmado
+   empíricamente por R3): nacidos 2009 y 2010 están igualmente expuestos
+   (rollout nacional completo en 2008) pero reportan recepción 24% vs 50%
+   — al menos la mitad del gradiente 2006-2009 es decaimiento del
+   recuerdo. Además, el 2-6% de los nacidos 2006 (gestación pre-programa)
+   es el piso de falsos positivos, y los ítems del PARN (inicio nacional
+   sep-2009: cuna f29d, bolso f29e) muestran 1,1-1,4% pre / 46-64% post —
+   la misatribución es baja. **Resolución**: f29a queda SOLO como
+   validación del despliegue; la exposición debe ser ITT por comuna × mes
+   de nacimiento con fechas administrativas. IV sobre el autorreporte:
+   MUERTO (error de medición no clásico).
+2. **"No tienes la geografía del tratamiento"** (R3: `estrato` 2024 está
+   anonimizado como códigos secuenciales 1-116). Resuelto con datos
+   públicos: en 2017 `estrato` sí trae los códigos CUT reales de la comuna
+   de selección; con los 7.213 niños presentes en ambas rondas el mapeo
+   2024↔2017 es **1:1 perfecto en ambas direcciones (116/116)** →
+   crosswalk completo reconstruido:
+   `data/processed/crosswalk_estrato24_comuna.csv`. La geografía de
+   asignación existe para toda la muestra 2024. Advertencia vigente: es la
+   comuna de MUESTREO 2010, no la de gestación (ITT con error para
+   migrantes pre-2010; movilidad 2017→2024 medida: 7,7%).
+3. **Instituciones verificadas con fuentes** (R2): entrada al PADB por el
+   primer control gestacional en el sistema público, sin incorporación
+   retroactiva de niños ya nacidos; 159 comunas piloto desde mediados de
+   2007 (seleccionadas por infraestructura de maternidades — NO aleatorio),
+   cobertura nacional a inicios de 2008; techo de cobertura 75-80% de los
+   nacimientos. Las fechas comunales exactas existen en el MDS (las usó
+   Clarke, Cortés & Vergara, *J. Population Economics* 2020) pero no están
+   publicadas online: obtenerlas vía Ley de Transparencia o de los autores.
+4. **Novedad acotada** (R2): nacimiento ya evaluado (Clarke et al. 2020);
+   niñez media ya evaluada (Rude 2022, ifo WP 372, con SIMCE 4º básico).
+   La adolescencia y la salud mental siguen libres — ese es el margen.
+5. **Econometría exigida** (R1): el rollout es corto (~6-12 meses entre
+   piloto y cobertura nacional) → el estimando honesto es "diferencial de
+   exposición temprana a un programa inmaduro", no efecto de régimen;
+   estimadores robustos a adopción escalonada (Callaway-Sant'Anna /
+   Sun-Abraham, solo not-yet-treated), descomposición de Goodman-Bacon,
+   event-study en tiempo-a-adopción, inferencia por wild cluster bootstrap
+   y aleatorización permutando fechas de adopción entre comunas, familias
+   de outcomes con q-values.
+6. **Líneas base asimétricas** (R3): TVIP 2010 solo existía para 30+ meses
+   → los expuestos (nacidos 2008-09) no tienen TVIP de línea base; las
+   pre-tendencias se testean con Battelle/EEDP 2010 (aplicados desde los
+   6 meses) sobre los NO expuestos por ola de adopción.
 
-**Amenazas encargadas a los revisores (ronda 2, en curso)**: adopción
-escalonada y heterogeneidad (Goodman-Bacon; Callaway-Sant'Anna), recall
-diferencial de f29a según edad del niño al reporte, migración comunal,
-colinealidad cohorte×edad-al-test, cobertura del sistema público como techo
-de la primera etapa, validez de los 116 códigos de `estrato`.
+### Carga de la prueba antes de escribir el paper
+
+1. Conseguir las fechas de implementación comunal del MDS (Transparencia o
+   Clarke). Sin ellas no hay diseño.
+2. Primera etapa within-cohorte entre comunas (piloto vs resto, EF de
+   año-mes de nacimiento) ≥ ~15 pp en recepción/uso ChCC.
+3. Pre-tendencias planas en Battelle/EEDP 2010 de los nacidos 2006-07 por
+   ola de adopción comunal.
+4. Balance de características comunales por ola + robustez a excluir
+   regiones más golpeadas por el 27F.
+
+### Veredicto final del proceso
+
+| Resultado | Estado |
+|---|---|
+| RD corte escolar (cualquier claim causal) | MUERTO |
+| Conclusión metodológica: RD mensual no identificable en Chile; batería permutacional como estándar | SOBREVIVE |
+| Primera etapa institucional (rampa abril-junio) como hecho descriptivo | SOBREVIVE |
+| DiD ChCC con outcomes adolescentes (ITT comuna×mes, fechas MDS) | SOBREVIVE condicional a la carga de la prueba 1-4 |
+| Plan B nominado por los revisores si (1) falla | Terremoto 27F: dosis regional × edad, outcomes salud mental 2024 |
