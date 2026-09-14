@@ -40,18 +40,22 @@ generados por la plataforma y no sirven para un script reproducible.
 ```
 ├── scripts/
 │   ├── 01_descargar_elpi.py      # descarga bases + libros de códigos (URLs exactas)
-│   ├── 02_verificar_archivos.py  # extrae los .zip y verifica que todo abre
-│   └── 03_construir_panel.py     # enlaza a los niños/as y construye el panel
+│   ├── 02_verificar_archivos.py  # extrae los .zip/.rar y verifica que todo abre
+│   ├── 03_construir_panel.py     # enlaza a los niños/as y construye el panel
+│   └── 04_graficos.py            # gráficos de apoyo (reports/figures/)
 ├── data/
 │   ├── raw/                      # descargas tal cual (committeadas; ~110 MB, 55 archivos)
 │   │   ├── 2010/ 2012/ 2017/ 2024/
 │   │   └── SHA256SUMS.txt        # manifiesto de integridad
 │   ├── interim/                  # extracción de zip/rar (NO committeada; regenerable)
 │   └── processed/                # base panel (committeada)
+├── docs/
+│   └── disenos_jmp.md            # diseños de investigación causal posibles (JMP)
 ├── reports/
 │   ├── verificacion_archivos.md  # informe de verificación (filas/columnas por base)
 │   ├── panel_resumen.md          # verificaciones y conteos del panel
-│   └── notas_metodologicas.md    # informes metodológicos: qué hay que tener en cuenta
+│   ├── notas_metodologicas.md    # informes metodológicos: qué hay que tener en cuenta
+│   └── figures/                  # gráficos (scripts/04_graficos.py)
 ├── requirements.txt
 └── README.md
 ```
