@@ -1,0 +1,10 @@
+# Archivos intermedios regenerables (extracción de los .zip de data/raw).
+# Incluyen dos bases extraídas que superan los 100 MB y no deben subirse a git:
+#   data/interim/2017/Base_Cuidador_Principal_ELPI_III(STATA)_241010.dta (~606 MB)
+#   data/interim/2024/Base responsable principal Stata.dta               (~184 MB)
+# Se regeneran con: python3 scripts/02_verificar_archivos.py
+data/interim/
+
+__pycache__/
+*.pyc
+.DS_Store
