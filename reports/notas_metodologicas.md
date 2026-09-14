@@ -151,3 +151,18 @@ archivos):
   trabajo de campo se documentan en el Manual de Usuario y en el Informe de
   Resultados de cada ronda; el Reporte Metodológico de la 3ª ronda (§3)
   reconstruye además el diseño muestral y los factores de 2010 y 2012.
+
+## 7. Conciliación con las cifras de cohorte publicadas
+
+Presentaciones y artículos que describen la ELPI como cohorte (p. ej. el
+Cohort Profile de Martínez et al., 2026) reportan la serie de **atrición de
+la cohorte original 2010**: 15.175 (2010) → 12.898 (2012) → 10.230 (2017) →
+10.003 (2024), con 34,1% de atrición acumulada. Estas cifras cuentan solo a
+los niños/as de la muestra 2010 re-entrevistados en cada ronda y se
+reproducen exactamente desde el panel ancho filtrando `en_2010==1`.
+
+Los totales por ronda de este repositorio (15.175 / 16.033 / 17.307 /
+10.003) corresponden en cambio a la **muestra completa de cada
+levantamiento**, que incluye además los refrescos: 3.135 incorporados en
+2012 (de los cuales 2.142 fueron seguidos en 2017) y 4.935 incorporados en
+2017. Ambas series son consistentes entre sí.
