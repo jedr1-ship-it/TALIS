@@ -163,3 +163,49 @@ salud mental (15+ años después)**.
 | Primera etapa institucional (rampa abril-junio) como hecho descriptivo | SOBREVIVE |
 | DiD ChCC con outcomes adolescentes (ITT comuna×mes, fechas MDS) | SOBREVIVE condicional a la carga de la prueba 1-4 |
 | Plan B nominado por los revisores si (1) falla | Terremoto 27F: dosis regional × edad, outcomes salud mental 2024 |
+
+---
+
+## Candidato 3: Desastres naturales y desarrollo humano (27F → adolescencia) — VIVO con matices
+
+Plantilla "school prayer": shock fechado (27-02-2010), exposición diferencial
+por intensidad comunal × edad al golpe (gestación a 4 años), outcomes de vida
+14 años después, sobre una cohorte que ya estaba siendo medida antes del shock.
+
+**Verificación de literatura (dos rastreadores con fuentes, sep-2026):**
+
+- El campo publica en JDE (Caruso & Miller 2015; Caruso 2017), JOLE
+  (Karbownik & Wray 2019), JHR 2023 (terremoto Pakistán: Andrabi, Daniels &
+  Das; huracán Brasil), Demography (Torche 2011, 2018 — seguimiento a los
+  7 años), y el techo del paradigma estrés temprano → salud mental es AER
+  2018 (Persson & Rossin-Slater). Demanda viva: Annual Review of Resource
+  Economics 2025 sobre desastres y capital humano; salud mental adolescente
+  en JPE 2026 (Cuddy & Currie).
+- **Competencia directa sobre 27F + ELPI**: Gillmore (SSRN WP 5106675,
+  2025) hace exactamente el diseño intensidad-Mercalli-comunal × ELPI con
+  TVIP hasta la ronda 2017 (edades ~8-12) y mecanismos (tabaquismo materno,
+  ingreso); Berthelon, Kruger & Sánchez (Economics & Human Biology 2021)
+  cubren estrés in utero → 0-3 años; Morales et al. (Soc Psychiatry 2023)
+  CBCL a 1½-3 años con matching. Nada toca la ronda 2024.
+
+**Veredicto**: muere la versión fuerte ("nadie ha estudiado a los niños del
+27F") — la infancia de estos niños YA está estudiada. Sobrevive la versión
+precisa: **nadie ha llegado a la adolescencia** (ronda 2024, n=10.003,
+14-18 años, PHQ-4, conductas de riesgo, liberada nov-2025) ni a la salud
+mental adolescente, que en economía del desastre temprano es una celda
+vacía a nivel mundial. El paper viable es "el primer seguimiento a la
+adolescencia y a la salud mental", citando y diferenciándose explícitamente
+de Gillmore (horizonte, outcomes, canal parental medido ronda a ronda:
+depresión materna, PSI, HOME) y explotando además edad-al-golpe como test
+de períodos críticos.
+
+**Riesgo estratégico**: carrera de tiempo real — Gillmore puede extender su
+working paper a la ronda 2024. La velocidad de ejecución es parte del
+diseño.
+
+**Ejecución (todo con datos ya en mano o públicos):** intensidad sísmica
+por comuna del ShakeMap USGS del 27F × las 116 comunas de selección
+(crosswalk ya construido) × edad al 27F por mes de nacimiento; primera
+etapa/validación con el módulo de terremoto de ELPI 2012 (h4*); outcomes
+2024 (PHQ-4, GAD-2, riesgo, TVIP) y trayectoria 2010-2017; canal parental
+(CESD/EPDS materna, ingresos, HOME, PSI).
