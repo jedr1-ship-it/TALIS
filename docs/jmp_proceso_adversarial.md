@@ -181,12 +181,17 @@ por intensidad comunal × edad al golpe (gestación a 4 años), outcomes de vida
   2018 (Persson & Rossin-Slater). Demanda viva: Annual Review of Resource
   Economics 2025 sobre desastres y capital humano; salud mental adolescente
   en JPE 2026 (Cuddy & Currie).
-- **Competencia directa sobre 27F + ELPI**: Gillmore (SSRN WP 5106675,
-  2025) hace exactamente el diseño intensidad-Mercalli-comunal × ELPI con
-  TVIP hasta la ronda 2017 (edades ~8-12) y mecanismos (tabaquismo materno,
-  ingreso); Berthelon, Kruger & Sánchez (Economics & Human Biology 2021)
-  cubren estrés in utero → 0-3 años; Morales et al. (Soc Psychiatry 2023)
-  CBCL a 1½-3 años con matching. Nada toca la ronda 2024.
+- **Competencia directa sobre 27F + ELPI**: Gillmore, "Natural Disasters
+  and Early Child Development: Evidence from an Earthquake" — SSRN 5106675
+  (feb-2025) y **ya publicado en Economics of Education Review 115 (2026),
+  art. 102817** (capítulo de su tesis en UT Austin 2023): dif-en-dif
+  intensidad Mercalli comunal × ELPI, exposición prenatal-4 años, TVIP
+  −0,06 DE por unidad Mercalli medido ~7 años después (ronda 2017, edades
+  8-12), peor en varones; mecanismos: tabaquismo/estrés materno, caída
+  transitoria de ingreso ("stress-budget trap"). Berthelon, Kruger &
+  Sánchez (Economics & Human Biology 2021) cubren estrés in utero → 0-3
+  años; Morales et al. (Soc Psychiatry 2023) CBCL a 1½-3 años con
+  matching. Nada toca la ronda 2024.
 
 **Veredicto**: muere la versión fuerte ("nadie ha estudiado a los niños del
 27F") — la infancia de estos niños YA está estudiada. Sobrevive la versión
@@ -199,9 +204,12 @@ de Gillmore (horizonte, outcomes, canal parental medido ronda a ronda:
 depresión materna, PSI, HOME) y explotando además edad-al-golpe como test
 de períodos críticos.
 
-**Riesgo estratégico**: carrera de tiempo real — Gillmore puede extender su
-working paper a la ronda 2024. La velocidad de ejecución es parte del
-diseño.
+**Riesgo estratégico (actualizado)**: el paper de Gillmore ya está
+publicado y cerrado — extenderlo a 2024 sería para él un proyecto nuevo,
+lo que baja la temperatura de la carrera sin eliminarla; a cambio, deja
+evidencia publicada y citable de la herida en la infancia sobre la que la
+pregunta de adolescencia es la continuación natural. Ejecutar rápido sigue
+siendo ventaja.
 
 **Ejecución (todo con datos ya en mano o públicos):** intensidad sísmica
 por comuna del ShakeMap USGS del 27F × las 116 comunas de selección
