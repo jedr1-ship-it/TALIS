@@ -204,12 +204,21 @@ de Gillmore (horizonte, outcomes, canal parental medido ronda a ronda:
 depresión materna, PSI, HOME) y explotando además edad-al-golpe como test
 de períodos críticos.
 
-**Riesgo estratégico (actualizado)**: el paper de Gillmore ya está
-publicado y cerrado — extenderlo a 2024 sería para él un proyecto nuevo,
-lo que baja la temperatura de la carrera sin eliminarla; a cambio, deja
-evidencia publicada y citable de la herida en la infancia sobre la que la
-pregunta de adolescencia es la continuación natural. Ejecutar rápido sigue
-siendo ventaja.
+**Riesgo estratégico (actualizado con perfil del autor, sep-2026)**:
+Gillmore trabaja hoy en el Banco Central de Chile (departamento de análisis
+de big data), fuera de la academia; su tesis fue un compendio de tres
+papers y ya colocó dos (terremoto en EER 2026; horario de verano y
+accidentes en Health Economics 2025) mientras su producción reciente es de
+mercado laboral formal. No hay NINGUNA señal localizable de extensión a la
+adolescencia ni de uso de la ronda 2024 (sin Scholar nuevo en el último
+año, ORCID vacío, sin página personal ni work in progress). El riesgo de
+carrera con él es BAJO; el riesgo residual real es que cualquier grupo de
+micro aplicada chileno (p. ej. los autores de Berthelon-Kruger-Sánchez,
+que conocen la ELPI) vea el mismo hueco ahora que la ronda 2024 es
+pública. La velocidad sigue siendo ventaja, sin pánico. Su introducción
+(tesis pública UT Austin, descargada y desglosada) fija además el estándar
+de amenazas a replicar: fertilidad endógena con registros vitales,
+migración y atrición.
 
 **Ejecución (todo con datos ya en mano o públicos):** intensidad sísmica
 por comuna del ShakeMap USGS del 27F × las 116 comunas de selección
