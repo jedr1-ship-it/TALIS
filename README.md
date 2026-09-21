@@ -42,7 +42,10 @@ generados por la plataforma y no sirven para un script reproducible.
 │   ├── 01_descargar_elpi.py      # descarga bases + libros de códigos (URLs exactas)
 │   ├── 02_verificar_archivos.py  # extrae los .zip/.rar y verifica que todo abre
 │   ├── 03_construir_panel.py     # enlaza a los niños/as y construye el panel
-│   └── 04_graficos.py            # gráficos de apoyo (reports/figures/)
+│   ├── 04_graficos.py            # gráficos de apoyo (reports/figures/)
+│   ├── 05_rd_entrada_escolar.py  # RD corte escolar (diseño descartado; ver docs/)
+│   ├── 06_permutacion_rd.py      # inferencia permutacional del RD
+│   └── 07_presentacion_3slides.js # genera docs/presentacion_elpi_gillmore_3slides.pptx (node + pptxgenjs)
 ├── data/
 │   ├── raw/                      # descargas tal cual (committeadas; ~110 MB, 55 archivos)
 │   │   ├── 2010/ 2012/ 2017/ 2024/
@@ -50,7 +53,9 @@ generados por la plataforma y no sirven para un script reproducible.
 │   ├── interim/                  # extracción de zip/rar (NO committeada; regenerable)
 │   └── processed/                # base panel (committeada)
 ├── docs/
-│   └── disenos_jmp.md            # diseños de investigación causal posibles (JMP)
+│   ├── disenos_jmp.md            # diseños de investigación causal posibles (JMP)
+│   ├── jmp_proceso_adversarial.md # registro del proceso adversarial de selección
+│   └── presentacion_elpi_gillmore_3slides.pptx # 3 slides: ELPI, muestreo, especificación 27-F
 ├── reports/
 │   ├── verificacion_archivos.md  # informe de verificación (filas/columnas por base)
 │   ├── panel_resumen.md          # verificaciones y conteos del panel
