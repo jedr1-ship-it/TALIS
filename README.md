@@ -45,7 +45,8 @@ generados por la plataforma y no sirven para un script reproducible.
 │   ├── 04_graficos.py            # gráficos de apoyo (reports/figures/)
 │   ├── 05_rd_entrada_escolar.py  # RD corte escolar (diseño descartado; ver docs/)
 │   ├── 06_permutacion_rd.py      # inferencia permutacional del RD
-│   └── 07_presentacion_3slides.js # genera docs/presentacion_elpi_gillmore_3slides.pptx (node + pptxgenjs)
+│   ├── 07_presentacion.js        # genera docs/presentacion_elpi_gillmore.pptx (node + pptxgenjs)
+│   └── 07_gillmore_spec.tex      # diapo de especificación (Beamer; pdflatex + pdftoppm -r 640)
 ├── data/
 │   ├── raw/                      # descargas tal cual (committeadas; ~110 MB, 55 archivos)
 │   │   ├── 2010/ 2012/ 2017/ 2024/
@@ -55,7 +56,7 @@ generados por la plataforma y no sirven para un script reproducible.
 ├── docs/
 │   ├── disenos_jmp.md            # diseños de investigación causal posibles (JMP)
 │   ├── jmp_proceso_adversarial.md # registro del proceso adversarial de selección
-│   └── presentacion_elpi_gillmore_3slides.pptx # 3 slides: ELPI, muestreo, especificación 27-F
+│   └── presentacion_elpi_gillmore.pptx # 5 slides: ELPI, preguntas textuales (x2), muestreo, especificación 27-F
 ├── reports/
 │   ├── verificacion_archivos.md  # informe de verificación (filas/columnas por base)
 │   ├── panel_resumen.md          # verificaciones y conteos del panel

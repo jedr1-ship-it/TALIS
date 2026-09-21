@@ -1,5 +1,9 @@
-// 3-slide deck: ELPI overview / sampling evolution / Gillmore specification
-const pptxgen = require("pptxgenjs") // npm i pptxgenjs react-icons react react-dom sharp;
+// 5-slide deck: ELPI overview / verbatim questions (child, caregiver) /
+// sampling & attrition / Gillmore specification (Beamer image).
+// Deps: npm i pptxgenjs react-icons react react-dom sharp
+// Slide 5 embeds spec-1.png, rendered from 07_gillmore_spec.tex:
+//   pdflatex 07_gillmore_spec.tex && pdftoppm -png -r 640 07_gillmore_spec.pdf spec
+const pptxgen = require("pptxgenjs");
 const React = require("react");
 const ReactDOMServer = require("react-dom/server");
 const sharp = require("sharp");
@@ -89,6 +93,7 @@ async function iconPng(Comp) {
     home: await iconPng(fa.FaHome),
     hands: await iconPng(fa.FaHandsHelping),
     brief: await iconPng(fa.FaBriefcase),
+    warn: await iconPng(fa.FaExclamationTriangle),
   };
 
   const cards = [
@@ -137,6 +142,195 @@ async function iconPng(Comp) {
       align: "left", margin: 0, isTextBox: true }
   );
   s1.addNotes("ELPI overview: survey design facts on top; eight variable domains with instruments and wave coverage. All coverage claims verified against the microdata and codebooks in the TALIS repo.");
+
+  // =====================================================================
+  // SLIDE 2 — Verbatim questions: the child & adolescent
+  // =====================================================================
+  const label = (s, y, txt) => s.addText(txt, {
+    x: 0.5, y, w: 12.33, h: 0.26, fontFace: SANS, fontSize: 10.5, bold: true,
+    color: FAINT, charSpacing: 2, align: "left", margin: 0, isTextBox: true,
+  });
+  const quote = (s, x, y, w, q, tag, qSize, lines) => {
+    s.addText("“" + q + "”", {
+      x, y, w, h: 0.4, fontFace: SER, fontSize: qSize || 10.5, italic: true,
+      color: INK, align: "left", valign: "top", margin: 0, isTextBox: true,
+      lineSpacingMultiple: 1.02,
+    });
+    s.addText(tag, {
+      x, y: y + ((lines || 2) === 2 ? 0.42 : 0.24), w, h: 0.16, fontFace: SANS, fontSize: 7.8, color: FAINT,
+      align: "left", margin: 0, isTextBox: true,
+    });
+  };
+
+  const q1 = pptx.addSlide();
+  q1.background = { color: "FFFFFF" };
+  q1.addText("What we ask the child — verbatim", {
+    x: 0.5, y: 0.26, w: 12.33, h: 0.54, fontFace: SER, fontSize: 30, bold: true,
+    color: INK, align: "left", margin: 0, isTextBox: true,
+  });
+  q1.addText(
+    "Standardized tests administered by a trained evaluator — and, from 2024, a sensitive module the adolescent answers alone. Quotes are verbatim from the official microdata (variable labels), sic.",
+    { x: 0.5, y: 0.88, w: 12.33, h: 0.34, fontFace: SANS, fontSize: 12, color: MUT,
+      align: "left", margin: 0, isTextBox: true }
+  );
+
+  label(q1, 1.34, "THE EVALUATOR, WITH THE CHILD");
+  const tests = [
+    ["TVIP · all four waves",
+     "The child hears a word and points to 1 of 4 pictures — receptive vocabulary (Peabody, Hispanic norms)."],
+    ["“Juego del Corazón / de la Flor” · 2017",
+     "Hearts & Flowers: computerized inhibition task — % correct and reaction times (executive function)."],
+    ["Backward digit span · 2012–17",
+     "The child repeats digit strings in reverse order — working memory."],
+  ];
+  tests.forEach((t, k) => {
+    const x = 0.5 + k * (4.05 + 0.09);
+    q1.addShape(pptx.ShapeType.roundRect, {
+      x, y: 1.62, w: 4.05, h: 0.86, fill: { color: TINT }, line: { type: "none" }, rectRadius: 0.06,
+    });
+    q1.addText(t[0], {
+      x: x + 0.14, y: 1.7, w: 3.77, h: 0.22, fontFace: SANS, fontSize: 10.3, bold: true,
+      color: NAVY, align: "left", margin: 0, isTextBox: true,
+    });
+    q1.addText(t[1], {
+      x: x + 0.14, y: 1.94, w: 3.77, h: 0.48, fontFace: SANS, fontSize: 8.8, color: MUT,
+      align: "left", margin: 0, isTextBox: true, lineSpacingMultiple: 1.04,
+    });
+  });
+
+  label(q1, 2.66, "THE ADOLESCENT ANSWERS ALONE — SELF-COMPLETED MODULE, 2024 (AGES 14–18)");
+  const adol = [
+    ["¿Te has sentido bajoneado(a), deprimido(a), irritable o desesperanzado(a)?",
+     "d4_1 · PHQ-2, depression screen"],
+    ["¿Te has sentido muy nervioso(a), angustiado(a) o con los nervios de punta?",
+     "d4_3 · GAD-2, anxiety screen"],
+    ["Ha presenciado peleas o amenazas entre los integrantes del hogar",
+     "aces_2 · adverse childhood experiences (ACEs)"],
+    ["Vivió o vive con personas que tenían un problema de consumo excesivo de alcohol, drogas o medicinas",
+     "aces_10 · adverse childhood experiences (ACEs)"],
+    ["¿Has fumado cigarrillos de tabaco alguna vez en los últimos 12 meses?",
+     "g11 · tobacco use"],
+    ["¿Cuántos días consumiste alcohol la semana pasada?",
+     "g12_frec · alcohol use"],
+    ["¿En los últimos 12 meses has recibido llamadas al celular insultantes o amenazantes?",
+     "g2_3 · cyberbullying / victimization"],
+    ["¿Qué promedio de notas tuviste el año pasado?",
+     "e3_asiste · self-reported GPA (Chilean 1–7 scale)"],
+  ];
+  adol.forEach((e, k) => {
+    const x = k % 2 === 0 ? 0.5 : 6.88;
+    const y = 2.98 + Math.floor(k / 2) * 0.74;
+    quote(q1, x, y, 5.95, e[0], e[1]);
+  });
+
+  label(q1, 6.02, "AND ALREADY AT AGES 8–12 — THE CHILD SELF-REPORTS (2017)");
+  quote(q1, 0.5, 6.3, 5.95,
+    "¿Piensas que en tu colegio hay estudiantes que fuman cigarrillos…?",
+    "d13 · child questionnaire, risk environment at school");
+  quote(q1, 6.88, 6.3, 5.95,
+    "En la última semana, ¿tú y alguien de tu familia leyeron juntos libros…?",
+    "b17 · child questionnaire, family reading");
+
+  q1.addText(
+    "Verbatim variable labels from the ELPI public microdata; 2010–12 files store labels truncated at 80 characters (ellipses). Bracketed terms replace questionnaire placeholders.",
+    { x: 0.5, y: 7.14, w: 12.33, h: 0.24, fontFace: SANS, fontSize: 8, color: FAINT,
+      align: "left", margin: 0, isTextBox: true }
+  );
+  q1.addNotes("Verbatim questions, child side: evaluator-administered tests (TVIP, Hearts & Flowers, digit span), the 2024 self-completed adolescent module (PHQ-2 d4_1, GAD-2 d4_3, ACEs aces_2/aces_10, tobacco g11, alcohol g12_frec, cyberbullying g2_3, GPA e3_asiste), and 2017 child self-reports (d13, b17).");
+
+  // =====================================================================
+  // SLIDE 3 — Verbatim questions: the caregiver & household
+  // =====================================================================
+  const q2 = pptx.addSlide();
+  q2.background = { color: "FFFFFF" };
+  q2.addText("What we ask the caregiver — verbatim", {
+    x: 0.5, y: 0.26, w: 12.33, h: 0.54, fontFace: SER, fontSize: 30, bold: true,
+    color: INK, align: "left", margin: 0, isTextBox: true,
+  });
+  q2.addText(
+    "The main caregiver (usually the mother) is interviewed at home in every wave — retrospective pregnancy modules, screened mental-health scales, observed parenting, income, programs, and a dedicated 27-F module in 2012.",
+    { x: 0.5, y: 0.88, w: 12.33, h: 0.34, fontFace: SANS, fontSize: 12, color: MUT,
+      align: "left", margin: 0, isTextBox: true }
+  );
+
+  const group = (s, x, y, iconKey, title) => {
+    s.addShape(pptx.ShapeType.ellipse, {
+      x, y, w: 0.3, h: 0.3, fill: { color: BLUE }, line: { type: "none" },
+    });
+    s.addImage({ data: icons[iconKey], x: x + 0.075, y: y + 0.075, w: 0.15, h: 0.15 });
+    s.addText(title, {
+      x: x + 0.42, y, w: 5.5, h: 0.3, fontFace: SANS, fontSize: 11.5, bold: true,
+      color: NAVY, align: "left", valign: "middle", margin: 0, isTextBox: true,
+    });
+  };
+  const HDR = 0.36, GAP = 0.12;
+  const col = (s, x, groups) => {
+    let y = 1.42;
+    groups.forEach(g => {
+      group(s, x, y, g.icon, g.title);
+      y += HDR;
+      g.items.forEach(it => {
+        quote(s, x + 0.02, y, 5.85, it[0], it[1], 10, it[2]);
+        y += it[2] === 2 ? 0.62 : 0.44;
+      });
+      y += GAP;
+    });
+  };
+  col(q2, 0.5, [
+    { icon: "home", title: "Family structure & separation", items: [
+      ["\u00bfQu\u00e9 edad ten\u00eda [el/la adolescente] cuando la madre dej\u00f3 de vivir con \u00e9l(ella)?",
+       "m1 \u00b7 2024 (also 2017; asked for mother and father) \u00b7 separation timing", 2],
+    ]},
+    { icon: "child", title: "Pregnancy & birth (retrospective)", items: [
+      ["Durante el embarazo del(de la) ni\u00f1o(a) seleccionado(a), \u00bffum\u00f3 cigarrillos?",
+       "b8 \u00b7 2012 (also 2010 g7a) \u00b7 smoking in pregnancy", 1],
+      ["\u00bfEl embarazo del(de la) ni\u00f1o(a) seleccionado(a) fue planificado?",
+       "b36 \u00b7 2012 \u00b7 planned pregnancy", 1],
+    ]},
+    { icon: "heart", title: "Caregiver mental health (screened scales)", items: [
+      ["Me sent\u00ed deprimido/a \u2014 Sent\u00ed que todo lo que hac\u00eda me costaba un gran esfuerzo",
+       "cesd_p1d / cesd_p1e \u00b7 CES-D-10 depression, 2017 & 2024", 2],
+      ["Ser cuidador/a me pone tenso/a y ansioso/a",
+       "pscs_p16 \u00b7 parental self-efficacy scale (PSCS), 2017 & 2024", 1],
+      ["EPDS postpartum depression score \u2014 incl. a \u2018Pensamientos Suicidas\u2019 flag",
+       "epds_pb / epds_ps \u00b7 2012 \u00b7 plus Parental Stress Index (PSI) 2012\u20132024", 1],
+    ]},
+    { icon: "brief", title: "Household economy", items: [
+      ["En [mes pasado], \u00bfcu\u00e1l fue el ingreso de [nombre] proveniente de su o sus trabajos, ocupaci\u00f3n o actividad?",
+       "y1 \u00b7 2024 \u00b7 income module y1\u2013y5, per household member", 2],
+    ]},
+  ]);
+  col(q2, 6.88, [
+    { icon: "hands", title: "Parenting \u2014 reported and observed", items: [
+      ["Le dio una palmada o cachetada en alguna parte del cuerpo",
+       "pc4_6 \u00b7 2024 \u00b7 discipline in the last month (also 2012 f20c\u2013g)", 1],
+      ["\u00bfCree usted que para criar o educar correctamente a un adolescente, se le debe castigar f\u00edsicamente?",
+       "pc5 \u00b7 2024 \u00b7 attitudes toward corporal punishment", 2],
+      ["La Madre o tutora lee historias al(a la) ni\u00f1o(a), al menos tres veces a la\u2026",
+       "h11 \u00b7 2010 \u00b7 HOME inventory \u2014 marked by the evaluator observing the home", 1],
+    ]},
+    { icon: "warn", title: "The 27-F earthquake module (2012)", items: [
+      ["Producto del terremoto/tsunami, \u00bfla vivienda que habitaba el(la) ni\u00f1o(a)\u2026?",
+       "h3 \u00b7 housing damage", 1],
+      ["Recuerdos traum\u00e1ticos del terremoto \u2014 stress/angustia/ansiedad \u2014 miedo/p\u00e1nico",
+       "h4_2\u2013h4_5 \u00b7 post-quake symptom checklist", 2],
+      ["\u00bfUsted consult\u00f3 a un psic\u00f3logo o psiquiatra a causa de estos s\u00edntomas?",
+       "h5 \u00b7 mental-health care take-up after 27-F", 1],
+    ]},
+    { icon: "grad", title: "Programs & the home", items: [
+      ["\u00bfConoce o ha escuchado hablar del programa Chile Crece Contigo?",
+       "f27 \u00b7 2012 \u00b7 program awareness & receipt (f29: materials received)", 1],
+      ["\u00bfM\u00e1s o menos cu\u00e1ntos libros infantiles o juveniles tiene en su casa?",
+       "home1 \u00b7 2024 \u00b7 HOME, books at home", 1],
+    ]},
+  ]);
+
+  q2.addText(
+    "Verbatim variable labels from the ELPI public microdata; 2010–12 files store labels truncated at 80 characters (ellipses). Bracketed terms replace questionnaire placeholders (%nombre%, %mes pasado%).",
+    { x: 0.5, y: 7.14, w: 12.33, h: 0.24, fontFace: SANS, fontSize: 8, color: FAINT,
+      align: "left", margin: 0, isTextBox: true }
+  );
+  q2.addNotes("Verbatim questions, caregiver side: separation timing (m1/p1), pregnancy retrospectives (b8, b36), mental-health scales (CES-D, PSCS, EPDS incl. suicidal-thoughts flag, PSI), discipline reported (pc4, pc5) and HOME observed (h11), the 2012 earthquake module (h3, h4, h5), income (y1) and Chile Crece Contigo (f27/f29).");
 
   // =====================================================================
   // SLIDE 2 — Sampling evolution / attrition
@@ -289,122 +483,13 @@ async function iconPng(Comp) {
   s2.addNotes("Bars to scale. Blue = original 2010 cohort (15,175 -> 12,898 -> 10,230 -> 10,003; 85.0% / 79.3% / 97.8% between-wave retention; 34.1% cumulative attrition). Gray = refresh samples (2012: +3,135; 2017: +2,142 re-interviewed + 4,935 new), not followed in 2024.");
 
   // =====================================================================
-  // SLIDE 3 — Gillmore specification (economic-seminar slide)
+  // SLIDE 5 — Gillmore specification (Beamer/LaTeX render, full-bleed)
   // =====================================================================
   const s3 = pptx.addSlide();
   s3.background = { color: "FFFFFF" };
+  s3.addImage({ path: "spec-1.png", x: 0, y: 0, w: 13.333, h: 7.5 });
+  s3.addNotes("Specification slide typeset in LaTeX (Beamer, Computer Modern) and embedded as a full-bleed image; source gillmore_spec.tex in the repo. Eq. (2.1) verbatim from the dissertation chapter; identification incl. lower-bound argument; validity checks.");
 
-  s3.addText("Empirical strategy — Gillmore (2025)", {
-    x: 0.5, y: 0.26, w: 12.33, h: 0.54, fontFace: SER, fontSize: 30, bold: true,
-    color: INK, align: "left", margin: 0, isTextBox: true,
-  });
-  s3.addText(
-    "Difference-in-differences: municipal seismic intensity × birth-cohort exposure to the 2010 Chilean earthquake (27-F). “Natural Disasters and Early Child Development: Evidence from an Earthquake.”",
-    { x: 0.5, y: 0.88, w: 12.33, h: 0.34, fontFace: SANS, fontSize: 12, color: MUT,
-      align: "left", margin: 0, isTextBox: true }
-  );
-
-  // equation panel
-  s3.addShape(pptx.ShapeType.roundRect, {
-    x: 0.5, y: 1.42, w: 12.33, h: 1.06, fill: { color: TINT }, line: { type: "none" }, rectRadius: 0.07,
-  });
-  const it = { italic: true };
-  const sub = { italic: true, subscript: true };
-  const eq = [
-    { text: "Y", options: { ...it } }, { text: "ijtw", options: { ...sub } },
-    { text: " = ", options: {} },
-    { text: "β", options: { bold: true, color: ORANGE } },
-    { text: " (Affected", options: { ...it, color: NAVY, bold: true } },
-    { text: "it", options: { ...sub, color: NAVY, bold: true } },
-    { text: " × Mercalli", options: { ...it, color: NAVY, bold: true } },
-    { text: "j", options: { ...sub, color: NAVY, bold: true } },
-    { text: ")", options: { color: NAVY, bold: true } },
-    { text: " + γ", options: {} },
-    { text: " Affected", options: { ...it } }, { text: "it", options: { ...sub } },
-    { text: " + X", options: { ...it } }, { text: "ijt", options: { ...sub } },
-    { text: " + ψ", options: {} }, { text: "j", options: { ...sub } },
-    { text: " + θ", options: {} }, { text: "t", options: { ...sub } },
-    { text: " + λ", options: {} }, { text: "jt", options: { ...sub } },
-    { text: " + η", options: {} }, { text: "w", options: { ...sub } },
-    { text: " + e", options: { ...it } }, { text: "ijtw", options: { ...sub } },
-  ];
-  s3.addText(eq, {
-    x: 0.8, y: 1.42, w: 11.0, h: 1.06, fontFace: SER, fontSize: 20, color: INK,
-    align: "center", valign: "middle", margin: 0, isTextBox: true,
-  });
-  s3.addText("(2.1)", {
-    x: 11.9, y: 1.42, w: 0.8, h: 1.06, fontFace: SER, fontSize: 13, color: FAINT,
-    align: "right", valign: "middle", margin: 0, isTextBox: true,
-  });
-
-  // definitions, two columns
-  const defLine = (term, sfx, rest) => {
-    const runs = [{ text: term, options: { italic: true, bold: true, color: NAVY, fontFace: SER, fontSize: 12 } }];
-    if (sfx) runs.push({ text: sfx, options: { italic: true, bold: true, color: NAVY, subscript: true, fontFace: SER, fontSize: 12 } });
-    runs.push({ text: "  " + rest, options: { color: INK, fontSize: 10.8 } });
-    return runs;
-  };
-  const colOpts = (x) => ({
-    x, y: 2.68, w: 5.95, h: 2.28, fontFace: SANS, align: "left", valign: "top",
-    margin: 0, isTextBox: true, paraSpaceAfter: 7,
-  });
-  const L = [
-    defLine("i, j, t, w", "", "child · municipality · birth cohort · survey wave (2012, 2017)"),
-    defLine("Affected", "it", "= 1 if child i of cohort t was conceived before 27-F — between in utero and age 5 at impact (exposed cohorts vs. cohorts conceived after)"),
-    defLine("Mercalli", "j", "modified Mercalli intensity of municipality j (Astroza et al. 2010: housing damage conditional on construction type; robustness: USGS peak ground acceleration)"),
-    defLine("X", "ijt", "child, mother & household controls, incl. pre-earthquake characteristics"),
-  ];
-  const R = [
-    defLine("ψ", "j", "municipality fixed effects"),
-    defLine("θ", "t", "birth-cohort fixed effects"),
-    defLine("η", "w", "survey-wave fixed effects"),
-    defLine("λ", "jt", "municipality-specific linear trends — allow stable differential trends in development across municipalities"),
-    defLine("e", "ijtw", "error term; standard errors clustered at the municipality level"),
-  ];
-  const flat = (arr) => arr.flatMap((runs, k) => {
-    const out = runs.map(r => ({ ...r }));
-    out[out.length - 1].options = { ...out[out.length - 1].options, breakLine: k < arr.length - 1 };
-    return out;
-  });
-  s3.addText(flat(L), colOpts(0.5));
-  s3.addText(flat(R), colOpts(6.88));
-
-  // identification + threats band
-  s3.addShape(pptx.ShapeType.roundRect, {
-    x: 0.5, y: 5.12, w: 7.3, h: 1.72, fill: { color: NAVY }, line: { type: "none" }, rectRadius: 0.07,
-  });
-  s3.addText([
-    { text: "Identification.  ", options: { bold: true, color: "FFFFFF" } },
-    { text: "β", options: { bold: true, color: "FFC9A8", fontFace: SER, italic: true } },
-    { text: " = intention-to-treat: effect of one additional Mercalli unit on exposed cohorts. Assumption: absent 27-F, exposed cohorts would have trended like post-earthquake cohorts within each municipality (parallel trends conditional on λ", options: { color: "FFFFFF" } },
-    { text: "jt", options: { color: "FFFFFF", subscript: true, italic: true } },
-    { text: "). Post-quake conceptions may be indirectly exposed (stress, income) → ", options: { color: "FFFFFF" } },
-    { text: "β is a lower bound.", options: { bold: true, color: "FFC9A8" } },
-  ], {
-    x: 0.75, y: 5.28, w: 6.8, h: 1.4, fontFace: SANS, fontSize: 11, align: "left",
-    valign: "top", margin: 0, isTextBox: true, lineSpacingMultiple: 1.12,
-  });
-  s3.addShape(pptx.ShapeType.roundRect, {
-    x: 8.05, y: 5.12, w: 4.78, h: 1.72, fill: { color: CARD }, line: { type: "none" }, rectRadius: 0.07,
-  });
-  s3.addText([
-    { text: "Threats addressed", options: { bold: true, color: NAVY, breakLine: true, fontSize: 11 } },
-    { text: "Placebo on post-quake cohorts: null", options: { bullet: true, color: MUT, breakLine: true } },
-    { text: "Migration between waves 0.78% (affected → unaffected: 0.02%)", options: { bullet: true, color: MUT, breakLine: true } },
-    { text: "Fertility, planned births & sex ratio: null in vital records", options: { bullet: true, color: MUT, breakLine: true } },
-    { text: "Attrition uncorrelated with intensity", options: { bullet: true, color: MUT } },
-  ], {
-    x: 8.3, y: 5.26, w: 4.35, h: 1.46, fontFace: SANS, fontSize: 10, align: "left",
-    valign: "top", margin: 0, isTextBox: true, paraSpaceAfter: 4,
-  });
-
-  s3.addText(
-    "Eq. (2.1) as in Gillmore, UT Austin dissertation (2023), ch. 2; SSRN WP 5106675 (2025); Economics of Education Review (2026). The published version defines exposure as prenatal to age 4. Outcomes: TVIP/Peabody, Battelle, CBCL.",
-    { x: 0.5, y: 7.06, w: 12.33, h: 0.34, fontFace: SANS, fontSize: 8, color: FAINT,
-      align: "left", margin: 0, isTextBox: true }
-  );
-  s3.addNotes("Specification slide only, per request: eq. (2.1) verbatim from the dissertation chapter; beta highlighted; definitions; identification assumption incl. lower-bound argument (footnote 3); validity checks summarized.");
-
-  await pptx.writeFile({ fileName: "elpi_gillmore_3slides.pptx" });
-  console.log("written elpi_gillmore_3slides.pptx");
+  await pptx.writeFile({ fileName: "elpi_gillmore_deck.pptx" });
+  console.log("written elpi_gillmore_deck.pptx");
 })().catch(e => { console.error(e); process.exit(1); });
