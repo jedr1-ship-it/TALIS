@@ -382,9 +382,11 @@ def main():
     filas += [
         "",
         "## Desviaciones respecto al original (datos públicos)",
-        "- **D1 comuna**: 2010/2012 públicos no traen comuna → `estrato`"
-        " (comuna de selección) de 2017 heredado vía folio; filas 2012 sin"
-        " enlace usan una celda regional de reserva (conservan el n).",
+        "- **D1 comuna**: 2010/2012 públicos no traen comuna → `idcomuna` de"
+        " 2017 heredada vía folio a las filas 2012 (migración entre olas:"
+        " 0,78%); las filas 2012 sin enlace a 2017 se pierden (única fuente"
+        " del déficit de n en ST). La parrilla también probó estrato y un"
+        " fallback regional: idcomuna ajusta mejor.",
         "- **D2 fecha de nacimiento**: 2024 (exacta) → 2017"
         " (`fechanacimientons`, exacta) → 2017 (finicio−edad) → edad 2012 +"
         " jul-2012.",
