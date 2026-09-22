@@ -573,6 +573,21 @@ async function iconPng(Comp) {
     h: 0.2, fontFace: SANS, fontSize: 8, bold: true, color: "C0392B",
     align: "center", margin: 0, isTextBox: true });
 
+  // marcadores "entra a la ELPI" (anillo blanco con borde) + regla de lectura
+  const entra = (cx, y, t) => {
+    s6.addShape(pptx.ShapeType.ellipse, { x: cx - 0.09, y: y - 0.09,
+      w: 0.18, h: 0.18, fill: { color: "FFFFFF" },
+      line: { color: "0E7A54", width: 1.75 } });
+    s6.addText(t, { x: cx - 0.95, y: y + 0.17, w: 1.9, h: 0.18,
+      fontFace: SANS, fontSize: 7.5, italic: true, color: "0E7A54",
+      align: "center", margin: 0, isTextBox: true });
+  };
+  entra(C12, RWB, "entra (refresco 2012, con 0–1 año)");
+  s6.addText("Las barras empiezan al NACER; el anillo marca la entrada a la"
+    + " ELPI y el punto lleno, la medición que usa la regresión.", {
+    x: 2.9, y: 4.62, w: 9.9, h: 0.2, fontFace: SANS, fontSize: 8.5,
+    italic: true, color: FAINT, align: "left", margin: 0, isTextBox: true });
+
   // tarjetas de comparacion
   const card = (x, fill, head, body) => {
     s6.addShape(pptx.ShapeType.roundRect, { x, y: 5.05, w: 3.97, h: 1.8,
