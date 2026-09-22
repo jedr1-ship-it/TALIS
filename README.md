@@ -46,6 +46,7 @@ generados por la plataforma y no sirven para un script reproducible.
 │   ├── 05_rd_entrada_escolar.py  # RD corte escolar (diseño descartado; ver docs/)
 │   ├── 06_permutacion_rd.py      # inferencia permutacional del RD
 │   ├── 07_presentacion.js        # genera docs/presentacion_elpi_gillmore.pptx (node + pptxgenjs)
+│   ├── 08_replicacion_gillmore.py # replica la regresión principal de Gillmore (EER 2026)
 │   └── 07_gillmore_spec.tex      # diapo de especificación (Beamer; pdflatex + pdftoppm -r 640)
 ├── data/
 │   ├── raw/                      # descargas tal cual (committeadas; ~110 MB, 55 archivos)
