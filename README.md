@@ -58,7 +58,7 @@ generados por la plataforma y no sirven para un script reproducible.
 ├── docs/
 │   ├── disenos_jmp.md            # diseños de investigación causal posibles (JMP)
 │   ├── jmp_proceso_adversarial.md # registro del proceso adversarial de selección
-│   └── presentacion_elpi_gillmore.pptx # 5 slides: ELPI, preguntas textuales (x2), muestreo, especificación 27-F
+│   └── presentacion_elpi_gillmore.pptx # 6 slides: ELPI, preguntas (x2), muestreo, especificación y diagrama DiD 27-F
 ├── reports/
 │   ├── verificacion_archivos.md  # informe de verificación (filas/columnas por base)
 │   ├── panel_resumen.md          # verificaciones y conteos del panel

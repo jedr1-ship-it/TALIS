@@ -490,6 +490,113 @@ async function iconPng(Comp) {
   s3.addImage({ path: "spec-1.png", x: 0, y: 0, w: 13.333, h: 7.5 });
   s3.addNotes("Specification slide typeset in LaTeX (Beamer, Computer Modern) and embedded as a full-bleed image; source gillmore_spec.tex in the repo. Eq. (2.1) verbatim from the dissertation chapter; identification incl. lower-bound argument; validity checks.");
 
+
+  // =====================================================================
+  // SLIDE 6 — Diagrama: el DiD de Gillmore (cohortes x olas x edades)
+  // =====================================================================
+  const GREEN = "1BAF7A";
+  const s6 = pptx.addSlide();
+  s6.background = { color: "FFFFFF" };
+  s6.addText("El DiD de Gillmore: cohortes, olas y edades", {
+    x: 0.5, y: 0.26, w: 12.33, h: 0.54, fontFace: SER, fontSize: 30, bold: true,
+    color: INK, align: "left", margin: 0, isTextBox: true,
+  });
+  s6.addText(
+    "Affected = 1 si el niño tenía 0–4 años (o estaba en gestación) el 27-F. El grupo de control —concebidos después— solo existe gracias a los refrescos… y no fue re-entrevistado en 2024.",
+    { x: 0.5, y: 0.86, w: 12.33, h: 0.32, fontFace: SANS, fontSize: 11.5,
+      color: MUT, align: "left", margin: 0, isTextBox: true });
+
+  const xm = (yr) => 2.9 + (yr - 2006) * 0.5155;
+  const C12 = xm(2012.4), C17 = xm(2017.4), C24 = xm(2024.3);
+
+  // bandas de ola
+  [[C12, "OLA 2012"], [C17, "OLA 2017"], [C24, "OLA 2024"]].forEach(([cx, t]) => {
+    s6.addShape(pptx.ShapeType.roundRect, {
+      x: cx - 0.33, y: 1.58, w: 0.66, h: 3.34, fill: { color: TINT },
+      line: { type: "none" }, rectRadius: 0.05,
+    });
+    s6.addText(t, { x: cx - 0.7, y: 1.32, w: 1.4, h: 0.22, fontFace: SANS,
+      fontSize: 9.5, bold: true, color: NAVY, align: "center", margin: 0,
+      isTextBox: true });
+  });
+  // linea 27-F
+  const X27 = xm(2010.15);
+  s6.addShape(pptx.ShapeType.rect, { x: X27 - 0.015, y: 1.5, w: 0.03, h: 3.5,
+    fill: { color: "C0392B" }, line: { type: "none" } });
+  s6.addText("27-F (8,8 Mw)", { x: X27 - 0.8, y: 1.1, w: 1.6, h: 0.2,
+    fontFace: SANS, fontSize: 9.5, bold: true, color: "C0392B",
+    align: "center", margin: 0, isTextBox: true });
+
+  // filas
+  const rowbar = (y, x0, fill, line) => s6.addShape(pptx.ShapeType.roundRect, {
+    x: x0, y: y - 0.15, w: 12.75 - x0, h: 0.3, fill: { color: fill },
+    line: { color: line, width: 1 }, rectRadius: 0.08,
+  });
+  const dot = (cx, y, color) => s6.addShape(pptx.ShapeType.ellipse, {
+    x: cx - 0.14, y: y - 0.14, w: 0.28, h: 0.28, fill: { color },
+    line: { color: "FFFFFF", width: 1.5 },
+  });
+  const age = (cx, y, t, color) => s6.addText(t, {
+    x: cx - 0.55, y: y - 0.47, w: 1.1, h: 0.2, fontFace: SANS, fontSize: 10,
+    bold: true, color, align: "center", margin: 0, isTextBox: true });
+  const rol = (cx, y, t) => s6.addText(t, {
+    x: cx - 0.6, y: y + 0.2, w: 1.2, h: 0.18, fontFace: SANS, fontSize: 8,
+    color: FAINT, align: "center", margin: 0, isTextBox: true });
+  const lab = (y, l1, l2) => {
+    s6.addText(l1, { x: 0.5, y: y - 0.3, w: 2.3, h: 0.2, fontFace: SANS,
+      fontSize: 9.5, bold: true, color: INK, align: "left", margin: 0,
+      isTextBox: true });
+    s6.addText(l2, { x: 0.5, y: y - 0.09, w: 2.3, h: 0.42, fontFace: SANS,
+      fontSize: 8, color: MUT, align: "left", margin: 0, isTextBox: true });
+  };
+
+  const RWA = 2.15, RWB = 3.35, RWC = 4.25;
+  // fila A: tratados
+  rowbar(RWA, xm(2006), "CFE0F6", BLUE);
+  lab(RWA, "AFFECTED = 1", "Nacidos 2006–nov 2010: 0–4 años el 27-F (los de mar–nov 2010 entran vía refresco 2012)");
+  dot(C12, RWA, BLUE);  age(C12, RWA, "2–6", NAVY);  rol(C12, RWA, "corto plazo");
+  dot(C17, RWA, BLUE);  age(C17, RWA, "7–11", NAVY); rol(C17, RWA, "mediano");
+  dot(C24, RWA, NAVY);  age(C24, RWA, "14–18", NAVY); rol(C24, RWA, "largo (2024)");
+  // fila B: control refresco 2012
+  rowbar(RWB, xm(2011), "D2EBDD", GREEN);
+  lab(RWB, "AFFECTED = 0", "Nacidos 2011 — refresco 2012");
+  dot(C17, RWB, GREEN); age(C17, RWB, "5–6", "0E7A54"); rol(C17, RWB, "control");
+  // fila C: control refresco 2017
+  rowbar(RWC, xm(2012), "D2EBDD", GREEN);
+  lab(RWC, "AFFECTED = 0", "Nacidos 2012–2015 — refresco 2017");
+  dot(C17, RWC, GREEN); age(C17, RWC, "2–5", "0E7A54"); rol(C17, RWC, "control");
+  // cruces 2024
+  [[RWB], [RWC]].forEach(([y]) => s6.addText("✕", {
+    x: C24 - 0.2, y: y - 0.19, w: 0.4, h: 0.36, fontFace: SANS, fontSize: 16,
+    bold: true, color: "C0392B", align: "center", margin: 0, isTextBox: true }));
+  s6.addText("no re-entrevistados", { x: C24 - 0.85, y: RWC + 0.28, w: 1.7,
+    h: 0.2, fontFace: SANS, fontSize: 8, bold: true, color: "C0392B",
+    align: "center", margin: 0, isTextBox: true });
+
+  // tarjetas de comparacion
+  const card = (x, fill, head, body) => {
+    s6.addShape(pptx.ShapeType.roundRect, { x, y: 5.05, w: 3.97, h: 1.8,
+      fill: { color: fill }, line: { type: "none" }, rectRadius: 0.07 });
+    s6.addText(head, { x: x + 0.16, y: 5.17, w: 3.65, h: 0.24, fontFace: SANS,
+      fontSize: 10.5, bold: true, color: NAVY, align: "left", margin: 0,
+      isTextBox: true });
+    s6.addText(body, { x: x + 0.16, y: 5.45, w: 3.65, h: 1.3, fontFace: SANS,
+      fontSize: 9.3, color: MUT, align: "left", margin: 0, isTextBox: true,
+      lineSpacingMultiple: 1.05 });
+  };
+  card(0.5, TINT, "CORTO PLAZO · 2 años",
+    "Tratados con 2–6 años (ola 2012) vs. controles con 2–6 años (ola 2017): misma edad, distinta ola — la diferencia de ola la absorbe ηw.");
+  card(4.67, TINT, "MEDIANO PLAZO · 7 años",
+    "Tratados 7–11 vs. controles 2–6, todos en la ola 2017: misma ola, distinta edad — tests normados por edad (+ z por tramo).");
+  card(8.84, "FDE8DC", "LARGO PLAZO · 14 años (nuestro)",
+    "Tratados 14–18 en la ola 2024. El control NO fue re-entrevistado: se importa de la ola 2017 (CBCL2, TVIP) — y para PHQ/GAD no existe en ninguna ola.");
+
+  s6.addText(
+    "Estructura muestral según ap. T3–T4 de Gillmore (EER 2026) y microdato ELPI. ηw = efecto fijo de ola de la ec. (1).",
+    { x: 0.5, y: 7.14, w: 12.33, h: 0.24, fontFace: SANS, fontSize: 8,
+      color: FAINT, align: "left", margin: 0, isTextBox: true });
+  s6.addNotes("Diagrama del diseno de Gillmore: fila tratada (2006-nov2010) medida en 2012 (2-6, corto), 2017 (7-11, mediano) y 2024 (14-18, largo); filas de control nacidas post-27F via refrescos, medidas en 2017 y NO re-entrevistadas en 2024; banda roja = 27-F.");
+
   await pptx.writeFile({ fileName: "elpi_gillmore_deck.pptx" });
   console.log("written elpi_gillmore_deck.pptx");
 })().catch(e => { console.error(e); process.exit(1); });
