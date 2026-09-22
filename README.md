@@ -48,6 +48,8 @@ generados por la plataforma y no sirven para un script reproducible.
 │   ├── 07_presentacion.js        # genera docs/presentacion_elpi_gillmore.pptx (node + pptxgenjs)
 │   ├── 08_replicacion_gillmore.py # replica la regresión principal de Gillmore (EER 2026)
 │   ├── 09_salud_mental_27f.py    # 27-F → salud mental adolescente (ola 2024)
+│   ├── 10_ec1_largo_plazo.py     # ec. (1) de Gillmore literal a 14 años (2024 vs controles 2017)
+│   ├── 11_regresion_paper.py     # LA regresión del paper: bins edad-exposición×EQ + wild bootstrap
 │   └── 07_gillmore_spec.tex      # diapo de especificación (Beamer; pdflatex + pdftoppm -r 640)
 ├── data/
 │   ├── raw/                      # descargas tal cual (committeadas; ~110 MB, 55 archivos)
