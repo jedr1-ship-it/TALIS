@@ -14,7 +14,11 @@ usan la misma maquinaria:
   A. GRADIENTE EDAD-A-LA-EXPOSICIÓN × INTENSIDAD (análogo a la Fig. B.1 del
      paper, ahora a 14 años): Y = Σ_a β_a·(EdadBin_a × EQ_m) + EdadBin + X
      + ψ_estrato + θ_cohorte. Identifica si la exposición más temprana deja
-     más cicatriz, dentro de comuna y cohorte. Referencia: 36–59 meses.
+     más cicatriz, dentro de comuna y cohorte. Referencia: 0–11 meses.
+     Las interacciones se construyen como dummies EXPLÍCITAS (excluyendo la
+     referencia): con la sintaxis C(bin):EQ patsy incluía los 4 bins×EQ,
+     cuya suma es EQ (colineal con los FE de comuna) ⇒ diseño singular que
+     statsmodels resolvía por pseudoinversa con niveles arbitrarios.
   B. NIVEL GEOGRÁFICO con controles PRE-terremoto de la línea base 2010
      (educación y edad de la madre, tamaño del hogar, área). Sin FE de
      comuna (EQ es regional y quedaría absorbido). Asociación condicional,
@@ -171,7 +175,9 @@ def fit(d, y, modo):
     d["coh"] = d.cohorte.astype(int).astype(str)
     tx = " + ".join(xterms(d))
     if modo == "A":      # gradiente edad×EQ, FE estrato + cohorte
-        f = (f"{y} ~ C(bin, Treatment('36-59m')):EQ + C(bin) + C(est) "
+        for lab in ("12-23m", "24-35m", "36-59m"):   # ref: 0-11m
+            d[f"I_{lab[:2]}"] = ((d.bin == lab) & (d.EQ == 1)).astype(float)
+        f = (f"{y} ~ I_12 + I_24 + I_36 + C(bin) + C(est) "
              f"+ C(coh) + {tx}")
     elif modo == "B":    # nivel EQ con controles pre-quake (sin FE comuna)
         f = f"{y} ~ EQ + C(coh) + {tx}"
@@ -182,8 +188,8 @@ def fit(d, y, modo):
         out["terms"] = [("EQ", r.params["EQ"], r.bse["EQ"], r.pvalues["EQ"])]
     else:
         out["terms"] = []
-        for b in ("0-11m", "12-23m", "24-35m"):
-            k = f"C(bin, Treatment('36-59m'))[{b}]:EQ"
+        for b, k in (("12-23m", "I_12"), ("24-35m", "I_24"),
+                     ("36-59m", "I_36")):
             out["terms"].append((f"{b}×EQ", r.params[k], r.bse[k],
                                  r.pvalues[k]))
     return out
@@ -218,11 +224,12 @@ def main():
         " previa familiar (2012), con indicadores de missing.",
         "",
         "**Diseño A** — gradiente edad-a-la-exposición × EQ (FE de comuna"
-        " de selección + cohorte; referencia: 36–59 meses el 27-F). Es el"
-        " análogo a la Fig. B.1 del paper, 14 años después: ¿deja más"
-        " cicatriz la exposición más temprana?",
+        " de selección + cohorte; referencia: 0–11 meses el 27-F; dummies"
+        " explícitas, diseño de rango completo). Es el análogo a la"
+        " Fig. B.1 del paper, 14 años después: ¿deja más cicatriz la"
+        " exposición más temprana?",
         "",
-        "| Outcome | 0–11m×EQ | 12–23m×EQ | 24–35m×EQ | n | clusters |",
+        "| Outcome | 12–23m×EQ | 24–35m×EQ | 36–59m×EQ | n | clusters |",
         "|---|---:|---:|---:|---:|---:|"]
     resB = []
     for y, nom in YS:
@@ -255,26 +262,33 @@ def main():
         " adolescencia difiere por edad de exposición dentro de comuna; en"
         " B, si difiere entre comunas EQ y no-EQ.",
         "",
-        "## Lectura de la primera pasada",
-        "1. **Gradiente por edad (A)**: dentro de comuna, los expuestos a"
-        " los 24–35 meses muestran MENOS síntomas a los 14–18 que los"
-        " expuestos a los 36–59 meses (ref.): PHQ-4 −0,15 DE, GAD-2 −0,10,"
-        " PHQ-2 −0,07, CBCL −0,13 (todos sig. al 1%). Los expuestos en la"
-        " infancia (0–11m) no difieren del ref. Es decir, la cicatriz de"
-        " salud mental autorreportada la concentran los expuestos en edad"
-        " PREESCOLAR (3–5 años, edad de memoria episódica del evento) y,"
-        " en menor medida, la primera infancia — patrón en U consistente"
-        " con el canal de memoria traumática más que con el fetal.",
-        "2. **Trayectoria CBCL (C)**: dentro de comunas EQ, los tres bins"
-        " más jóvenes EMPEORAN ≈+0,24 DE su CBCL 2017→2024 relativo al"
-        " grupo 36–59m — equivalente a que el déficit no-cognitivo que"
-        " Gillmore midió en 2017 (concentrado en los mayores) se DESVANECE"
-        " hacia la adolescencia en el reporte del cuidador, mientras el"
-        " autorreporte (PHQ/GAD) de esos mismos mayores sigue peor: los"
-        " padres dejan de verlo, el adolescente lo sigue reportando.",
-        "3. **Niveles (B) nulos**: sin cohorte no expuesta, la comparación"
-        " geográfica pura a 14 años no detecta nivel (esperable: 14 años"
-        " de recuperación + heterogeneidad regional).",
+        "## Lectura (corregida)",
+        "1. **Gradiente por edad (A)**: patrón en U dentro de comuna."
+        " Relativo a los expuestos de bebés (0–11m, ref.), los expuestos a"
+        " los 24–35 meses muestran MENOS síntomas a los 14–18 (PHQ-4"
+        " −0,15**, GAD-2 −0,07**), y los expuestos a los 36–59 meses"
+        " vuelven al nivel de los bebés (≈−0,04, n.s.). El contraste"
+        " 36–59 vs 24–35 (la 'edad de memoria' vs el valle) es +0,10*"
+        " en PHQ-4 y +0,06** en GAD-2 — ver reports/regresion_paper.md"
+        " (script 11) para la versión definitiva con columnas, contraste"
+        " y wild bootstrap por región.",
+        "2. **Trayectoria CBCL (C)**: SIN gradiente por edad de exposición"
+        " (contrastes ≈0, n.s.). En nivel (B), en comunas EQ el CBCL cae"
+        " ≈0,14 DE* 2017→2024 relativo a no-EQ.",
+        "3. **Niveles (B) nulos** en 2024: sin cohorte no expuesta, la"
+        " comparación geográfica pura a 14 años no detecta nivel"
+        " (esperable: 14 años de recuperación + heterogeneidad regional).",
+        "",
+        "## Nota de corrección",
+        "La primera versión de este informe usaba `C(bin):EQ`, que incluía"
+        " los 4 bins×EQ; su suma es EQ, colineal con los FE de comuna ⇒"
+        " diseño singular (rango 139 de 141) resuelto por pseudoinversa:"
+        " los niveles individuales eran arbitrarios (solo las diferencias"
+        " entre bins estaban identificadas). En particular, el resultado"
+        " '+0,24*** de empeoramiento ΔCBCL en los bins jóvenes' era un"
+        " ARTEFACTO del reparto de la pseudoinversa; con dummies"
+        " explícitas (rango completo) desaparece. Los gradientes PHQ/GAD"
+        " sobreviven con la referencia correctamente etiquetada (0–11m).",
         "",
         "## Notas de identificación",
         "- La ola 2024 no tiene cohorte concebida post-27F ⇒ el DiD"
