@@ -225,7 +225,8 @@ def main():
         "## Panel A — niveles 2024 (autorreporte y cuidador)",
         ""]
     md = panel(md, d, "z_phq4", "PHQ-4 (z), autorreporte", wild_for=3)
-    md = panel(md, d, "gad2_bin", "GAD-2 positivo (0/1), autorreporte")
+    md = panel(md, d, "gad2_bin", "GAD-2 positivo (0/1), autorreporte",
+               wild_for=3)
     md = panel(md, d, "phq2_bin", "PHQ-2 positivo (0/1), autorreporte")
     md = panel(md, d, "z_cbcl", "CBCL2-T 2024 (z), reporte del cuidador")
     md += ["## Panel B — persistencia intra-niño: ΔCBCL 2017→2024 (z)", "",
