@@ -588,6 +588,18 @@ async function iconPng(Comp) {
     x: 2.9, y: 4.62, w: 9.9, h: 0.2, fontFace: SANS, fontSize: 8.5,
     italic: true, color: FAINT, align: "left", margin: 0, isTextBox: true });
 
+  // ventana fina: nacidos <=2010 vs 2011 (la comparacion del usuario)
+  s6.addShape(pptx.ShapeType.roundRect, { x: 9.28, y: 2.44, w: 2.66, h: 0.72,
+    fill: { color: "FFFFFF" }, line: { color: NAVY, width: 1, dashType: "dash" },
+    rectRadius: 0.05 });
+  s6.addText([
+    { text: "La ventana fina: ", options: { bold: true, color: NAVY } },
+    { text: "nacidos \u22642010 vs 2011 \u2014 12 meses aparte. A los de 2011 se les testea en 2017, a la misma edad. Gillmore C.31: \u22120,25 DE.",
+      options: { color: MUT } },
+  ], { x: 9.38, y: 2.5, w: 2.48, h: 0.62, fontFace: SANS, fontSize: 7.8,
+    align: "left", valign: "top", margin: 0, isTextBox: true,
+    lineSpacingMultiple: 1.02 });
+
   // tarjetas de comparacion
   const card = (x, fill, head, body) => {
     s6.addShape(pptx.ShapeType.roundRect, { x, y: 5.05, w: 3.97, h: 1.8,
