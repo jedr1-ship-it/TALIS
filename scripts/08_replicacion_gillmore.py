@@ -277,6 +277,7 @@ def fit(d, y, col, cfg):
     d["com"] = d.geo.astype(int).astype(str)
     d["coh"] = d.cohorte.astype(int).astype(str)
     d["ola"] = d.wave.astype(str)
+    d["t_lin"] = d.cohorte.astype(float)
     if col == 1:
         f = f"{y} ~ AffEq + affected + C(com)"
     else:
@@ -295,10 +296,13 @@ def fit(d, y, col, cfg):
                 else:
                     terms.append(v)
             f += " + " + " + ".join(terms)
+    if col >= 4:
+        f += " + C(com):t_lin"
     r = smf.wls(f, data=d, weights=d.w).fit(
         cov_type="cluster", cov_kwds={"groups": d["com"]})
     return dict(b=r.params["AffEq"], se=r.bse["AffEq"], p=r.pvalues["AffEq"],
-                n=int(r.nobs), ncl=d["com"].nunique())
+                n=int(r.nobs), ncl=d["com"].nunique(),
+                r2=float(r.rsquared_adj))
 
 
 def run_all(R, cfg):
