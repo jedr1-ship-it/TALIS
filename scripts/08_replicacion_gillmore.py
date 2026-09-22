@@ -63,8 +63,8 @@ OUT = Path("reports")
 EQ_REGIONS = {5, 6, 7, 8, 9, 13}
 FIELD_2012_YM = 2012 * 12 + 6
 
-BEST = dict(geo="estrato_fb", pesos="eva", aff_cut=2010 * 12 + 10,
-            xmode="dummy")
+BEST = dict(geo="idcomuna", pesos="eva", aff_cut=2010 * 12 + 11,
+            xmode="dummy")  # ganadora de --grid (score 0.525)
 
 PAPER = {("ST", "z_bat"): (-0.0978, -0.108, -0.0813),
          ("ST", "z_tvip"): (-0.148, -0.158, -0.141),
