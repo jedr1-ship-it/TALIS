@@ -11,48 +11,48 @@
 
 \begin{document}
 \begin{frame}
-\frametitle{Empirical strategy --- Gillmore (2025)}
-{\footnotesize Difference-in-differences: municipal seismic intensity $\times$
-birth-cohort exposure to the 2010 Chilean earthquake (27-F).}
+\frametitle{Empirical strategy --- Gillmore (EER, 2026)}
+{\footnotesize Difference-in-differences: official earthquake classification
+$\times$ birth-cohort exposure to the 2010 Chilean earthquake (27-F).}
 
 \vspace{2mm}
 \begin{equation*}
-Y_{ijtw}=\beta\,\bigl(\mathit{Affected}_{it}\times \mathit{Mercalli}_{j}\bigr)
-+\gamma\,\mathit{Affected}_{it}+X_{ijt}+\psi_{j}+\theta_{t}+\lambda_{jt}
-+\eta_{w}+e_{ijtw}
-\tag{2.1}
+Y_{imtw}=\alpha+\beta\,\bigl(\mathit{Affected}_{it}\times \mathit{Earthquake}_{m}\bigr)
++X_{imt}+\psi_{m}+\theta_{t}+\eta_{w}+e_{imtw}
+\tag{1}
 \end{equation*}
 
 \vspace{1mm}
 \begin{itemize}\setlength\itemsep{1.5pt}\footnotesize
-  \item $i$ child, $j$ municipality, $t$ birth cohort, $w$ survey wave (2012, 2017)
-  \item $\mathit{Affected}_{it}=1$ if conceived before 27-F: in utero to age~5
-        at impact (vs.\ cohorts conceived after)
-  \item $\mathit{Mercalli}_{j}$: modified Mercalli intensity of the municipality
-        (Astroza et al.\ 2010); robustness: USGS peak ground acceleration
-  \item $X_{ijt}$: child, mother and household controls (incl.\ pre-quake);
-        $\psi_{j},\theta_{t},\eta_{w}$: municipality, cohort and wave fixed
-        effects; $\lambda_{jt}$: municipality linear trends
+  \item $i$ child, $m$ municipality, $t$ birth cohort, $w$ survey wave (2012, 2017)
+  \item $\mathit{Affected}_{it}=1$ if conceived before 27-F: in utero to age~4
+        at impact (cohorts 2006--2010, vs.\ conceived after)
+  \item $\mathit{Earthquake}_{m}=1$ for officially impacted municipalities
+        (Astroza et al.\ 2010: Valpara\'iso, Metropolitana, O'Higgins, Maule,
+        Biob\'io, Araucan\'ia); robustness: continuous USGS PGA, distance to
+        epicenter, PGA-percentile cutoffs
+  \item $X_{imt}$: child, mother and household controls;
+        $\psi_{m},\theta_{t},\eta_{w}$: municipality, birth-cohort and wave
+        fixed effects; municipality linear trends as robustness
 \end{itemize}
 
 \vspace{2mm}
-{\footnotesize \textbf{Identification.} $\beta$ = intention-to-treat effect of one
-additional Mercalli unit on exposed cohorts. Parallel trends conditional on
-$\lambda_{jt}$; post-quake conceptions possibly indirectly exposed
-$\Rightarrow$ $\beta$ is a lower bound. Standard errors clustered by
-municipality.}
+{\footnotesize \textbf{Identification.} $\beta$ = intention-to-treat effect on
+exposed cohorts. Parallel trends validated by a cohort event study (joint
+$F$-test on 2011--14 placebo cohorts: $p=0.25$); post-quake conceptions
+possibly indirectly exposed $\Rightarrow$ $\beta$ is a lower bound. Standard
+errors clustered by municipality (145 clusters); national sampling weights.}
 
 \vspace{1.5mm}
-{\footnotesize \textbf{Validity.} Placebo on post-quake cohorts: null. Migration
-between waves: 0.78\% (affected$\rightarrow$unaffected 0.02\%). Fertility,
-planned births and sex ratio: null in vital records. Attrition uncorrelated
-with intensity.}
+{\footnotesize \textbf{Validity.} Placebo and north/south falsifications: null.
+Migration between waves 0.78\%
+(affected$\rightarrow$unaffected 0.02\%). Fertility, planned births, sex ratio: null in vital records. Differential attrition $+6$~pp $\Rightarrow$
+robust to Lee and Kling--Liebman bounds. Romano--Wolf FWER correction:
+medium-term Peabody $p=0.02$.}
 
 \vfill
-{\tiny Eq.\ (2.1): Gillmore, \emph{Natural Disasters and Early Child
-Development: Evidence from an Earthquake} --- UT Austin dissertation (2023,
-ch.~2); SSRN WP 5106675 (2025); \emph{Economics of Education Review} (2026).
-Published version: exposure prenatal--age 4. Outcomes: TVIP/Peabody, Battelle,
-CBCL.}
+{\tiny Eq.\ (1): Gillmore, \emph{Natural disasters and early child
+development: Evidence from an earthquake}, Economics of Education Review 115
+(2026) 102817. Preferred: column 3 (no linear trends).}
 \end{frame}
 \end{document}
