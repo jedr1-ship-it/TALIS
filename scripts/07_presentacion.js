@@ -492,137 +492,129 @@ async function iconPng(Comp) {
 
 
   // =====================================================================
-  // SLIDE 6 — Diagrama: el DiD de Gillmore (cohortes x olas x edades)
+  // SLIDE 6 — Diagrama: el DiD de Gillmore (4 grupos, 4 olas)
   // =====================================================================
   const GREEN = "1BAF7A";
   const s6 = pptx.addSlide();
   s6.background = { color: "FFFFFF" };
   s6.addText("El DiD de Gillmore: cohortes, olas y edades", {
-    x: 0.5, y: 0.26, w: 12.33, h: 0.54, fontFace: SER, fontSize: 30, bold: true,
+    x: 0.5, y: 0.24, w: 12.33, h: 0.5, fontFace: SER, fontSize: 29, bold: true,
     color: INK, align: "left", margin: 0, isTextBox: true,
   });
   s6.addText(
-    "Affected = 1 si el niño tenía 0–4 años (o estaba en gestación) el 27-F. El grupo de control —concebidos después— solo existe gracias a los refrescos… y no fue re-entrevistado en 2024.",
-    { x: 0.5, y: 0.86, w: 12.33, h: 0.32, fontFace: SANS, fontSize: 11.5,
+    "Cuatro grupos, no dos: la muestra original y la mitad tratada del refresco 2012 (Affected = 1), y las dos tandas concebidas después del 27-F (Affected = 0). Solo la original llega a 2024.",
+    { x: 0.5, y: 0.8, w: 12.33, h: 0.3, fontFace: SANS, fontSize: 11,
       color: MUT, align: "left", margin: 0, isTextBox: true });
 
   const xm = (yr) => 2.9 + (yr - 2006) * 0.5155;
-  const C12 = xm(2012.4), C17 = xm(2017.4), C24 = xm(2024.3);
+  const C10 = xm(2010.8), C12 = xm(2012.4), C17 = xm(2017.4), C24 = xm(2024.3);
 
-  // bandas de ola
-  [[C12, "OLA 2012"], [C17, "OLA 2017"], [C24, "OLA 2024"]].forEach(([cx, t]) => {
+  [[C10, "OLA 2010", 0.5], [C12, "OLA 2012", 0.66], [C17, "OLA 2017", 0.66],
+   [C24, "OLA 2024", 0.66]].forEach(([cx, t, w]) => {
     s6.addShape(pptx.ShapeType.roundRect, {
-      x: cx - 0.33, y: 1.58, w: 0.66, h: 3.34, fill: { color: TINT },
+      x: cx - w / 2, y: 1.48, w, h: 3.18, fill: { color: TINT },
       line: { type: "none" }, rectRadius: 0.05,
     });
-    s6.addText(t, { x: cx - 0.7, y: 1.32, w: 1.4, h: 0.22, fontFace: SANS,
-      fontSize: 9.5, bold: true, color: NAVY, align: "center", margin: 0,
+    s6.addText(t, { x: cx - 0.7, y: 1.24, w: 1.4, h: 0.2, fontFace: SANS,
+      fontSize: 9, bold: true, color: NAVY, align: "center", margin: 0,
       isTextBox: true });
   });
-  // linea 27-F
   const X27 = xm(2010.15);
-  s6.addShape(pptx.ShapeType.rect, { x: X27 - 0.015, y: 1.5, w: 0.03, h: 3.5,
+  s6.addShape(pptx.ShapeType.rect, { x: X27 - 0.015, y: 1.4, w: 0.03, h: 3.38,
     fill: { color: "C0392B" }, line: { type: "none" } });
-  s6.addText("27-F (8,8 Mw)", { x: X27 - 0.8, y: 1.1, w: 1.6, h: 0.2,
-    fontFace: SANS, fontSize: 9.5, bold: true, color: "C0392B",
+  s6.addText("27-F", { x: X27 - 0.6, y: 1.04, w: 1.2, h: 0.18,
+    fontFace: SANS, fontSize: 9, bold: true, color: "C0392B",
     align: "center", margin: 0, isTextBox: true });
 
-  // filas
-  const rowbar = (y, x0, fill, line) => s6.addShape(pptx.ShapeType.roundRect, {
-    x: x0, y: y - 0.15, w: 12.75 - x0, h: 0.3, fill: { color: fill },
-    line: { color: line, width: 1 }, rectRadius: 0.08,
-  });
-  const dot = (cx, y, color) => s6.addShape(pptx.ShapeType.ellipse, {
-    x: cx - 0.14, y: y - 0.14, w: 0.28, h: 0.28, fill: { color },
-    line: { color: "FFFFFF", width: 1.5 },
-  });
-  const age = (cx, y, t, color) => s6.addText(t, {
-    x: cx - 0.55, y: y - 0.47, w: 1.1, h: 0.2, fontFace: SANS, fontSize: 10,
-    bold: true, color, align: "center", margin: 0, isTextBox: true });
-  const rol = (cx, y, t) => s6.addText(t, {
-    x: cx - 0.6, y: y + 0.2, w: 1.2, h: 0.18, fontFace: SANS, fontSize: 8,
+  const P1 = 1.92, P2 = 2.69, P3 = 3.46, P4 = 4.23;
+  const bar = (y, x0, fill, line) => s6.addShape(pptx.ShapeType.roundRect, {
+    x: x0, y: y - 0.14, w: 12.75 - x0, h: 0.28, fill: { color: fill },
+    line: { color: line, width: 1 }, rectRadius: 0.07 });
+  const dot = (cx, y, c) => s6.addShape(pptx.ShapeType.ellipse, {
+    x: cx - 0.125, y: y - 0.125, w: 0.25, h: 0.25, fill: { color: c },
+    line: { color: "FFFFFF", width: 1.5 } });
+  const ring = (cx, y, c) => s6.addShape(pptx.ShapeType.ellipse, {
+    x: cx - 0.09, y: y - 0.09, w: 0.18, h: 0.18, fill: { color: "FFFFFF" },
+    line: { color: c, width: 1.75 } });
+  const age = (cx, y, t, c) => s6.addText(t, { x: cx - 0.55, y: y - 0.4,
+    w: 1.1, h: 0.17, fontFace: SANS, fontSize: 9, bold: true, color: c,
+    align: "center", margin: 0, isTextBox: true });
+  const sub = (cx, y, t) => s6.addText(t, { x: cx - 0.85, y: y + 0.16,
+    w: 1.7, h: 0.16, fontFace: SANS, fontSize: 7.2, italic: true,
     color: FAINT, align: "center", margin: 0, isTextBox: true });
-  const lab = (y, l1, l2) => {
-    s6.addText(l1, { x: 0.5, y: y - 0.3, w: 2.3, h: 0.2, fontFace: SANS,
-      fontSize: 9.5, bold: true, color: INK, align: "left", margin: 0,
+  const equis = (cx, y) => s6.addText("✕", { x: cx - 0.18, y: y - 0.17,
+    w: 0.36, h: 0.32, fontFace: SANS, fontSize: 14, bold: true,
+    color: "C0392B", align: "center", margin: 0, isTextBox: true });
+  const lab = (y, l1, c1, l2) => {
+    s6.addText(l1, { x: 0.5, y: y - 0.27, w: 2.32, h: 0.17, fontFace: SANS,
+      fontSize: 8.6, bold: true, color: c1, align: "left", margin: 0,
       isTextBox: true });
-    s6.addText(l2, { x: 0.5, y: y - 0.09, w: 2.3, h: 0.42, fontFace: SANS,
-      fontSize: 8, color: MUT, align: "left", margin: 0, isTextBox: true });
+    s6.addText(l2, { x: 0.5, y: y - 0.09, w: 2.32, h: 0.44, fontFace: SANS,
+      fontSize: 7.4, color: MUT, align: "left", margin: 0, isTextBox: true });
   };
 
-  const RWA = 2.15, RWB = 3.35, RWC = 4.25;
-  // fila A: tratados
-  rowbar(RWA, xm(2006), "CFE0F6", BLUE);
-  lab(RWA, "AFFECTED = 1", "Nacidos 2006–nov 2010: 0–4 años el 27-F (los de mar–nov 2010 entran vía refresco 2012)");
-  dot(C12, RWA, BLUE);  age(C12, RWA, "2–6", NAVY);  rol(C12, RWA, "corto plazo");
-  dot(C17, RWA, BLUE);  age(C17, RWA, "7–11", NAVY); rol(C17, RWA, "mediano");
-  dot(C24, RWA, NAVY);  age(C24, RWA, "14–18", NAVY); rol(C24, RWA, "largo (2024)");
-  // fila B: control refresco 2012
-  rowbar(RWB, xm(2011), "D2EBDD", GREEN);
-  lab(RWB, "AFFECTED = 0", "Nacidos 2011 — refresco 2012");
-  dot(C17, RWB, GREEN); age(C17, RWB, "5–6", "0E7A54"); rol(C17, RWB, "control");
-  // fila C: control refresco 2017
-  rowbar(RWC, xm(2012), "D2EBDD", GREEN);
-  lab(RWC, "AFFECTED = 0", "Nacidos 2012–2015 — refresco 2017");
-  dot(C17, RWC, GREEN); age(C17, RWC, "2–5", "0E7A54"); rol(C17, RWC, "control");
-  // cruces 2024
-  [[RWB], [RWC]].forEach(([y]) => s6.addText("✕", {
-    x: C24 - 0.2, y: y - 0.19, w: 0.4, h: 0.36, fontFace: SANS, fontSize: 16,
-    bold: true, color: "C0392B", align: "center", margin: 0, isTextBox: true }));
-  s6.addText("no re-entrevistados", { x: C24 - 0.85, y: RWC + 0.28, w: 1.7,
-    h: 0.2, fontFace: SANS, fontSize: 8, bold: true, color: "C0392B",
-    align: "center", margin: 0, isTextBox: true });
+  // Fila 1: muestra ORIGINAL (tratada)
+  bar(P1, xm(2006), "CFE0F6", BLUE);
+  lab(P1, "AFFECTED = 1 · muestra ORIGINAL", NAVY,
+      "Nacidos 2006–2009. Entran en 2010 con 0–4. Los únicos seguidos hasta 2024.");
+  ring(C10, P1, BLUE); age(C10, P1, "0–4", NAVY); sub(C10, P1, "entra · solo línea base");
+  dot(C12, P1, BLUE); age(C12, P1, "2–6", NAVY); sub(C12, P1, "corto plazo");
+  dot(C17, P1, BLUE); age(C17, P1, "8–12", NAVY); sub(C17, P1, "mediano");
+  dot(C24, P1, NAVY); age(C24, P1, "14–18", NAVY); sub(C24, P1, "largo (nuestro)");
 
-  // marcadores "entra a la ELPI" (anillo blanco con borde) + regla de lectura
-  const entra = (cx, y, t) => {
-    s6.addShape(pptx.ShapeType.ellipse, { x: cx - 0.09, y: y - 0.09,
-      w: 0.18, h: 0.18, fill: { color: "FFFFFF" },
-      line: { color: "0E7A54", width: 1.75 } });
-    s6.addText(t, { x: cx - 0.95, y: y + 0.17, w: 1.9, h: 0.18,
-      fontFace: SANS, fontSize: 7.5, italic: true, color: "0E7A54",
-      align: "center", margin: 0, isTextBox: true });
-  };
-  entra(C12, RWB, "entra (refresco 2012, con 0–1 año)");
-  s6.addText("Las barras empiezan al NACER; el anillo marca la entrada a la"
-    + " ELPI y el punto lleno, la medición que usa la regresión.", {
-    x: 2.9, y: 4.62, w: 9.9, h: 0.2, fontFace: SANS, fontSize: 8.5,
-    italic: true, color: FAINT, align: "left", margin: 0, isTextBox: true });
+  // Fila 2: refresco 2012, nacidos 2010 (tratados)
+  bar(P2, xm(2010.2), "CFE0F6", BLUE);
+  lab(P2, "AFFECTED = 1 · refresco 2012", NAVY,
+      "Nacidos mar–nov 2010: en gestación el 27-F. Primera entrevista en 2012.");
+  dot(C12, P2, BLUE); age(C12, P2, "1–2", NAVY); sub(C12, P2, "entra · corto");
+  dot(C17, P2, BLUE); age(C17, P2, "6–7", NAVY); sub(C17, P2, "mediano");
+  equis(C24, P2);
 
-  // ventana fina: nacidos <=2010 vs 2011 (la comparacion del usuario)
-  s6.addShape(pptx.ShapeType.roundRect, { x: 9.28, y: 2.44, w: 2.66, h: 0.72,
-    fill: { color: "FFFFFF" }, line: { color: NAVY, width: 1, dashType: "dash" },
-    rectRadius: 0.05 });
-  s6.addText([
-    { text: "La ventana fina: ", options: { bold: true, color: NAVY } },
-    { text: "nacidos \u22642010 vs 2011 \u2014 12 meses aparte. A los de 2011 se les testea en 2017, a la misma edad. Gillmore C.31: \u22120,25 DE.",
-      options: { color: MUT } },
-  ], { x: 9.38, y: 2.5, w: 2.48, h: 0.62, fontFace: SANS, fontSize: 7.8,
-    align: "left", valign: "top", margin: 0, isTextBox: true,
-    lineSpacingMultiple: 1.02 });
+  // Fila 3: refresco 2012, nacidos 2011 (control)
+  bar(P3, xm(2011), "D2EBDD", GREEN);
+  lab(P3, "AFFECTED = 0 · refresco 2012", "0E7A54",
+      "Nacidos 2011: concebidos DESPUÉS del 27-F. Primera entrevista en 2012, de bebés.");
+  ring(C12, P3, GREEN); age(C12, P3, "0–1", "0E7A54"); sub(C12, P3, "entra (sin tests: bebés)");
+  dot(C17, P3, GREEN); age(C17, P3, "5–6", "0E7A54"); sub(C17, P3, "control");
+  equis(C24, P3);
 
-  // tarjetas de comparacion
+  // Fila 4: refresco 2017 (control)
+  bar(P4, xm(2012), "D2EBDD", GREEN);
+  lab(P4, "AFFECTED = 0 · refresco 2017", "0E7A54",
+      "Nacidos 2012–2015. Primera (y única) entrevista en 2017.");
+  dot(C17, P4, GREEN); age(C17, P4, "2–5", "0E7A54"); sub(C17, P4, "entra · control");
+  equis(C24, P4);
+  s6.addText("no re-entrevistados en 2024", { x: C24 - 1.0, y: P4 + 0.2,
+    w: 2.0, h: 0.18, fontFace: SANS, fontSize: 7.5, bold: true,
+    color: "C0392B", align: "center", margin: 0, isTextBox: true });
+
+  s6.addText("Las barras empiezan al NACER. Anillo = primera entrevista sin test utilizable; punto lleno = test que usa la regresión. Las respuestas de la ola 2010 NO se usan como outcome (solo línea base y test de atrición). Ventana fina: fila 2 vs fila 3, 12 meses aparte (Gillmore C.31: −0,25 DE).", {
+    x: 2.9, y: 4.74, w: 9.9, h: 0.34, fontFace: SANS, fontSize: 8,
+    italic: true, color: FAINT, align: "left", margin: 0, isTextBox: true,
+    lineSpacingMultiple: 1.05 });
+
   const card = (x, fill, head, body) => {
-    s6.addShape(pptx.ShapeType.roundRect, { x, y: 5.05, w: 3.97, h: 1.8,
+    s6.addShape(pptx.ShapeType.roundRect, { x, y: 5.2, w: 3.97, h: 1.62,
       fill: { color: fill }, line: { type: "none" }, rectRadius: 0.07 });
-    s6.addText(head, { x: x + 0.16, y: 5.17, w: 3.65, h: 0.24, fontFace: SANS,
-      fontSize: 10.5, bold: true, color: NAVY, align: "left", margin: 0,
+    s6.addText(head, { x: x + 0.16, y: 5.3, w: 3.65, h: 0.22, fontFace: SANS,
+      fontSize: 10, bold: true, color: NAVY, align: "left", margin: 0,
       isTextBox: true });
-    s6.addText(body, { x: x + 0.16, y: 5.45, w: 3.65, h: 1.3, fontFace: SANS,
-      fontSize: 9.3, color: MUT, align: "left", margin: 0, isTextBox: true,
+    s6.addText(body, { x: x + 0.16, y: 5.56, w: 3.65, h: 1.2, fontFace: SANS,
+      fontSize: 9, color: MUT, align: "left", margin: 0, isTextBox: true,
       lineSpacingMultiple: 1.05 });
   };
   card(0.5, TINT, "CORTO PLAZO · 2 años",
-    "Tratados con 2–6 años (ola 2012) vs. controles con 2–6 años (ola 2017): misma edad, distinta ola — la diferencia de ola la absorbe ηw.");
+    "Filas 1–2 medidas en la ola 2012 (2–6) vs. filas 3–4 medidas en la ola 2017 (2–6): misma edad, distinta ola — la absorbe ηw.");
   card(4.67, TINT, "MEDIANO PLAZO · 7 años",
-    "Tratados 7–11 vs. controles 2–6, todos en la ola 2017: misma ola, distinta edad — tests normados por edad (+ z por tramo).");
+    "Filas 1–2 (6–12) vs. filas 3–4 (2–6), todos en la ola 2017: misma ola, distinta edad — tests normados por edad.");
   card(8.84, "FDE8DC", "LARGO PLAZO · 14 años (nuestro)",
-    "Tratados 14–18 en la ola 2024. El control NO fue re-entrevistado: se importa de la ola 2017 (CBCL2, TVIP) — y para PHQ/GAD no existe en ninguna ola.");
+    "Solo la fila 1 llega a 2024 (14–18). El control se importa de la ola 2017 (CBCL2, TVIP); para PHQ/GAD no existe en ninguna ola.");
 
   s6.addText(
     "Estructura muestral según ap. T3–T4 de Gillmore (EER 2026) y microdato ELPI. ηw = efecto fijo de ola de la ec. (1).",
     { x: 0.5, y: 7.14, w: 12.33, h: 0.24, fontFace: SANS, fontSize: 8,
       color: FAINT, align: "left", margin: 0, isTextBox: true });
-  s6.addNotes("Diagrama del diseno de Gillmore: fila tratada (2006-nov2010) medida en 2012 (2-6, corto), 2017 (7-11, mediano) y 2024 (14-18, largo); filas de control nacidas post-27F via refrescos, medidas en 2017 y NO re-entrevistadas en 2024; banda roja = 27-F.");
+  s6.addNotes("Version 4 filas: original (2006-09, unica seguida a 2024), refresco-2012 tratado (nacidos 2010), refresco-2012 control (nacidos 2011), refresco-2017 control (2012-15). Ola 2010 = solo linea base. Anillo=entrada; punto=test usado; X=no re-entrevistado 2024.");
 
   await pptx.writeFile({ fileName: "elpi_gillmore_deck.pptx" });
   console.log("written elpi_gillmore_deck.pptx");
