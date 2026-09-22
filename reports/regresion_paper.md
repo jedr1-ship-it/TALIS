@@ -28,6 +28,8 @@ Wild cluster bootstrap-t por región (Webb, 4.999 reps, col. 3): 24-35m×EQ: p =
 | n | 9,996 | 9,996 | 9,996 | 6,430 |
 | Comunas (cluster) | 116 | 116 | 116 | 67 |
 
+Wild cluster bootstrap-t por región (Webb, 4.999 reps, col. 3): 24-35m×EQ: p = 0.115; contraste: p = 0.109 (15 regiones).
+
 **PHQ-2 positivo (0/1), autorreporte**
 
 | | (1) | (2) | (3) | (4) sin RM |
