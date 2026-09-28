@@ -36,10 +36,10 @@ LOG = []
 
 BINS = ["0-11m", "12-23m", "24-35m", "36-59m"]
 IV = {"12-23m": "I_12", "24-35m": "I_24", "36-59m": "I_36"}
-ROWLAB = {"12-23m": "Exposed at 12--23",
-          "24-35m": "Exposed at 24--35",
-          "36-59m": "Exposed at 36--59"}
-CONTRLAB = "Contrast: 36--59 $-$ 24--35"
+ROWLAB = {"12-23m": "Exposed at age 1",
+          "24-35m": "Exposed at age 2",
+          "36-59m": "Exposed at ages 3--4"}
+CONTRLAB = "Contrast: ages 3--4 $-$ age 2"
 X_PRE = ["mujer", "edad_meses", "edad_madre10", "educ_madre10",
          "tot_per10", "rural10"]
 X_POST = ["n_hijos", "mh_madre", "mh_padre", "mh_ofam", "mh_miss"]
@@ -379,7 +379,7 @@ def bins_block(res_by_col, ncols, dec=3, contrast=False):
     return rows
 
 
-def foot_block(res_by_col, unit="Adolescents"):
+def foot_block(res_by_col, unit="Observations"):
     return [f"{unit} & " + " & ".join(f"{r['n']:,}" for r in res_by_col)
             + " \\\\",
             "Selection municipalities (clusters) & "
@@ -429,9 +429,9 @@ def t1_descriptivos(d, a):
     ret["all"] = a.in2024.mean()
     body.append(srow("\\hspace{1em}Reinterviewed in 2024 (\\% of 2010)",
                      ret, pct=True))
-    header = [" & \\multicolumn{4}{c}{Age in months when the earthquake struck} & \\\\",
+    header = [" & \\multicolumn{4}{c}{Age when the earthquake struck} & \\\\",
               "\\cmidrule(lr){2-5}",
-              " & 0--11 & 12--23 & 24--35 & 36--59 & All \\\\",
+              " & $<$1 & 1 & 2 & 3--4 & All \\\\",
               " & (1) & (2) & (3) & (4) & (5) \\\\"]
     notes = ("Means over the 10,003 adolescents of the 2024 ELPI wave, all "
              "born 2006--2009 and therefore exposed to the 27 February 2010 "
@@ -456,39 +456,36 @@ def t2_lp():
     spec.loader.exec_module(lp)
     df = lp.build()
     body = []
-    ns = {}
-    for y, lab in [("z_tvip", "Receptive vocabulary: Peabody picture--word test (z)"),
-                   ("z_cbcl", "Internalizing problems: caregiver CBCL checklist (z)")]:
+    for y, plab in [("z_tvip", "Panel A. Receptive vocabulary: Peabody "
+                     "picture--word test (z)"),
+                    ("z_cbcl", "Panel B. Internalizing problems: "
+                     "caregiver CBCL checklist (z)")]:
         res = [lp.fit(df, y, c) for c in (1, 2, 3, 4)]
-        body += coef2(lab, [(r["b"], r["se"], r["p"]) for r in res])
+        body.append(f"\\panel{{5}}{{{plab}}}")
+        body += coef2("Affected $\\times$ affected zone",
+                      [(r["b"], r["se"], r["p"]) for r in res])
+        body.append("\\addlinespace[3pt]")
+        body.append("\\hspace{1em}Observations & "
+                    + " & ".join(f"{r['n']:,}" for r in res) + " \\\\")
         body.append("\\addlinespace")
-        ns[y] = res
         log("T2 LP", y, [f"{r['b']:+.3f}{stars(r['p'])}" for r in res])
     body = body[:-1]
     body += ["\\midrule",
-             "Commune, cohort and wave fixed effects & Yes & Yes & Yes & "
-             "Yes \\\\",
-             "Commune linear trends & No & No & No & Yes \\\\",
-             "Observations, vocabulary & "
-             + " & ".join(f"{r['n']:,}" for r in ns["z_tvip"]) + " \\\\",
-             "Observations, CBCL & "
-             + " & ".join(f"{r['n']:,}" for r in ns["z_cbcl"]) + " \\\\"]
-    header = [" & \\multicolumn{4}{c}{Affected $\\times$ affected zone} \\\\",
-              "\\cmidrule(lr){2-5}",
-              " & (1) & (2) & (3) & (4) \\\\"]
-    notes = ("Each cell reports the coefficient on Affected $\\times$ "
+             "Municipality fixed effects & Yes & Yes & Yes & Yes \\\\",
+             "Cohort and wave fixed effects & No & Yes & Yes & Yes \\\\",
+             "Household controls & No & No & Yes & Yes \\\\",
+             "Municipality linear trends & No & No & No & Yes \\\\"]
+    header = [" & (1) & (2) & (3) & (4) \\\\"]
+    notes = ("Each panel reports the coefficient on Affected $\\times$ "
              "affected zone from Gillmore's (2026) equation (1) taken to "
              "the 14-year horizon: the affected group are the children "
              "exposed in utero to age four, measured in the 2024 wave at "
              "ages 14--18; the comparison group are children conceived "
              "after the earthquake, measured in the 2017 wave. The CBCL "
              "is oriented as in Gillmore (2026), so that positive values "
-             "mean fewer problems. Column 1 includes municipality fixed "
-             "effects only; column 2 adds cohort and wave fixed effects; "
-             "column 3 adds the household controls; column 4 adds "
-             "municipality linear trends. \\zonedef{} Standard errors "
-             "clustered by municipality in parentheses; evaluation sampling "
-             "weights. \\starnote")
+             "mean fewer problems. \\zonedef{} Standard errors "
+             "clustered by municipality in parentheses; evaluation "
+             "sampling weights. \\starnote")
     table_env("t2_largo_plazo",
               "The Cognitive Scar Persists into Adolescence: Gillmore's "
               "Equation at the 14-Year Horizon",
@@ -652,7 +649,7 @@ def t6_placebo(d):
              "The design should find nothing. Of fifteen coefficients, "
              "two are significant at the 10 percent level (1.5 expected "
              "by chance), and their sign --- a worse birth endowment of "
-             "the 24--35 group in affected municipalities --- would work "
+             "the age-2 group in affected municipalities --- would work "
              "\\emph{against} the trough of Table~\\ref{tab:main}; the "
              "birth-endowment row of Table~\\ref{tab:robust} confirms "
              "the result does not move. \\bindef{} \\clusternote{} "
@@ -717,7 +714,7 @@ def t7_robustez(d, ipw, nrep):
              f"({nreg} regions) & {pw['24']:.3f} & {pw['ct']:.3f} & \\\\"]
     header = [" & \\multicolumn{2}{c}{Dependent variable: PHQ-4 "
               "score (z)} & \\\\", "\\cmidrule(lr){2-3}",
-              " & 24--35 $\\times$ affected & 36--59 $-$ 24--35 & "
+              " & Age 2 $\\times$ affected & Ages 3--4 $-$ age 2 & "
               "Observations \\\\",
               " & (1) & (2) & (3) \\\\"]
     notes = ("Each row re-estimates the preferred specification of "
@@ -756,8 +753,8 @@ def t8_rw(d, nrep):
                     f"{rwp[(y, 'ct')]:.3f} \\\\")
         log("T8 RW", y, "24:", f"{rwp[(y, '24')]:.3f}",
             "ct:", f"{rwp[(y, 'ct')]:.3f}")
-    header = [" & \\multicolumn{2}{c}{24--35 $\\times$ affected} & "
-              "\\multicolumn{2}{c}{36--59 $-$ 24--35} \\\\",
+    header = [" & \\multicolumn{2}{c}{Age 2 $\\times$ affected} & "
+              "\\multicolumn{2}{c}{Ages 3--4 $-$ age 2} \\\\",
               "\\cmidrule(lr){2-3}\\cmidrule(lr){4-5}",
               " & Unadjusted $p$ & Romano--Wolf $p$ & Unadjusted $p$ & "
               "Romano--Wolf $p$ \\\\",
@@ -798,7 +795,7 @@ def t9_atricion(a):
     body += ["\\midrule",
              "Exposure-age and region fixed effects & Yes \\\\",
              "Mother's education and age in 2010 & Yes \\\\",
-             f"Children of the 2010 baseline & {int(r.nobs):,} \\\\",
+             f"Observations & {int(r.nobs):,} \\\\",
              "Mean retention into 2024 & "
              f"{d.in2024.mean() * 100:.1f} percent \\\\"]
     header = [" & Pr(reinterviewed in 2024) \\\\", " & (1) \\\\"]
@@ -895,8 +892,8 @@ def t11_madre(d):
     body += ["\\midrule",
              "Municipality fixed effects & Yes & Yes & Yes & Yes \\\\",
              "Birth-cohort fixed effects & Yes & Yes & Yes & Yes \\\\",
-             "Adolescents & " + " & ".join(f"{res[k]['n']:,}"
-                                           for k in order) + " \\\\"]
+             "Observations & " + " & ".join(f"{res[k]['n']:,}"
+                                             for k in order) + " \\\\"]
     header = [" & \\multicolumn{2}{c}{PHQ-4 score (z)} & "
               "\\multicolumn{2}{c}{Positive GAD-2 screen} \\\\",
               "\\cmidrule(lr){2-3}\\cmidrule(lr){4-5}",
@@ -952,7 +949,7 @@ def t12_heterogeneidad(d):
              "\\multicolumn{2}{c}{Yes} & \\\\"]
     header = [" & \\multicolumn{2}{c}{Dependent variable: PHQ-4 "
               "score (z)} & \\\\", "\\cmidrule(lr){2-3}",
-              " & 24--35 $\\times$ affected & 36--59 $-$ 24--35 & "
+              " & Age 2 $\\times$ affected & Ages 3--4 $-$ age 2 & "
               "Observations \\\\",
               " & (1) & (2) & (3) \\\\"]
     notes = ("Each pair of rows estimates the preferred specification of "
@@ -977,7 +974,7 @@ def figuras(d):
     FIG.mkdir(parents=True, exist_ok=True)
     INK, BLUE, GRID = "#0B0B0B", "#2A78D6", "#C9C9C9"
     x = np.arange(4)
-    xt_lab = ["0–11 m.\n(omitted)", "12–23 m.", "24–35 m.", "36–59 m."]
+    xt_lab = ["$<$1\n(omitted)", "Age 1", "Age 2", "Ages 3–4"]
     fig, ax = plt.subplots(figsize=(6.3, 3.6))
     for y, colr, lab, off in [
             ("z_phq4", INK, "PHQ-4 score (z), self-report", -0.07),
@@ -991,7 +988,7 @@ def figuras(d):
     ax.axhline(0, color=GRID, lw=1, zorder=0)
     ax.set_xticks(x, xt_lab)
     ax.set_xlabel("Age when the earthquake struck")
-    ax.set_ylabel("Effect relative to exposure at 0–11 months")
+    ax.set_ylabel("Effect relative to exposure before age 1")
     ax.legend(frameon=False, fontsize=9, loc="lower left")
     for s in ("top", "right"):
         ax.spines[s].set_visible(False)

@@ -46,7 +46,7 @@
 
 %---- Frases unicas, reutilizadas por las notas de todas las tablas ----------
 \newcommand{\starnote}{*** Significant at the 1 percent level. ** Significant at the 5 percent level. * Significant at the 10 percent level.}
-\newcommand{\bindef}{Exposure-age groups give the child's age, in months, on 27 February 2010; the omitted group was struck at 0--11 months. Each coefficient compares the gap between the age group in the row and the 0--11 months group in affected municipalities with the same gap in unaffected municipalities.}
+\newcommand{\bindef}{Exposure-age groups give the child's age when the earthquake struck, defined in months of age as 0--11 (before age 1, the omitted group), 12--23 (age 1), 24--35 (age 2) and 36--59 (ages 3--4). Each coefficient compares the gap between the age group in the row and the omitted group in affected municipalities with the same gap in unaffected municipalities.}
 \newcommand{\zonedef}{The affected zone comprises the six regions where the official intensity study records destructive shaking (V, VI, VII, VIII, IX and Metropolitan; Astroza et al.\ 2010).}
 \newcommand{\specdef}{Column 1 includes exposure-age, municipality-of-selection and birth-cohort fixed effects; column 2 adds pre-earthquake controls (sex, age in months, and the 2010 household baseline: mother's education and age, household size, rurality); column 3 adds 2012 controls (number of children of the mother, family history of mental illness), with missing-value indicators; column 4 estimates column 3 without the Metropolitan Region. Estimates use the 2024 sampling weights.}
 \newcommand{\phqdef}{The PHQ-4 is a four-item screener (two depression, two anxiety items) answered by the adolescent in private, scored 0--12 and standardized within age in years; a positive PHQ-2 (GAD-2) screen is a depression (anxiety) subscore of three or more, and coefficients for these outcomes are probabilities.}
@@ -60,8 +60,7 @@
 \begin{titlepage}
 \centering
 \vspace*{2cm}
-{\Large\bfseries The Adolescent Scar of Early-Life Disaster\\[6pt]
-Earthquake Exposure in Early Childhood and Mental Health at Ages 14--18\par}
+{\Large\bfseries The Adolescent Scar of Early-Life Disaster\par}
 \vspace{1.5cm}
 {\large José Elías Durán Roa\par}
 \vspace{1cm}
@@ -73,8 +72,9 @@ Earthquake Exposure in Early Childhood and Mental Health at Ages 14--18\par}
 \singlespacing\normalsize
 \textit{The comparison in words.} Every adolescent of the 2024 ELPI wave lived
 through the 27 February 2010 earthquake as a child; what varies is how hard
-their municipality was shaken and how old they were --- 0--11, 12--23, 24--35
-or 36--59 months --- when it struck. The estimates answer one question. Take
+their municipality was shaken and how old they were when it
+struck, grouped as under age one (0--11 months), age one (12--23), age two
+(24--35) and ages three to four (36--59). The estimates answer one question. Take
 the gap in an outcome at ages 14--18 between two exposure ages, say the
 children struck at 24--35 months versus those struck at 0--11 months, among
 the municipalities the earthquake hit; take the same gap among the
@@ -107,33 +107,30 @@ sampling weights.\end{minipage}
 {\scshape The Main Coefficient in Words}
 \end{center}
 
-Children whom the earthquake struck at 24--35 months of age score 0.147
-standard deviations lower on the PHQ-4 at ages 14--18 than children it struck
-at 0--11 months, and are 7.3 percentage points less likely to screen positive
-for anxiety (column 3 of Table~\ref{tab:main}). The PHQ-4 is a validated
-four-item screener for depression and anxiety that the adolescent answers in
-private; scores run from 0 to 12, with a sample mean of 4.31 and a standard
-deviation of 2.67, so the effect corresponds to 0.39 points, or 9 percent of
-the mean. Read from the other side of the U in Figure~\ref{fig:ushape}, the
-children old enough to remember the earthquake --- struck at 36--59 months
---- carry 0.103 standard deviations more symptoms than those struck at
-24--35 months, and the children struck at 0--11 months carry a similar
-excess.
+The earthquake left a mental-health scar that depends on the age at which it
+struck. Children it caught at age two arrive at ages 14--18 with better
+mental health than children it caught before age one or at ages three to
+four; against the omitted group, those struck at age two score 0.147
+standard deviations lower on the PHQ-4 and are 7.3 percentage points less
+likely to screen positive for anxiety (column 3 of Table~\ref{tab:main}).
+Mental health is measured with the PHQ-4, an internationally validated
+screener that covers two domains, depressive symptoms and anxiety symptoms;
+it runs from 0 to 12 with a sample mean of 4.31 and a standard deviation of
+2.67, so the estimate corresponds to 0.39 points, 9 percent of the mean.
+The magnitude is moderate, because it equals about six tenths of the
+girl--boy gap in positive anxiety screens and matches the 0.17--0.24
+standard-deviation scar the same earthquake left on vocabulary
+(Table~\ref{tab:longrun}).
 
-The magnitude is moderate and benchmarks cleanly. The 7.3 percentage points
-equal about six tenths of the girl--boy gap in positive anxiety screens in
-this sample, 33.3 versus 21.3 percent. The 0.15 standard deviations match
-the size of the cognitive scar the same earthquake left: 0.17 standard
-deviations of vocabulary at ages 7--11 in Gillmore (2026) and 0.24 at ages
-14--18 in Table~\ref{tab:longrun}. Under the continuous dose, one standard
-deviation of peak ground acceleration lowers the PHQ-4 by 0.068 standard
-deviations (Table~\ref{tab:dose}). Among girls the estimate doubles, to
-0.300 standard deviations (Table~\ref{tab:het}). The pattern is flat in a
-placebo on outcomes fixed at birth, stable across every specification, and
-holds under permutation inference ($p=0.045$, Table~\ref{tab:robust});
+The age profile is a U (Figure~\ref{fig:ushape}), consistent with two known
+channels, disrupted care in infancy and traumatic memory at preschool ages,
+with age two protected by infantile amnesia. Among girls the estimate
+doubles, to 0.300 standard deviations (Table~\ref{tab:het}). The result is
+flat in a placebo on outcomes fixed at birth, stable across every
+specification and dose, and holds under permutation inference ($p=0.045$);
 adjusting for the family of four outcomes leaves Romano--Wolf $p$-values at
-0.10--0.12 (Table~\ref{tab:rw}), so the full-sample evidence is solid rather
-than overwhelming, and the girls' result is the sharpest finding.
+0.10--0.12, so the full-sample evidence is solid rather than overwhelming
+and the girls' result is the sharpest finding.
 
 \clearpage
 
