@@ -46,12 +46,12 @@
 
 %---- Frases unicas, reutilizadas por las notas de todas las tablas ----------
 \newcommand{\starnote}{*** Significant at the 1 percent level. ** Significant at the 5 percent level. * Significant at the 10 percent level.}
-\newcommand{\bindef}{Exposure-age groups give the child's age on 27 February 2010; the omitted group was exposed before the first birthday (0--11 months). Each coefficient is a difference in differences: the gap between the age group in the row and the omitted group, in affected relative to unaffected communes.}
-\newcommand{\zonedef}{The affected zone comprises the regions the official intensity study assigns to the earthquake (V, VI, VII, VIII, IX and Metropolitan; Astroza et al.\ 2010); commune-of-selection fixed effects absorb it.}
-\newcommand{\specdef}{Column 1 includes exposure-age, commune-of-selection and birth-cohort fixed effects; column 2 adds pre-earthquake controls (sex, age in months, and the 2010 household baseline: mother's education and age, household size, rurality); column 3 adds 2012 controls (number of children of the mother, family history of mental illness), with missing-value indicators; column 4 estimates column 3 without the Metropolitan Region. Estimates use the 2024 sampling weights.}
+\newcommand{\bindef}{Exposure-age groups give the child's age, in months, on 27 February 2010; the omitted group was struck at 0--11 months. Each coefficient compares the gap between the age group in the row and the 0--11 months group in affected municipalities with the same gap in unaffected municipalities.}
+\newcommand{\zonedef}{The affected zone comprises the six regions where the official intensity study records destructive shaking (V, VI, VII, VIII, IX and Metropolitan; Astroza et al.\ 2010).}
+\newcommand{\specdef}{Column 1 includes exposure-age, municipality-of-selection and birth-cohort fixed effects; column 2 adds pre-earthquake controls (sex, age in months, and the 2010 household baseline: mother's education and age, household size, rurality); column 3 adds 2012 controls (number of children of the mother, family history of mental illness), with missing-value indicators; column 4 estimates column 3 without the Metropolitan Region. Estimates use the 2024 sampling weights.}
 \newcommand{\phqdef}{The PHQ-4 is a four-item screener (two depression, two anxiety items) answered by the adolescent in private, scored 0--12 and standardized within age in years; a positive PHQ-2 (GAD-2) screen is a depression (anxiety) subscore of three or more, and coefficients for these outcomes are probabilities.}
 \newcommand{\cbcldef}{The CBCL internalizing score is reported by the main caregiver, in T units, standardized within age.}
-\newcommand{\clusternote}{Standard errors clustered by commune of selection in parentheses.}
+\newcommand{\clusternote}{Standard errors clustered by municipality of selection in parentheses.}
 
 \doublespacing
 
@@ -61,7 +61,7 @@
 \centering
 \vspace*{2cm}
 {\Large\bfseries The Adolescent Scar of Early-Life Disaster\\[6pt]
-Self-Reports, Parental Blindness, and the Age Profile of Trauma\par}
+Earthquake Exposure in Early Childhood and Mental Health at Ages 14--18\par}
 \vspace{1.5cm}
 {\large José Elías Durán Roa\par}
 \vspace{1cm}
@@ -69,24 +69,36 @@ Self-Reports, Parental Blindness, and the Age Profile of Trauma\par}
 \vspace{1cm}
 {\normalsize Tables and instrument appendix --- draft for discussion\par}
 \vspace{1.5cm}
-\begin{minipage}{0.86\textwidth}
+\begin{minipage}{0.9\textwidth}
 \singlespacing\normalsize
+\textit{The comparison in words.} Every adolescent of the 2024 ELPI wave lived
+through the 27 February 2010 earthquake as a child; what varies is how hard
+their municipality was shaken and how old they were --- 0--11, 12--23, 24--35
+or 36--59 months --- when it struck. The estimates answer one question. Take
+the gap in an outcome at ages 14--18 between two exposure ages, say the
+children struck at 24--35 months versus those struck at 0--11 months, among
+the municipalities the earthquake hit; take the same gap among the
+municipalities it did not hit; the coefficient is the first gap minus the
+second. We therefore never compare affected against unaffected municipalities
+directly, and never compare cohorts nationally: municipality fixed effects
+keep every comparison within a municipality, and cohort fixed effects strip
+out everything shared by a birth cohort, including its age at the survey.
 All tables estimate versions of
 \begin{equation}
 Y_{imc} \;=\; \alpha \;+\; \sum_{a}\beta_a\,\bigl(\text{Bin}_a^{\,i}\times D_m\bigr)
 \;+\; \gamma_a\,\text{Bin}_a^{\,i} \;+\; \psi_m \;+\; \theta_c \;+\; X_i'\delta \;+\; \varepsilon_{imc}
 \end{equation}
-where $i$ is an adolescent of the 2024 ELPI wave, $m$ the commune of selection of
-the household before the earthquake, and $c$ the birth cohort. $\text{Bin}_a$
-gives the age at which the 27 February 2010 earthquake struck the child
-($a\in\{12$--$23,\,24$--$35,\,36$--$59$ months$\}$; omitted: 0--11 months) and
-$D_m$ the seismic dose of the commune: the official affected-zone indicator or,
-where stated, the peak ground acceleration of the USGS ShakeMap at the commune
-centroid. $\psi_m$ and $\theta_c$ are commune and cohort fixed effects; $\psi_m$
-absorbs $D_m$, and $\theta_c$ absorbs everything common to a cohort, including
-age at the survey. Each $\beta_a$ is therefore a difference in differences
-between exposure-age cohorts, within commune.
-\end{minipage}
+where $i$ is an adolescent, $m$ the municipality where the household lived
+before the earthquake, and $c$ the birth cohort. $\text{Bin}_a$ marks the
+child's age, in months, when the earthquake struck. $D_m$ is a dummy equal to
+one when the municipality belongs to the affected zone, the six regions where
+the shaking was destructive (V to IX and the Metropolitan Region); in the
+dose tables it is replaced by the peak ground acceleration, that is, how
+strongly the ground actually shook in the municipality, expressed as a share
+of the acceleration of gravity and standardized. $\psi_m$ and $\theta_c$ are
+municipality and cohort fixed effects and $X_i$ are household controls.
+Standard errors are clustered by municipality and estimates use the 2024
+sampling weights.\end{minipage}
 \end{titlepage}
 
 \setcounter{page}{1}
@@ -95,38 +107,33 @@ between exposure-age cohorts, within commune.
 {\scshape The Main Coefficient in Words}
 \end{center}
 
-The headline estimate of the paper is the age-two interaction in column 3 of
-Table~\ref{tab:main}, Panel A: $-$0.147 (standard error 0.069). In words:
-comparing communes inside and outside the affected zone, an adolescent whom the
-earthquake struck at age two reports 0.147 standard deviations \emph{fewer}
-depression--anxiety symptoms at ages 14--18 than one it struck before the first
-birthday. The scale behind the standard deviations is concrete: the PHQ-4 runs
-from 0 to 12, with a sample mean of 4.31 and a standard deviation of 2.67, so
-the coefficient is $-$0.39 points on the raw scale (the unstandardized row of
-Table~\ref{tab:robust}), about 9 percent of the mean. Read from the other side
-of the U (Figure~\ref{fig:ushape}), children the earthquake caught at ages
-three to four --- old enough to form memories of it --- carry 0.103 standard
-deviations more symptoms than the age-two trough, and infants carry a similar
+Children whom the earthquake struck at 24--35 months of age score 0.147
+standard deviations lower on the PHQ-4 at ages 14--18 than children it struck
+at 0--11 months, and are 7.3 percentage points less likely to screen positive
+for anxiety (column 3 of Table~\ref{tab:main}). The PHQ-4 is a validated
+four-item screener for depression and anxiety that the adolescent answers in
+private; scores run from 0 to 12, with a sample mean of 4.31 and a standard
+deviation of 2.67, so the effect corresponds to 0.39 points, or 9 percent of
+the mean. Read from the other side of the U in Figure~\ref{fig:ushape}, the
+children old enough to remember the earthquake --- struck at 36--59 months
+--- carry 0.103 standard deviations more symptoms than those struck at
+24--35 months, and the children struck at 0--11 months carry a similar
 excess.
 
-Is that magnitude relevant? Three benchmarks say yes, with one honest caveat.
-First, in the anxiety-screen metric the same comparison moves the probability
-of a positive GAD-2 screen by 7.3 percentage points on a base of 27.3 percent
---- a 27 percent relative reduction, equal to about six tenths of the full
-girl--boy gap in positive anxiety screens in this sample (33.3 versus 21.3
-percent). Second, it is of the same order as the cognitive scar this
-literature measures: $-$0.17 standard deviations of vocabulary at ages 7--11
-in Gillmore (2026) and $-$0.24 at ages 14--18 in Table~\ref{tab:longrun}.
-Third, in the continuous-dose metric one sample standard deviation of ground
-acceleration (about 14 percent of $g$) moves the PHQ-4 by $-$0.068 standard
-deviations (Table~\ref{tab:dose}), so the average affected commune, at 1.7
-standard deviations of dose, implies roughly $-$0.11. Among girls the trough
-doubles, to $-$0.300 standard deviations (Table~\ref{tab:het}). The caveat:
-the gradient survives permutation inference (p $=$ 0.045,
-Table~\ref{tab:robust}) and every specification change, but adjusting for the
-family of four outcomes leaves Romano--Wolf $p$-values at 0.10--0.12
-(Table~\ref{tab:rw}); the full-sample evidence is solid rather than
-overwhelming, and the girls' result is the sharpest single finding.
+The magnitude is moderate and benchmarks cleanly. The 7.3 percentage points
+equal about six tenths of the girl--boy gap in positive anxiety screens in
+this sample, 33.3 versus 21.3 percent. The 0.15 standard deviations match
+the size of the cognitive scar the same earthquake left: 0.17 standard
+deviations of vocabulary at ages 7--11 in Gillmore (2026) and 0.24 at ages
+14--18 in Table~\ref{tab:longrun}. Under the continuous dose, one standard
+deviation of peak ground acceleration lowers the PHQ-4 by 0.068 standard
+deviations (Table~\ref{tab:dose}). Among girls the estimate doubles, to
+0.300 standard deviations (Table~\ref{tab:het}). The pattern is flat in a
+placebo on outcomes fixed at birth, stable across every specification, and
+holds under permutation inference ($p=0.045$, Table~\ref{tab:robust});
+adjusting for the family of four outcomes leaves Romano--Wolf $p$-values at
+0.10--0.12 (Table~\ref{tab:rw}), so the full-sample evidence is solid rather
+than overwhelming, and the girls' result is the sharpest finding.
 
 \clearpage
 
@@ -141,7 +148,7 @@ overwhelming, and the girls' result is the sharpest single finding.
   \begin{fignotes}[0.9\textwidth]
 \textit{Notes:} Each marker is a $\beta_a$ coefficient of equation~(1) with the
 controls of column 3 of Table~\ref{tab:main}, with its 95 percent confidence
-interval; the omitted group was exposed before the first birthday. The PHQ-4 is
+interval; the omitted group was struck at 0--11 months. The PHQ-4 is
 in standard deviations and the GAD-2 screen in probability units. \clusternote
   \end{fignotes}
 \end{figure}
@@ -155,26 +162,26 @@ in standard deviations and the GAD-2 screen in probability units. \clusternote
   \label{fig:pga}
   \begin{fignotes}[0.9\textwidth]
 \textit{Notes:} Each marker is the coefficient on the exposure-age group
-interacted with the standardized peak ground acceleration of the USGS ShakeMap
-of the 2010 Maule earthquake at the centroid of the commune of selection, with
+interacted with the standardized peak ground acceleration, how strongly the
+ground shook, at the centroid of the municipality of selection, with
 its 95 percent confidence interval; specification of column 3 of
-Table~\ref{tab:main}. The dose varies across the 116 communes, within affected
+Table~\ref{tab:main}. The dose varies across the 116 municipalities, within affected
 regions. \clusternote
   \end{fignotes}
 \end{figure}
 
 \begin{figure}[htbp]\centering
   \includegraphics[height=0.86\textheight]{f3_mapa_dosis.pdf}
-  \caption{The Seismic Dose Across the Communes of Selection}
+  \caption{The Seismic Dose Across the Municipalities of Selection}
   \label{fig:mapdose}
   \begin{fignotes}[0.86\textwidth]
-\textit{Notes:} Each dot is one of the 116 communes of selection of the ELPI
-sample, at its centroid, colored by the peak ground acceleration of the USGS
-ShakeMap of the 2010 Maule earthquake; the star marks the epicenter.
-Black-edged dots belong to the official affected zone (regions V--IX and
-Metropolitan; Astroza et al.\ 2010) and gray-edged dots lie outside it. The
-map shows the two sources of identifying variation of Table~\ref{tab:dose}:
-the binary zone and the continuous dose within it.
+\textit{Notes:} Each colored municipality is one of the 116 municipalities of
+selection of the ELPI sample, colored by the peak ground acceleration, that
+is, how strongly the ground shook during the earthquake, expressed as a share
+of the acceleration of gravity (from the ShakeMap of the U.S. Geological
+Survey); the star marks the epicenter and light-gray municipalities are not
+in the sample. The map shows the two sources of identifying variation of
+Table~\ref{tab:dose}, the affected zone and the continuous dose within it.
   \end{fignotes}
 \end{figure}
 
@@ -183,12 +190,12 @@ the binary zone and the continuous dose within it.
   \caption{The Geography of Adolescent Anxiety in 2024}
   \label{fig:mapanx}
   \begin{fignotes}[0.86\textwidth]
-\textit{Notes:} Each dot is one of the 116 communes of selection, colored by
-the share of its adolescents with a positive GAD-2 anxiety screen in the 2024
-wave (commune shares range from 11.9 to 43.8 percent). The map is descriptive
-and unadjusted; the regressions of the paper compare cohorts within commune,
-never communes against each other. Black-edged dots belong to the official
-affected zone.
+\textit{Notes:} Each colored municipality is one of the 116 municipalities of
+selection, colored by the share of its adolescents with a positive GAD-2
+anxiety screen in the 2024 wave; municipality shares range from 11.9 to 43.8
+percent, and light-gray municipalities are not in the sample. The map is
+descriptive and unadjusted; the regressions of the paper compare cohorts
+within municipality, never municipalities against each other.
   \end{fignotes}
 \end{figure}
 
@@ -196,7 +203,8 @@ affected zone.
 \input{tables/t7_robustez}
 \input{tables/t8_romanowolf}
 \input{tables/t9_atricion}
-\input{tables/t10_mecanismos}
+\input{tables/t10a_bienestar}
+\input{tables/t10b_riesgo}
 \input{tables/t11_madre}
 \input{tables/t12_heterogeneidad}
 

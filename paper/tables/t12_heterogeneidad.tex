@@ -5,7 +5,9 @@
 \begin{threeparttable}
 \begin{tabular}{@{}p{215pt}*{2}{>{\centering\arraybackslash}p{85pt}}>{\centering\arraybackslash}p{62pt}@{}}
 \toprule
- & Age 2 $\times$ zone & Ages 3--4 $-$ age 2 & Observations \\
+ & \multicolumn{2}{c}{Dependent variable: PHQ-4 score (z)} & \\
+\cmidrule(lr){2-3}
+ & 24--35 $\times$ affected & 36--59 $-$ 24--35 & Observations \\
  & (1) & (2) & (3) \\
 \midrule
 Girls & $-$0.300\sym{***} & 0.182\sym{**} & 4,961 \\
@@ -25,6 +27,8 @@ Urban household in 2010 & $-$0.139\sym{*} & 0.129\sym{**} & 9,005 \\
 \addlinespace
 Rural household in 2010 & $-$0.238 & $-$0.213 & 991 \\
  & (0.172) & (0.257) & \\
+\midrule
+Municipality and birth-cohort fixed effects & \multicolumn{2}{c}{Yes} & \\
 \bottomrule
 \end{tabular}
 \begin{wpnotes}
