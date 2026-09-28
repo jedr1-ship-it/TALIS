@@ -50,7 +50,14 @@ generados por la plataforma y no sirven para un script reproducible.
 │   ├── 09_salud_mental_27f.py    # 27-F → salud mental adolescente (ola 2024)
 │   ├── 10_ec1_largo_plazo.py     # ec. (1) de Gillmore literal a 14 años (2024 vs controles 2017)
 │   ├── 11_regresion_paper.py     # LA regresión del paper: bins edad-exposición×EQ + wild bootstrap
+│   ├── 12_fase0_kill_tests.py    # Fase 0: kill-tests de ideas candidatas (ver docs/fase0_ideas.md)
+│   ├── 13_paper_dataset.py       # dataset del paper (mecanismos, placebos al nacer, atrición)
+│   ├── 14_pga_dose.py            # dosis sísmica continua por comuna (ShakeMap USGS + centroides)
+│   ├── 15_paper_estimaciones.py  # todas las tablas del paper (.tex) + figuras + inferencia
 │   └── 07_gillmore_spec.tex      # diapo de especificación (Beamer; pdflatex + pdftoppm -r 640)
+├── paper/                        # "The Adolescent Scar of Early-Life Disaster"
+│   ├── tablas.tex → tablas.pdf   # documento maquetado de tablas (Gate 2)
+│   ├── tables/ figures/          # fragmentos .tex y figuras generados por scripts/15
 ├── data/
 │   ├── raw/                      # descargas tal cual (committeadas; ~110 MB, 55 archivos)
 │   │   ├── 2010/ 2012/ 2017/ 2024/
