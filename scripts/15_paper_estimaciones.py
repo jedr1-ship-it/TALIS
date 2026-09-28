@@ -649,8 +649,7 @@ def t2_lp():
     df = lp.build()
     rows = head4()
     for y, lab in [("z_tvip", "Vocabulario (Peabody, z)"),
-                   ("z_cbcl", "Problemas internalizantes (CBCL, z; "
-                              "$+$ = mejor, como Gillmore)")]:
+                   ("z_cbcl", "Problemas internalizantes (CBCL, z)")]:
         res = [lp.fit(df, y, c) for c in (1, 2, 3, 4)]
         cells = " & ".join(cell(r["b"], r["se"], r["p"]) for r in res)
         rows.append(f"{lab} & {cells} \\\\")

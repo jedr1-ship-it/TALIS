@@ -6,9 +6,13 @@
 \usepackage[T1]{fontenc}
 \usepackage{booktabs,threeparttable,amsmath,graphicx,caption,float}
 \captionsetup{font=small,labelfont=bf,justification=raggedright,singlelinecheck=false}
+\renewcommand{\tablename}{Tabla}
+\renewcommand{\figurename}{Figura}
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{6pt}
 \newcommand{\sym}[1]{\rlap{#1}}
+% tablas compactas: \tin{fragmento}
+\newcommand{\tin}[1]{{\footnotesize\setlength{\tabcolsep}{3.5pt}\input{tables/#1}}}
 \begin{document}
 
 \begin{center}
@@ -53,7 +57,7 @@ Significancia: *** 1\%, ** 5\%, * 10\% (cluster comunal).
 \caption{Muestra analítica por edad a la que golpeó el terremoto}
 \centering
 \begin{threeparttable}
-\input{tables/t1_descriptivos}
+\tin{t1_descriptivos}
 \begin{tablenotes}\footnotesize
 \item ELPI ola 2024: los 10.003 adolescentes de la cohorte original 2010 (nacidos 2006--2009);
 todos vivieron el 27-F con entre 6 y 50 meses de edad. ``Zona afectada'' según la clasificación
@@ -68,7 +72,7 @@ muestra que la retención 2010$\to$2024 es plana entre grupos de edad de exposic
 \caption{La cicatriz cognitiva persiste 14 años: la ecuación de Gillmore (2026) estimada en la adolescencia}
 \centering
 \begin{threeparttable}
-\input{tables/t2_largo_plazo}
+\tin{t2_largo_plazo}
 \begin{tablenotes}\footnotesize
 \item Réplica literal de la ecuación (1) de Gillmore (EER, 2026) llevada al largo plazo:
 tratados = expuestos en útero--4 años medidos en 2024 (14--18 años); controles = concebidos
@@ -85,9 +89,9 @@ Cluster por comuna; pesos de evaluación.
 \caption{Resultado principal: depresión y ansiedad autorreportadas a los 14--18, por edad a la que golpeó el 27-F}
 \centering
 \begin{threeparttable}
-{\textbf{Panel A. PHQ-4 (z), autorreporte}\par\smallskip \input{tables/t3a_phq4}\par\bigskip}
-{\textbf{Panel B. Ansiedad positiva, GAD-2 (0/1)}\par\smallskip \input{tables/t3b_gad2}\par\bigskip}
-{\textbf{Panel C. Depresión positiva, PHQ-2 (0/1)}\par\smallskip \input{tables/t3c_phq2}}
+{\textbf{Panel A. PHQ-4 (z), autorreporte}\par\smallskip \tin{t3a_phq4}\par\bigskip}
+{\textbf{Panel B. Ansiedad positiva, GAD-2 (0/1)}\par\smallskip \tin{t3b_gad2}\par\bigskip}
+{\textbf{Panel C. Depresión positiva, PHQ-2 (0/1)}\par\smallskip \tin{t3c_phq2}}
 \begin{tablenotes}\footnotesize
 \item Cada celda responde: ¿cuánto peor ($\beta>0$) o mejor ($\beta<0$) llega a los 14--18 quien
 vivió el terremoto a esa edad, comparado con quien lo vivió con menos de un año, en comunas
@@ -105,9 +109,9 @@ Inferencia exigente para la columna (3) en la Tabla~\ref{tab:rob}.
 \centering
 \begin{threeparttable}
 {\textbf{Panel A. CBCL internalizante 2024 (z), reporte del cuidador}\par\smallskip
-\input{tables/t4a_cbcl24}\par\bigskip}
+\tin{t4a_cbcl24}\par\bigskip}
 {\textbf{Panel B. $\Delta$CBCL 2017$\to$2024 dentro del mismo niño (z por ola)}\par\smallskip
-\input{tables/t4b_dcbcl}}
+\tin{t4b_dcbcl}}
 \begin{tablenotes}\footnotesize
 \item Panel A: mismo diseño que la Tabla 3 con el reporte del cuidador como resultado: no hay
 gradiente por edad de exposición. Panel B: el cambio intra-niño del CBCL entre los 7--11 (2017) y
@@ -122,8 +126,8 @@ gradiente. La cicatriz de la Tabla 3 existe solo en lo que el adolescente report
 \caption{Dosis sísmica continua: el gradiente no depende del binario regional}
 \centering
 \begin{threeparttable}
-{\textbf{Panel A. PHQ-4 (z)}\par\smallskip \input{tables/t5a_dosis_phq4}\par\bigskip}
-{\textbf{Panel B. Ansiedad positiva, GAD-2}\par\smallskip \input{tables/t5b_dosis_gad2}}
+{\textbf{Panel A. PHQ-4 (z)}\par\smallskip \tin{t5a_dosis_phq4}\par\bigskip}
+{\textbf{Panel B. Ansiedad positiva, GAD-2}\par\smallskip \tin{t5b_dosis_gad2}}
 \begin{tablenotes}\footnotesize
 \item Cambia la dosis $D_m$ de la ecuación (1): columna (1) el binario regional oficial;
 columna (2) la aceleración máxima del suelo (PGA, \%g) del ShakeMap del USGS del Maule 2010 en el
@@ -140,7 +144,7 @@ inferencia con tratamiento regional. Especificación de la columna (3) de la Tab
 \caption{Placebo: resultados fijados al nacer, antes del terremoto}
 \centering
 \begin{threeparttable}
-\input{tables/t6_placebo}
+\tin{t6_placebo}
 \begin{tablenotes}\footnotesize
 \item Los cinco resultados quedaron determinados al nacer (1--4 años \emph{antes} del 27-F para
 todas las cohortes de la muestra): el diseño no debería ``encontrar'' efectos. De 15 celdas, dos
@@ -159,7 +163,7 @@ columna (2).
 \label{tab:rob}
 \centering
 \begin{threeparttable}
-\input{tables/t7_robustez}
+\tin{t7_robustez}
 \begin{tablenotes}\footnotesize
 \item Cada fila re-estima la especificación preferida cambiando una cosa. ``IPW'': reponderación
 por el inverso de la probabilidad estimada de seguir en 2024 (Tabla~\ref{tab:atr}). El $p$ de
@@ -176,7 +180,7 @@ VIII, IX, RM).
 \caption{Comparaciones múltiples: valores-$p$ ajustados de Romano--Wolf}
 \centering
 \begin{threeparttable}
-\input{tables/t8_romanowolf}
+\tin{t8_romanowolf}
 \begin{tablenotes}\footnotesize
 \item Familia de cuatro resultados de salud mental (especificación de la columna 3). Ajuste
 stepdown de Romano--Wolf con wild bootstrap Rademacher conjunto por comuna (2.000 réplicas,
@@ -192,7 +196,7 @@ mismos giros de signo para todos los resultados), por separado para el coeficien
 \label{tab:atr}
 \centering
 \begin{threeparttable}
-\input{tables/t9_atricion}
+\tin{t9_atricion}
 \begin{tablenotes}\footnotesize
 \item Modelo lineal de probabilidad sobre los niños de la línea base 2010 con edad válida:
 Pr(reentrevistado en 2024) sobre los bins de edad de exposición $\times$ zona afectada, efectos
@@ -209,7 +213,7 @@ la fila IPW de la Tabla~\ref{tab:rob}.
 \caption{Mecanismos y otros resultados adolescentes}
 \centering
 \begin{threeparttable}
-\input{tables/t10_mecanismos}
+\tin{t10_mecanismos}
 \begin{tablenotes}\footnotesize
 \item Mismo diseño y especificación que la columna (3) de la Tabla 3, con los demás resultados
 de la ola 2024: resiliencia (Brief Resilience Scale, 6 ítems), satisfacción vital (1--7), salud
@@ -222,15 +226,17 @@ violencia en la pareja (condicional a haber pololeado), y consumo de tabaco, alc
 
 % ---------------------------------------------------------------- T11
 \begin{table}[H]
-\caption{Transmisión: el gradiente se concentra en hijos de madres con salud mental vulnerable antes del 27-F}
+\caption{El gradiente no se explica por la salud mental materna previa al 27-F}
 \centering
 \begin{threeparttable}
-\input{tables/t11_madre}
+\tin{t11_madre}
 \begin{tablenotes}\footnotesize
 \item ``Madre vulnerable'': diagnóstico de depresión, ansiedad o estrés postraumático durante el
 embarazo, derivación psicológica/psiquiátrica, o depresión postparto diagnosticada --- todo
 reportado en 2010 y anterior (o inmediatamente posterior) al nacimiento del niño, años antes del
-terremoto. Muestras separadas con la especificación de la columna (3).
+terremoto. Muestras separadas con la especificación de la columna (3). El contraste es similar en
+ambos grupos (PHQ-4) y no menor en hijos de madres sin vulnerabilidad previa (GAD-2): el gradiente
+no es una recomposición de la carga familiar preexistente.
 \end{tablenotes}
 \end{threeparttable}
 \end{table}
@@ -240,7 +246,7 @@ terremoto. Muestras separadas con la especificación de la columna (3).
 \caption{Heterogeneidad del resultado principal (PHQ-4, z)}
 \centering
 \begin{threeparttable}
-\input{tables/t12_heterogeneidad}
+\tin{t12_heterogeneidad}
 \begin{tablenotes}\footnotesize
 \item Submuestras con la especificación de la columna (3). La base de síntomas es mucho más alta
 en mujeres (tamizaje positivo de depresión-ansiedad: 33,9\% vs.\ 19,5\%; ELPI 2024), por lo que
