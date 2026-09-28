@@ -48,6 +48,9 @@ NUBLE_84 = {  # CUT 2010 de la antigua provincia de Ñuble (región 8)
     8418: "San Ignacio", 8419: "San Nicolás", 8420: "Treguaco",
     8421: "Yungay"}
 
+OLD_CUT = {  # códigos CUT-2000 que el diseño muestral conservó
+    5106: "Quilpué", 5108: "Villa Alemana", 5505: "Limache"}
+
 
 def curl(url, out=None, extra=None):
     cmd = ["curl", "-sSL", "--max-time", "120",
@@ -91,6 +94,8 @@ def nombres_comunas(cuts):
             out[cut] = wiki[cut]
         elif cut in NUBLE_84:
             out[cut] = NUBLE_84[cut]
+        elif cut in OLD_CUT:
+            out[cut] = OLD_CUT[cut]
         else:
             falta.append(cut)
     print(f"nombres: {len(out)}/{len(cuts)} resueltos; faltan: {falta}")
