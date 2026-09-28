@@ -1,13 +1,29 @@
-\begin{tabular}{l rl rl rl rl}
+% ---- begin paper/tables/t2_largo_plazo.tex
+\begin{table}[htbp]\centering
+\caption{The Cognitive Scar Persists into Adolescence: Gillmore's Equation at the 14-Year Horizon}
+\label{tab:longrun}
+\begin{threeparttable}
+\begin{tabular}{@{}p{185pt}*{4}{>{\centering\arraybackslash}p{62pt}}@{}}
 \toprule
- & \multicolumn{2}{c}{(1)} & \multicolumn{2}{c}{(2)} & \multicolumn{2}{c}{(3)} & \multicolumn{2}{c}{(4)} \\
- & \multicolumn{2}{c}{EF} & \multicolumn{2}{c}{$+X$ pre-27F} & \multicolumn{2}{c}{$+$controles 2012} & \multicolumn{2}{c}{sin RM} \\
+ & \multicolumn{4}{c}{Affected $\times$ affected zone} \\
+\cmidrule(lr){2-5}
+ & (1) & (2) & (3) & (4) \\
 \midrule
-Vocabulario (Peabody, z) & -0.226** & (0.108) & -0.227** & (0.108) & -0.240** & (0.104) & -0.412** & (0.180) \\
-\quad Adolescentes & \multicolumn{2}{c}{13,779} & \multicolumn{2}{c}{13,779} & \multicolumn{2}{c}{13,779} & \multicolumn{2}{c}{13,779} \\
+Receptive vocabulary: Peabody picture--word test (z) & $-$0.226\sym{**} & $-$0.227\sym{**} & $-$0.240\sym{**} & $-$0.412\sym{**} \\
+ & (0.108) & (0.108) & (0.104) & (0.180) \\
 \addlinespace
-Problemas internalizantes (CBCL, z) & 0.057 & (0.088) & 0.059 & (0.088) & 0.084 & (0.088) & -0.066 & (0.125) \\
-\quad Adolescentes & \multicolumn{2}{c}{11,038} & \multicolumn{2}{c}{11,038} & \multicolumn{2}{c}{11,038} & \multicolumn{2}{c}{11,038} \\
-\addlinespace
+Internalizing problems: caregiver CBCL checklist (z) & 0.057 & 0.059 & 0.084 & $-$0.066 \\
+ & (0.088) & (0.088) & (0.088) & (0.125) \\
+\midrule
+Commune, cohort and wave fixed effects & Yes & Yes & Yes & Yes \\
+Commune linear trends & No & No & No & Yes \\
+Observations, vocabulary & 13,779 & 13,779 & 13,779 & 13,779 \\
+Observations, CBCL & 11,038 & 11,038 & 11,038 & 11,038 \\
 \bottomrule
 \end{tabular}
+\begin{wpnotes}
+\textit{Notes:} Each cell reports the coefficient on Affected $\times$ affected zone from Gillmore's (2026) equation (1) taken to the 14-year horizon: the affected group are the children exposed in utero to age four, measured in the 2024 wave at ages 14--18; the comparison group are children conceived after the earthquake, measured in the 2017 wave. The CBCL is oriented as in Gillmore (2026), so that positive values mean fewer problems. Column 1 includes commune fixed effects only; column 2 adds cohort and wave fixed effects; column 3 adds the household controls; column 4 adds commune linear trends. \zonedef{} Standard errors clustered by commune in parentheses; evaluation sampling weights. \starnote
+\end{wpnotes}
+\end{threeparttable}
+\end{table}
+% ---- end paper/tables/t2_largo_plazo.tex

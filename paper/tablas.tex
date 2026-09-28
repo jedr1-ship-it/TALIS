@@ -1,283 +1,218 @@
-% Documento de tablas — "The Adolescent Scar of Early-Life Disaster"
+% The Adolescent Scar of Early-Life Disaster — tables and instrument appendix
+% Estándar de formato: WP de la Jornada (AER-style). Fragmentos generados por
+% scripts/15_paper_estimaciones.py y scripts/16_apendice_instrumentos.py.
 % Compilar: pdflatex -interaction=nonstopmode tablas.tex (x2)
-\documentclass[11pt,a4paper]{article}
-\usepackage[margin=2.2cm]{geometry}
+\documentclass[12pt]{article}
+
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
-\usepackage{booktabs,threeparttable,amsmath,graphicx,caption,float}
-\captionsetup{font=small,labelfont=bf,justification=raggedright,singlelinecheck=false}
-\renewcommand{\tablename}{Tabla}
-\renewcommand{\figurename}{Figura}
-\setlength{\parindent}{0pt}
-\setlength{\parskip}{6pt}
-\newcommand{\sym}[1]{\rlap{#1}}
-% tablas compactas: \tin{fragmento}
-\newcommand{\tin}[1]{{\footnotesize\setlength{\tabcolsep}{3.5pt}\input{tables/#1}}}
+\usepackage{mathptmx}
+\usepackage[margin=1in]{geometry}
+\usepackage{booktabs,threeparttable}
+\usepackage{graphicx}
+\usepackage[figuresright]{rotating}
+\usepackage{float}
+\usepackage{amsmath}
+\usepackage{setspace}
+\usepackage{caption}
+\usepackage[table]{xcolor}
+\usepackage[hidelinks]{hyperref}
+\usepackage{etoolbox}
+\usepackage{relsize}
+
+% estout imprime los asteriscos con \sym, que no define ningun paquete cargado.
+\providecommand{\sym}[1]{\ensuremath{^{#1}}}
+
+\graphicspath{{figures/}}
+
+%---- Tablas al estilo AER: TABLE 1—TÍTULO, versalitas, sin dos puntos -------
+\DeclareCaptionLabelSeparator{emdash}{---}
+\captionsetup[table]{labelsep=emdash,labelfont=sc,textfont=sc,
+ justification=centering,singlelinecheck=false,skip=6pt}
+\captionsetup[figure]{labelsep=period,justification=centering,
+ singlelinecheck=false,skip=6pt}
+
+% Estilo unico de tabla: se aplica a todas, y los .tex ya no lo declaran.
+\newcommand{\tabstyle}{\singlespacing\small\setlength{\tabcolsep}{5pt}\renewcommand{\arraystretch}{1.05}}
+\AtBeginEnvironment{table}{\tabstyle}
+\AtBeginEnvironment{sidewaystable}{\tabstyle}
+\AtBeginEnvironment{figure}{\singlespacing}
+\newcommand{\flushhead}{}
+
+% Notas: un escalon por debajo del cuerpo, con el ancho de la tabla.
+\newenvironment{wpnotes}{\par\vspace{6pt}\begin{tablenotes}[flushleft]\relsize{-1}\setlength{\parindent}{0pt}\item[]}{\end{tablenotes}}
+\newenvironment{fignotes}[1][0.9\textwidth]{\par\vspace{6pt}\begin{minipage}{#1}\footnotesize\setlength{\parindent}{0pt}}{\end{minipage}}
+\newcommand{\panel}[2]{\multicolumn{#1}{@{}l}{\textit{#2}}\\}
+
+%---- Frases unicas, reutilizadas por las notas de todas las tablas ----------
+\newcommand{\starnote}{*** Significant at the 1 percent level. ** Significant at the 5 percent level. * Significant at the 10 percent level.}
+\newcommand{\bindef}{Exposure-age groups give the child's age on 27 February 2010; the omitted group was exposed before the first birthday (0--11 months). Each coefficient is a difference in differences: the gap between the age group in the row and the omitted group, in affected relative to unaffected communes.}
+\newcommand{\zonedef}{The affected zone comprises the regions the official intensity study assigns to the earthquake (V, VI, VII, VIII, IX and Metropolitan; Astroza et al.\ 2010); commune-of-selection fixed effects absorb it.}
+\newcommand{\specdef}{Column 1 includes exposure-age, commune-of-selection and birth-cohort fixed effects; column 2 adds pre-earthquake controls (sex, age in months, and the 2010 household baseline: mother's education and age, household size, rurality); column 3 adds 2012 controls (number of children of the mother, family history of mental illness), with missing-value indicators; column 4 estimates column 3 without the Metropolitan Region. Estimates use the 2024 sampling weights.}
+\newcommand{\phqdef}{The PHQ-4 is a four-item screener (two depression, two anxiety items) answered by the adolescent in private, scored 0--12 and standardized within age in years; a positive PHQ-2 (GAD-2) screen is a depression (anxiety) subscore of three or more, and coefficients for these outcomes are probabilities.}
+\newcommand{\cbcldef}{The CBCL internalizing score is reported by the main caregiver, in T units, standardized within age.}
+\newcommand{\clusternote}{Standard errors clustered by commune of selection in parentheses.}
+
+\doublespacing
+
 \begin{document}
 
-\begin{center}
-{\LARGE\bfseries The Adolescent Scar of Early-Life Disaster}\\[4pt]
-{\large Salud mental autorreportada a los 14--18 años y el terremoto del 27-F}\\[6pt]
-{\normalsize Documento de tablas --- borrador para discusión, \today}
-\end{center}
-
-\subsection*{La ecuación que estiman todas las tablas (salvo indicación)}
+\begin{titlepage}
+\centering
+\vspace*{2cm}
+{\Large\bfseries The Adolescent Scar of Early-Life Disaster\\[6pt]
+Self-Reports, Parental Blindness, and the Age Profile of Trauma\par}
+\vspace{1.5cm}
+{\large José Elías Durán Roa\par}
+\vspace{1cm}
+{\large \today\par}
+\vspace{1cm}
+{\normalsize Tables and instrument appendix --- draft for discussion\par}
+\vspace{1.5cm}
+\begin{minipage}{0.86\textwidth}
+\singlespacing\normalsize
+All tables estimate versions of
 \begin{equation}
 Y_{imc} \;=\; \alpha \;+\; \sum_{a}\beta_a\,\bigl(\text{Bin}_a^{\,i}\times D_m\bigr)
 \;+\; \gamma_a\,\text{Bin}_a^{\,i} \;+\; \psi_m \;+\; \theta_c \;+\; X_i'\delta \;+\; \varepsilon_{imc}
 \end{equation}
-donde $i$ es el adolescente, $m$ su comuna de selección \emph{pre-terremoto} y $c$ su cohorte de
-nacimiento. $\text{Bin}_a$ indica la edad a la que lo golpeó el 27-F ($a\in\{12\text{--}23,\,
-24\text{--}35,\,36\text{--}59$ meses$\}$; referencia: 0--11 meses). $D_m$ es la dosis sísmica de la
-comuna: el indicador oficial de zona afectada (regiones V, VI, VII, VIII, IX y Metropolitana;
-Astroza et al.\ 2010) o, en las tablas de dosis, la aceleración máxima del suelo (PGA, ShakeMap
-USGS) en el centroide comunal. $\psi_m$ y $\theta_c$ son efectos fijos de comuna de selección y de
-cohorte; $\psi_m$ absorbe $D_m$ y toda característica fija de la comuna, y $\theta_c$ todo lo común
-a la cohorte, incluida la edad a la encuesta. Cada $\beta_a$ es una diferencia en diferencias: el
-gradiente entre cohortes dentro de las comunas afectadas menos ese mismo gradiente en las no
-afectadas. Errores estándar agrupados por comuna de selección (116); pesos muestrales
-\texttt{f\_exp} de 2024.
+where $i$ is an adolescent of the 2024 ELPI wave, $m$ the commune of selection of
+the household before the earthquake, and $c$ the birth cohort. $\text{Bin}_a$
+gives the age at which the 27 February 2010 earthquake struck the child
+($a\in\{12$--$23,\,24$--$35,\,36$--$59$ months$\}$; omitted: 0--11 months) and
+$D_m$ the seismic dose of the commune: the official affected-zone indicator or,
+where stated, the peak ground acceleration of the USGS ShakeMap at the commune
+centroid. $\psi_m$ and $\theta_c$ are commune and cohort fixed effects; $\psi_m$
+absorbs $D_m$, and $\theta_c$ absorbs everything common to a cohort, including
+age at the survey. Each $\beta_a$ is therefore a difference in differences
+between exposure-age cohorts, within commune.
+\end{minipage}
+\end{titlepage}
 
-\subsection*{Definiciones que usan todas las tablas}
-\textbf{PHQ-4}: cuatro preguntas de tamizaje (dos de depresión, dos de ansiedad) que el
-adolescente contesta \emph{a solas}; puntaje 0--12, estandarizado dentro de edad (z).
-\textbf{PHQ-2 / GAD-2 positivo}: supera el umbral clínico ($\ge 3$) del subpuntaje de depresión /
-ansiedad; los coeficientes son puntos de probabilidad. \textbf{CBCL}: inventario de problemas
-conductuales-emocionales del niño respondido por el \emph{cuidador} (escala internalizante, T,
-estandarizada). $\beta>0$ = peor salud mental salvo que la fila diga lo contrario. Columnas: (1)
-solo efectos fijos; (2) $+$ controles pre-terremoto (sexo, edad, línea base 2010 del hogar: educación
-y edad de la madre, tamaño del hogar, ruralidad); (3) $+$ controles 2012 (nº de hijos, salud mental
-familiar), con indicadores de valores faltantes; (4) columna (3) sin la Región Metropolitana.
-Significancia: *** 1\%, ** 5\%, * 10\% (cluster comunal).
+\setcounter{page}{1}
+
+\begin{center}
+{\scshape The Main Coefficient in Words}
+\end{center}
+
+The headline estimate of the paper is the age-two interaction in column 3 of
+Table~\ref{tab:main}, Panel A: $-$0.147 (standard error 0.069). In words:
+comparing communes inside and outside the affected zone, an adolescent whom the
+earthquake struck at age two reports 0.147 standard deviations \emph{fewer}
+depression--anxiety symptoms at ages 14--18 than one it struck before the first
+birthday. The scale behind the standard deviations is concrete: the PHQ-4 runs
+from 0 to 12, with a sample mean of 4.31 and a standard deviation of 2.67, so
+the coefficient is $-$0.39 points on the raw scale (the unstandardized row of
+Table~\ref{tab:robust}), about 9 percent of the mean. Read from the other side
+of the U (Figure~\ref{fig:ushape}), children the earthquake caught at ages
+three to four --- old enough to form memories of it --- carry 0.103 standard
+deviations more symptoms than the age-two trough, and infants carry a similar
+excess.
+
+Is that magnitude relevant? Three benchmarks say yes, with one honest caveat.
+First, in the anxiety-screen metric the same comparison moves the probability
+of a positive GAD-2 screen by 7.3 percentage points on a base of 27.3 percent
+--- a 27 percent relative reduction, equal to about six tenths of the full
+girl--boy gap in positive anxiety screens in this sample (33.3 versus 21.3
+percent). Second, it is of the same order as the cognitive scar this
+literature measures: $-$0.17 standard deviations of vocabulary at ages 7--11
+in Gillmore (2026) and $-$0.24 at ages 14--18 in Table~\ref{tab:longrun}.
+Third, in the continuous-dose metric one sample standard deviation of ground
+acceleration (about 14 percent of $g$) moves the PHQ-4 by $-$0.068 standard
+deviations (Table~\ref{tab:dose}), so the average affected commune, at 1.7
+standard deviations of dose, implies roughly $-$0.11. Among girls the trough
+doubles, to $-$0.300 standard deviations (Table~\ref{tab:het}). The caveat:
+the gradient survives permutation inference (p $=$ 0.045,
+Table~\ref{tab:robust}) and every specification change, but adjusting for the
+family of four outcomes leaves Romano--Wolf $p$-values at 0.10--0.12
+(Table~\ref{tab:rw}); the full-sample evidence is solid rather than
+overwhelming, and the girls' result is the sharpest single finding.
 
 \clearpage
 
-% ---------------------------------------------------------------- T1
-\begin{table}[H]
-\caption{Muestra analítica por edad a la que golpeó el terremoto}
-\centering
-\begin{threeparttable}
-\tin{t1_descriptivos}
-\begin{tablenotes}\footnotesize
-\item ELPI ola 2024: los 10.003 adolescentes de la cohorte original 2010 (nacidos 2006--2009);
-todos vivieron el 27-F con entre 6 y 50 meses de edad. ``Zona afectada'' según la clasificación
-oficial de intensidades. La última fila usa la línea base 2010 (14.855 niños con edad válida) y
-muestra que la retención 2010$\to$2024 es plana entre grupos de edad de exposición.
-\end{tablenotes}
-\end{threeparttable}
-\end{table}
+\input{tables/t1_descriptivos}
+\input{tables/t2_largo_plazo}
+\input{tables/t3_main}
 
-% ---------------------------------------------------------------- T2
-\begin{table}[H]
-\caption{La cicatriz cognitiva persiste 14 años: la ecuación de Gillmore (2026) estimada en la adolescencia}
-\centering
-\begin{threeparttable}
-\tin{t2_largo_plazo}
-\begin{tablenotes}\footnotesize
-\item Réplica literal de la ecuación (1) de Gillmore (EER, 2026) llevada al largo plazo:
-tratados = expuestos en útero--4 años medidos en 2024 (14--18 años); controles = concebidos
-después del 27-F, medidos en la ola 2017. Coeficiente mostrado: Afectado $\times$ Zona afectada.
-El CBCL está orientado como en Gillmore ($+$ = mejor). Vocabulario: test de Peabody (imagen-palabra).
-Efectos fijos de comuna, cohorte y ola; columna (4) añade tendencias lineales por comuna.
-Cluster por comuna; pesos de evaluación.
-\end{tablenotes}
-\end{threeparttable}
-\end{table}
+\begin{figure}[htbp]\centering
+  \includegraphics[width=0.9\textwidth]{f1_gradiente_u.pdf}
+  \caption{The U-Shaped Gradient of Adolescent Mental Health in the Age at Exposure}
+  \label{fig:ushape}
+  \begin{fignotes}[0.9\textwidth]
+\textit{Notes:} Each marker is a $\beta_a$ coefficient of equation~(1) with the
+controls of column 3 of Table~\ref{tab:main}, with its 95 percent confidence
+interval; the omitted group was exposed before the first birthday. The PHQ-4 is
+in standard deviations and the GAD-2 screen in probability units. \clusternote
+  \end{fignotes}
+\end{figure}
 
-% ---------------------------------------------------------------- T3
-\begin{table}[H]
-\caption{Resultado principal: depresión y ansiedad autorreportadas a los 14--18, por edad a la que golpeó el 27-F}
-\centering
-\begin{threeparttable}
-{\textbf{Panel A. PHQ-4 (z), autorreporte}\par\smallskip \tin{t3a_phq4}\par\bigskip}
-{\textbf{Panel B. Ansiedad positiva, GAD-2 (0/1)}\par\smallskip \tin{t3b_gad2}\par\bigskip}
-{\textbf{Panel C. Depresión positiva, PHQ-2 (0/1)}\par\smallskip \tin{t3c_phq2}}
-\begin{tablenotes}\footnotesize
-\item Cada celda responde: ¿cuánto peor ($\beta>0$) o mejor ($\beta<0$) llega a los 14--18 quien
-vivió el terremoto a esa edad, comparado con quien lo vivió con menos de un año, en comunas
-afectadas frente a no afectadas? El patrón es una U: el valle está en los expuestos a los 2 años
-(amnesia infantil) y los extremos --- bebés (estrés temprano) y 3--4 años (primeras memorias) ---
-cargan la cicatriz. El contraste 3--4 $-$ 2 años compara la edad de memoria contra el valle.
-Inferencia exigente para la columna (3) en la Tabla~\ref{tab:rob}.
-\end{tablenotes}
-\end{threeparttable}
-\end{table}
+\input{tables/t4_informante}
+\input{tables/t5_dosis}
 
-% ---------------------------------------------------------------- T4
-\begin{table}[H]
-\caption{El cuidador no lo ve: los mismos contrastes con el reporte del padre/madre}
-\centering
-\begin{threeparttable}
-{\textbf{Panel A. CBCL internalizante 2024 (z), reporte del cuidador}\par\smallskip
-\tin{t4a_cbcl24}\par\bigskip}
-{\textbf{Panel B. $\Delta$CBCL 2017$\to$2024 dentro del mismo niño (z por ola)}\par\smallskip
-\tin{t4b_dcbcl}}
-\begin{tablenotes}\footnotesize
-\item Panel A: mismo diseño que la Tabla 3 con el reporte del cuidador como resultado: no hay
-gradiente por edad de exposición. Panel B: el cambio intra-niño del CBCL entre los 7--11 (2017) y
-los 14--18 (2024) --- equivalente a un efecto fijo de niño con dos períodos --- tampoco muestra
-gradiente. La cicatriz de la Tabla 3 existe solo en lo que el adolescente reporta a solas.
-\end{tablenotes}
-\end{threeparttable}
-\end{table}
+\begin{figure}[htbp]\centering
+  \includegraphics[width=0.9\textwidth]{f2_dosis_pga.pdf}
+  \caption{The Gradient Under the Continuous Seismic Dose}
+  \label{fig:pga}
+  \begin{fignotes}[0.9\textwidth]
+\textit{Notes:} Each marker is the coefficient on the exposure-age group
+interacted with the standardized peak ground acceleration of the USGS ShakeMap
+of the 2010 Maule earthquake at the centroid of the commune of selection, with
+its 95 percent confidence interval; specification of column 3 of
+Table~\ref{tab:main}. The dose varies across the 116 communes, within affected
+regions. \clusternote
+  \end{fignotes}
+\end{figure}
 
-% ---------------------------------------------------------------- T5
-\begin{table}[H]
-\caption{Dosis sísmica continua: el gradiente no depende del binario regional}
-\centering
-\begin{threeparttable}
-{\textbf{Panel A. PHQ-4 (z)}\par\smallskip \tin{t5a_dosis_phq4}\par\bigskip}
-{\textbf{Panel B. Ansiedad positiva, GAD-2}\par\smallskip \tin{t5b_dosis_gad2}}
-\begin{tablenotes}\footnotesize
-\item Cambia la dosis $D_m$ de la ecuación (1): columna (1) el binario regional oficial;
-columna (2) la aceleración máxima del suelo (PGA, \%g) del ShakeMap del USGS del Maule 2010 en el
-centroide de la comuna de selección, estandarizada; columna (3) la intensidad instrumental MMI del
-mismo ShakeMap; columna (4) $-\log$ de la distancia del centroide al epicentro. Las dosis continuas
-varían \emph{dentro} de las regiones afectadas (116 comunas), lo que responde a la crítica de
-inferencia con tratamiento regional. Especificación de la columna (3) de la Tabla 3.
-\end{tablenotes}
-\end{threeparttable}
-\end{table}
+\begin{figure}[htbp]\centering
+  \includegraphics[height=0.86\textheight]{f3_mapa_dosis.pdf}
+  \caption{The Seismic Dose Across the Communes of Selection}
+  \label{fig:mapdose}
+  \begin{fignotes}[0.86\textwidth]
+\textit{Notes:} Each dot is one of the 116 communes of selection of the ELPI
+sample, at its centroid, colored by the peak ground acceleration of the USGS
+ShakeMap of the 2010 Maule earthquake; the star marks the epicenter.
+Black-edged dots belong to the official affected zone (regions V--IX and
+Metropolitan; Astroza et al.\ 2010) and gray-edged dots lie outside it. The
+map shows the two sources of identifying variation of Table~\ref{tab:dose}:
+the binary zone and the continuous dose within it.
+  \end{fignotes}
+\end{figure}
 
-% ---------------------------------------------------------------- T6
-\begin{table}[H]
-\caption{Placebo: resultados fijados al nacer, antes del terremoto}
-\centering
-\begin{threeparttable}
-\tin{t6_placebo}
-\begin{tablenotes}\footnotesize
-\item Los cinco resultados quedaron determinados al nacer (1--4 años \emph{antes} del 27-F para
-todas las cohortes de la muestra): el diseño no debería ``encontrar'' efectos. De 15 celdas, dos
-son significativas al 10\% (esperadas por azar: 1,5) y su signo --- peor dotación al nacer del bin
-24--35m en zonas afectadas --- iría \emph{en contra} de explicar el valle de la Tabla 3: si algo,
-lo subestima. La fila de robustez ``controlando dotación al nacer'' de la Tabla~\ref{tab:rob}
-confirma que el resultado no se mueve. Reportados de la madre en 2010; especificación de la
-columna (2).
-\end{tablenotes}
-\end{threeparttable}
-\end{table}
+\begin{figure}[htbp]\centering
+  \includegraphics[height=0.86\textheight]{f4_mapa_sintomas.pdf}
+  \caption{The Geography of Adolescent Anxiety in 2024}
+  \label{fig:mapanx}
+  \begin{fignotes}[0.86\textwidth]
+\textit{Notes:} Each dot is one of the 116 communes of selection, colored by
+the share of its adolescents with a positive GAD-2 anxiety screen in the 2024
+wave (commune shares range from 11.9 to 43.8 percent). The map is descriptive
+and unadjusted; the regressions of the paper compare cohorts within commune,
+never communes against each other. Black-edged dots belong to the official
+affected zone.
+  \end{fignotes}
+\end{figure}
 
-% ---------------------------------------------------------------- T7
-\begin{table}[H]
-\caption{Robustez e inferencia exigente del resultado principal (PHQ-4, z)}
-\label{tab:rob}
-\centering
-\begin{threeparttable}
-\tin{t7_robustez}
-\begin{tablenotes}\footnotesize
-\item Cada fila re-estima la especificación preferida cambiando una cosa. ``IPW'': reponderación
-por el inverso de la probabilidad estimada de seguir en 2024 (Tabla~\ref{tab:atr}). El $p$ de
-permutación reasigna el estatus de zona afectada entre las 116 comunas (manteniendo el número de
-tratadas) 2.000 veces. El wild bootstrap por región (pesos de Webb) agrupa al nivel del
-tratamiento regional. El rango leave-one-out excluye una región afectada a la vez (V, VI, VII,
-VIII, IX, RM).
-\end{tablenotes}
-\end{threeparttable}
-\end{table}
-
-% ---------------------------------------------------------------- T8
-\begin{table}[H]
-\caption{Comparaciones múltiples: valores-$p$ ajustados de Romano--Wolf}
-\centering
-\begin{threeparttable}
-\tin{t8_romanowolf}
-\begin{tablenotes}\footnotesize
-\item Familia de cuatro resultados de salud mental (especificación de la columna 3). Ajuste
-stepdown de Romano--Wolf con wild bootstrap Rademacher conjunto por comuna (2.000 réplicas,
-mismos giros de signo para todos los resultados), por separado para el coeficiente del bin
-24--35m$\,\times$EQ y para el contraste 3--4$\,-\,$2 años.
-\end{tablenotes}
-\end{threeparttable}
-\end{table}
-
-% ---------------------------------------------------------------- T9
-\begin{table}[H]
-\caption{La atrición 2010$\to$2024 no es diferencial por edad de exposición $\times$ zona}
-\label{tab:atr}
-\centering
-\begin{threeparttable}
-\tin{t9_atricion}
-\begin{tablenotes}\footnotesize
-\item Modelo lineal de probabilidad sobre los niños de la línea base 2010 con edad válida:
-Pr(reentrevistado en 2024) sobre los bins de edad de exposición $\times$ zona afectada, efectos
-fijos de bin y de región y controles de la madre en 2010 (educación y edad). Errores estándar
-robustos. Los coeficientes chicos y no significativos indican que la pérdida de muestra (32,7\%)
-no se concentra en ninguna celda tratamiento$\times$edad; las probabilidades predichas alimentan
-la fila IPW de la Tabla~\ref{tab:rob}.
-\end{tablenotes}
-\end{threeparttable}
-\end{table}
-
-% ---------------------------------------------------------------- T10
-\begin{table}[H]
-\caption{Mecanismos y otros resultados adolescentes}
-\centering
-\begin{threeparttable}
-\tin{t10_mecanismos}
-\begin{tablenotes}\footnotesize
-\item Mismo diseño y especificación que la columna (3) de la Tabla 3, con los demás resultados
-de la ola 2024: resiliencia (Brief Resilience Scale, 6 ítems), satisfacción vital (1--7), salud
-física autorreportada, bullying escolar (escala de frecuencia), cibervictimización (12 meses),
-violencia en la pareja (condicional a haber pololeado), y consumo de tabaco, alcohol y cannabis
-(12 meses). Signos: se indica en cada fila; en las filas z, $+$ = más del rasgo nombrado.
-\end{tablenotes}
-\end{threeparttable}
-\end{table}
-
-% ---------------------------------------------------------------- T11
-\begin{table}[H]
-\caption{El gradiente no se explica por la salud mental materna previa al 27-F}
-\centering
-\begin{threeparttable}
-\tin{t11_madre}
-\begin{tablenotes}\footnotesize
-\item ``Madre vulnerable'': diagnóstico de depresión, ansiedad o estrés postraumático durante el
-embarazo, derivación psicológica/psiquiátrica, o depresión postparto diagnosticada --- todo
-reportado en 2010 y anterior (o inmediatamente posterior) al nacimiento del niño, años antes del
-terremoto. Muestras separadas con la especificación de la columna (3). El contraste es similar en
-ambos grupos (PHQ-4) y no menor en hijos de madres sin vulnerabilidad previa (GAD-2): el gradiente
-no es una recomposición de la carga familiar preexistente.
-\end{tablenotes}
-\end{threeparttable}
-\end{table}
-
-% ---------------------------------------------------------------- T12
-\begin{table}[H]
-\caption{Heterogeneidad del resultado principal (PHQ-4, z)}
-\centering
-\begin{threeparttable}
-\tin{t12_heterogeneidad}
-\begin{tablenotes}\footnotesize
-\item Submuestras con la especificación de la columna (3). La base de síntomas es mucho más alta
-en mujeres (tamizaje positivo de depresión-ansiedad: 33,9\% vs.\ 19,5\%; ELPI 2024), por lo que
-coeficientes similares implican efectos relativos mayores en hombres.
-\end{tablenotes}
-\end{threeparttable}
-\end{table}
+\input{tables/t6_placebo}
+\input{tables/t7_robustez}
+\input{tables/t8_romanowolf}
+\input{tables/t9_atricion}
+\input{tables/t10_mecanismos}
+\input{tables/t11_madre}
+\input{tables/t12_heterogeneidad}
 
 \clearpage
-% ---------------------------------------------------------------- Figuras
-\begin{figure}[H]
-\caption{El gradiente en U: efecto sobre la salud mental a los 14--18 según la edad a la que golpeó el 27-F}
-\centering
-\includegraphics[width=.85\textwidth]{figures/f1_gradiente_u.pdf}
-\par\smallskip
-\begin{minipage}{.85\textwidth}\footnotesize
-Coeficientes $\beta_a$ de la ecuación (1), especificación de la columna (3), con intervalos del
-95\% (cluster comunal). Referencia: expuestos con menos de 1 año. PHQ-4 en desviaciones estándar;
-GAD-2 en probabilidad.
-\end{minipage}
-\end{figure}
+\appendix
+\setcounter{table}{0}\renewcommand{\thetable}{A\arabic{table}}
+\setcounter{figure}{0}\renewcommand{\thefigure}{A\arabic{figure}}
 
-\begin{figure}[H]
-\caption{Dosis continua: el mismo gradiente con la aceleración del suelo (PGA)}
-\centering
-\includegraphics[width=.85\textwidth]{figures/f2_dosis_pga.pdf}
-\par\smallskip
-\begin{minipage}{.85\textwidth}\footnotesize
-Coeficientes de Bin$_a\times$PGA(z) del ShakeMap del USGS en el centroide de la comuna de
-selección, especificación de la columna (3). La variación es intra-regional: 116 comunas.
-\end{minipage}
-\end{figure}
+\begin{center}
+{\scshape Appendix. Instruments: Every Item and Its Scale}
+\end{center}
+
+\input{tables/a1_mh}
+\input{tables/a2_wellbeing}
+\input{tables/a3_conducta}
+\input{tables/a4_madre}
+\input{tables/a5_nacimiento}
 
 \end{document}

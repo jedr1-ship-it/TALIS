@@ -3,22 +3,23 @@
 """
 Fases 1–3 — todas las estimaciones del paper y sus tablas .tex.
 
-Entradas: data/processed/paper_adolescentes.pkl, paper_atricion.pkl,
-          pga_comuna.csv (opcional; si falta, la tabla de dosis se omite).
-Salidas:  paper/tables/*.tex (fragmentos tabular, booktabs),
-          paper/figures/*.pdf, reports/paper_numeros.md (log).
+Formato de salida: el estándar del WP de la Jornada (AER-style). Cada
+fragmento en paper/tables/*.tex es un entorno {table} COMPLETO: caption
+en versalitas via el preámbulo, coeficiente y (EE) en dos líneas, stars
+con \\sym{}, paneles con \\panel{}, bloque de efectos fijos y
+observaciones al pie, y notas en {wpnotes} que terminan en \\starnote.
+Los macros (\\panel, \\sym, wpnotes, \\starnote, \\bindef, \\zonedef,
+\\specdef, \\phqdef, \\cbcldef, \\clusternote) los define paper/tablas.tex.
 
-Especificación central (ec. 2 del paper):
-  Y = Σ_a β_a (Bin_a × Dosis_m) + γ_a Bin_a + ψ_m + θ_c + X'δ + ε
-  ref. 0–11 meses el 27-F; ψ_m comuna de selección pre-terremoto;
-  cluster comuna; pesos f_exp 2024.
-Columnas: (1) FE; (2) +X pre-27F; (3) +controles 2012; (4) sin RM.
+Entradas: data/processed/paper_adolescentes.pkl, paper_atricion.pkl,
+          pga_comuna.csv.
+Salidas:  paper/tables/t*.tex, paper/figures/*.pdf,
+          reports/paper_numeros.md (log).
 
 Uso: python3 scripts/15_paper_estimaciones.py [--solo t3,t7] [--rapido]
 """
 import argparse
 import importlib.util
-import sys
 import warnings
 from pathlib import Path
 
@@ -35,14 +36,15 @@ LOG = []
 
 BINS = ["0-11m", "12-23m", "24-35m", "36-59m"]
 IV = {"12-23m": "I_12", "24-35m": "I_24", "36-59m": "I_36"}
-LAB = {"12-23m": "Expuesto con 1 a\\~no (12--23 m.)",
-       "24-35m": "Expuesto con 2 a\\~nos (24--35 m.)",
-       "36-59m": "Expuesto con 3--4 a\\~nos (36--59 m.)"}
+ROWLAB = {"12-23m": "Exposed at age 1 (12--23 months)",
+          "24-35m": "Exposed at age 2 (24--35 months)",
+          "36-59m": "Exposed at ages 3--4 (36--59 months)"}
+CONTRLAB = "Ages 3--4 $-$ age 2"
 X_PRE = ["mujer", "edad_meses", "edad_madre10", "educ_madre10",
          "tot_per10", "rural10"]
 X_POST = ["n_hijos", "mh_madre", "mh_padre", "mh_ofam", "mh_miss"]
 CONTR = "I_36 - I_24"
-B = 1999          # réplicas bootstrap/permutación (--rapido: 499)
+B = 1999
 SEED = 27
 
 
@@ -60,9 +62,63 @@ def stars(p):
     return "***" if p < .01 else "**" if p < .05 else "*" if p < .1 else ""
 
 
-def cell(b, se, p, dec=3):
-    return f"{b:.{dec}f}{stars(p)} & ({se:.{dec}f})"
+# ------------------------- formato AER ------------------------------------
 
+def fnum(x, dec=3):
+    s = f"{x:.{dec}f}"
+    return s.replace("-", "$-$", 1) if s.startswith("-") else s
+
+
+def bcell(b, p, dec=3):
+    st = stars(p)
+    return fnum(b, dec) + (f"\\sym{{{st}}}" if st else "")
+
+
+def secell(se, dec=3):
+    return f"({se:.{dec}f})"
+
+
+def coef2(label, triples, dec=3):
+    """Fila doble: coeficientes con stars y, debajo, los EE."""
+    top = " & ".join(bcell(b, p, dec) if b is not None else ""
+                     for b, se, p in triples)
+    bot = " & ".join(secell(se, dec) if se is not None else ""
+                     for b, se, p in triples)
+    return [f"{label} & {top} \\\\", f" & {bot} \\\\"]
+
+
+def numcols(n, w):
+    return f"*{{{n}}}{{>{{\\centering\\arraybackslash}}p{{{w}pt}}}}"
+
+
+def table_env(fname, caption, label, colspec, header, body, notes,
+              sideways=False, extra_pre=""):
+    env = "sidewaystable" if sideways else "table"
+    pos = "[p]" if sideways else "[htbp]"
+    fh = "\\flushhead\n" if sideways else ""
+    lines = [f"% ---- begin paper/tables/{fname}.tex",
+             f"\\begin{{{env}}}{pos}\\centering",
+             fh + f"\\caption{{{caption}}}",
+             f"\\label{{{label}}}"]
+    if extra_pre:
+        lines.append(extra_pre)
+    lines += ["\\begin{threeparttable}",
+              f"\\begin{{tabular}}{{{colspec}}}",
+              "\\toprule"] + header + ["\\midrule"] + body + [
+              "\\bottomrule", "\\end{tabular}",
+              "\\begin{wpnotes}",
+              "\\textit{Notes:} " + notes,
+              "\\end{wpnotes}",
+              "\\end{threeparttable}",
+              f"\\end{{{env}}}",
+              f"% ---- end paper/tables/{fname}.tex"]
+    TAB.mkdir(parents=True, exist_ok=True)
+    (TAB / f"{fname}.tex").write_text("\n".join(lines) + "\n",
+                                      encoding="utf-8")
+    log(f"-> paper/tables/{fname}.tex")
+
+
+# ------------------------- datos y estimación ------------------------------
 
 def load_data():
     d = pd.read_pickle("data/processed/paper_adolescentes.pkl")
@@ -78,7 +134,6 @@ def load_data():
         d["ldist"] = -np.log(d.dist_epi_km.clip(lower=1))
         d["ldist_z"] = (d.ldist - d.ldist.mean()) / d.ldist.std()
     a = pd.read_pickle("data/processed/paper_atricion.pkl")
-    # outcomes derivados adicionales
     d["z_peso"] = zg(d.peso_nacer)
     d["z_talla"] = zg(d.talla_nacer)
     d["z_gest"] = zg(d.sem_gest)
@@ -107,7 +162,6 @@ def xt(d, xs):
 
 def fit(d0, y, col=3, dose="EQ", sample=None, weights=True, extra_x=None,
         keep_model=False):
-    """Estimación central. dose: 'EQ' | 'pga_z' | 'mmi_z' | 'ldist_z'."""
     d = d0.copy()
     if sample is not None:
         d = d[sample(d)]
@@ -145,8 +199,6 @@ def fit(d0, y, col=3, dose="EQ", sample=None, weights=True, extra_x=None,
 # ---------- maquinaria FWL para permutación / wild / Romano–Wolf ----------
 
 def fwl_prep(res):
-    """Descompone el diseño en (I columnas de interés) vs F (resto),
-    absorbe pesos y calcula el aniquilador de F aplicado a y e I."""
     d, f, w = res["_d"], res["_f"], res["_w"]
     ymat, X = patsy.dmatrices(f, d, return_type="dataframe")
     sw = np.sqrt(w.to_numpy())
@@ -186,8 +238,6 @@ def cvec(icols):
 
 
 def perm_test(res, nperm, seed=SEED):
-    """Permuta la asignación EQ entre comunas (manteniendo el nº de comunas
-    tratadas) y recalcula el t del coef 24-35 y del contraste."""
     P = fwl_prep(res)
     d = P["d"]
     c24, ccon = cvec(P["icols"])
@@ -198,8 +248,7 @@ def perm_test(res, nperm, seed=SEED):
     eq_by_com = d.groupby(d.estrato.astype(int)).EQ.first()
     n_treat = int(eq_by_com.sum())
     rng = np.random.default_rng(seed)
-    binm = np.stack([(d.bin == lab).to_numpy(float)
-                     for lab in IV], axis=1)
+    binm = np.stack([(d.bin == lab).to_numpy(float) for lab in IV], axis=1)
     hits = {"24": 0, "ct": 0}
     for _ in range(nperm):
         treat = set(rng.choice(coms, size=n_treat, replace=False))
@@ -215,17 +264,13 @@ def perm_test(res, nperm, seed=SEED):
 
 
 def rw_stepdown(results, nboot, seed=SEED):
-    """Romano–Wolf stepdown para la familia de outcomes (coef 24-35 y
-    contraste por outcome), con wild bootstrap Rademacher conjunto por
-    comuna (mismos giros de signo para todos los outcomes)."""
     preps = {}
     for y, res in results.items():
         P = fwl_prep(res)
         c24, ccon = cvec(P["icols"])
         b, V, e = small_ols(P["It"], P["yt"], P["com"])
-        fitted = P["It"] @ b
         preps[y] = dict(P=P, c24=c24, ccon=ccon, b=b, V=V, e=e,
-                        fitted=fitted)
+                        fitted=P["It"] @ b)
     stats = {}
     for y, pr in preps.items():
         stats[(y, "24")] = abs(pr["c24"] @ pr["b"]
@@ -251,7 +296,7 @@ def rw_stepdown(results, nboot, seed=SEED):
     for fam in ("24", "ct"):
         keys = sorted([k for k in stats if k[1] == fam],
                       key=lambda k: -stats[k])
-        prev = 0.0
+        prev, rest = 0.0, None
         rest = list(keys)
         for k in keys:
             maxb = np.max(np.stack([tb[j] for j in rest]), axis=0)
@@ -264,13 +309,12 @@ def rw_stepdown(results, nboot, seed=SEED):
 
 
 def wild_region(res, nboot, seed=SEED):
-    """Wild bootstrap-t por región (Webb) para 24-35 y contraste."""
     P = fwl_prep(res)
     reg = (P["d"].cut // 1000).astype(int).to_numpy() \
         if "cut" in P["d"] else P["d"].region.astype(int).to_numpy()
     c24, ccon = cvec(P["icols"])
 
-    def cr(It, yt, e, groups):
+    def cr(It, e, groups):
         XtXi = np.linalg.pinv(It.T @ It)
         M = np.zeros((It.shape[1], It.shape[1]))
         for g in np.unique(groups):
@@ -279,7 +323,7 @@ def wild_region(res, nboot, seed=SEED):
             M += np.outer(s, s)
         return XtXi @ M @ XtXi
     b, _, e = small_ols(P["It"], P["yt"], P["com"])
-    V = cr(P["It"], P["yt"], e, reg)
+    V = cr(P["It"], e, reg)
     tobs = {"24": c24 @ b / np.sqrt(c24 @ V @ c24),
             "ct": ccon @ b / np.sqrt(ccon @ V @ ccon)}
     fitted = P["It"] @ b
@@ -293,228 +337,416 @@ def wild_region(res, nboot, seed=SEED):
         fv = np.vectorize(flip.get)(reg)
         yb = fitted + e * fv
         bb, _, eb = small_ols(P["It"], yb, P["com"])
-        VV = cr(P["It"], yb, eb, reg)
+        VV = cr(P["It"], eb, reg)
         if abs((c24 @ (bb - b)) / np.sqrt(c24 @ VV @ c24)) >= abs(tobs["24"]):
             hits["24"] += 1
-        if abs((ccon @ (bb - b)) / np.sqrt(ccon @ VV @ ccon)) >= abs(tobs["ct"]):
+        if abs((ccon @ (bb - b)) / np.sqrt(ccon @ VV @ ccon)) \
+                >= abs(tobs["ct"]):
             hits["ct"] += 1
     return {k: (hits[k] + 1) / (nboot + 1) for k in hits}, len(regs)
 
 
 # --------------------------- tablas ---------------------------------------
 
-def write_tex(name, lines):
-    TAB.mkdir(parents=True, exist_ok=True)
-    (TAB / f"{name}.tex").write_text("\n".join(lines) + "\n",
-                                     encoding="utf-8")
-    log(f"-> paper/tables/{name}.tex")
+COLHEAD4 = [" & (1) & (2) & (3) & (4) \\\\",
+            " & Fixed effects & Pre-quake controls & 2012 controls "
+            "& Excl.\\ Metropolitan \\\\", " & & & & Region \\\\"]
 
 
-def panel_rows(res_by_col, dec=3):
+def bins_block(res_by_col, ncols, dec=3):
     rows = []
     for lab in IV:
-        cells = " & ".join(cell(*r["b"][lab], dec) for r in res_by_col)
-        rows.append(f"{LAB[lab]} & {cells} \\\\")
-    rows.append("\\addlinespace")
-    cells = " & ".join(cell(*r["contr"], dec) for r in res_by_col)
-    rows.append("Contraste: 3--4 a\\~nos $-$ 2 a\\~nos & " + cells + " \\\\")
-    rows.append("\\midrule")
-    rows.append("Adolescentes & " + " & ".join(
-        f"\\multicolumn{{2}}{{c}}{{{r['n']:,}}}" for r in res_by_col) + " \\\\")
-    rows.append("Comunas (cl\\'uster) & " + " & ".join(
-        f"\\multicolumn{{2}}{{c}}{{{r['ncl']}}}" for r in res_by_col) + " \\\\")
+        rows += coef2(ROWLAB[lab], [r["b"][lab] for r in res_by_col], dec)
+        rows.append("\\addlinespace[3pt]")
+    rows += coef2(CONTRLAB, [r["contr"] for r in res_by_col], dec)
     return rows
 
 
-def head4():
-    return ["\\begin{tabular}{l rl rl rl rl}", "\\toprule",
-            " & \\multicolumn{2}{c}{(1)} & \\multicolumn{2}{c}{(2)} & "
-            "\\multicolumn{2}{c}{(3)} & \\multicolumn{2}{c}{(4)} \\\\",
-            " & \\multicolumn{2}{c}{EF} & \\multicolumn{2}{c}{$+X$ pre-27F} &"
-            " \\multicolumn{2}{c}{$+$controles 2012} & "
-            "\\multicolumn{2}{c}{sin RM} \\\\", "\\midrule"]
+def foot_block(res_by_col, unit="Adolescents"):
+    return ["\\midrule",
+            f"{unit} & " + " & ".join(f"{r['n']:,}" for r in res_by_col)
+            + " \\\\",
+            "Selection communes (clusters) & "
+            + " & ".join(str(r["ncl"]) for r in res_by_col) + " \\\\"]
 
 
 def t1_descriptivos(d, a):
-    rows = ["\\begin{tabular}{l cccc c}", "\\toprule",
-            " & \\multicolumn{4}{c}{Edad el 27-F} & \\\\",
-            "\\cmidrule(lr){2-5}",
-            " & $<$1 a\\~no & 1 a\\~no & 2 a\\~nos & 3--4 a\\~nos & Total \\\\",
-            "\\midrule"]
     g = d.groupby("bin", observed=True)
 
-    def fila(nombre, s, fmt="{:.2f}", pct=False):
-        v = [s[b] if b in s else np.nan for b in BINS] + [s["all"]]
-        f = " & ".join(("--" if pd.isna(x) else
-                        (f"{100*x:.1f}" if pct else fmt.format(x)))
-                       for x in v)
-        rows.append(f"{nombre} & {f} \\\\")
+    def srow(name, s, dec=2, pct=False):
+        v = [s.get(b, np.nan) for b in BINS] + [s["all"]]
+        cells = " & ".join(
+            "--" if pd.isna(x) else
+            (f"{100 * x:.1f}" if pct else
+             (f"{x:,.0f}" if dec == 0 else f"{x:.{dec}f}")) for x in v)
+        return f"{name} & {cells} \\\\"
 
-    def stat(col, fun="mean"):
-        s = getattr(g[col], fun)()
-        s = {k: v for k, v in s.items()}
-        s["all"] = getattr(d[col], fun)()
+    def stat(col):
+        s = dict(g[col].mean())
+        s["all"] = d[col].mean()
         return s
-    fila("Adolescentes (n)", {**g.size().to_dict(), "all": len(d)},
-         fmt="{:,.0f}")
-    fila("En zona afectada (\\%)", stat("EQ"), pct=True)
-    fila("Mujer (\\%)", stat("mujer"), pct=True)
-    fila("Edad en 2024 (a\\~nos)",
-         {**(g.edad_meses.mean() / 12).to_dict(),
-          "all": d.edad_meses.mean() / 12}, fmt="{:.1f}")
-    fila("Educ.\\ de la madre 2010 (a\\~nos)", stat("educ_madre10"))
-    fila("PHQ-4 (0--12)", stat("phq4_score"))
-    fila("Depresi\\'on positiva, PHQ-2 (\\%)", stat("phq2_bin"), pct=True)
-    fila("Ansiedad positiva, GAD-2 (\\%)", stat("gad2_bin"), pct=True)
-    fila("CBCL internalizante 2024 (T)",
-         {**g.cbcl2_pt_inter_t.mean().to_dict(),
-          "all": num(d.cbcl2_pt_inter_t).mean()}, fmt="{:.1f}")
-    ret = a.groupby("bin", observed=True).in2024.mean().to_dict()
+    body = [
+        "\\panel{6}{Panel A. Sample}",
+        srow("\\hspace{1em}Adolescents",
+             {**dict(g.size()), "all": len(d)}, dec=0),
+        srow("\\hspace{1em}In the affected zone (percent)", stat("EQ"),
+             pct=True),
+        srow("\\hspace{1em}Female (percent)", stat("mujer"), pct=True),
+        srow("\\hspace{1em}Age in 2024 (years)",
+             {**dict(g.edad_meses.mean() / 12),
+              "all": d.edad_meses.mean() / 12}, dec=1),
+        srow("\\hspace{1em}Mother's years of education in 2010",
+             stat("educ_madre10")),
+        "\\addlinespace",
+        "\\panel{6}{Panel B. Mental health at ages 14--18}",
+        srow("\\hspace{1em}PHQ-4 score: sum of four items (0--12)", stat("phq4_score")),
+        srow("\\hspace{1em}Positive depression screen, PHQ-2 (percent)",
+             stat("phq2_bin"), pct=True),
+        srow("\\hspace{1em}Positive anxiety screen, GAD-2 (percent)",
+             stat("gad2_bin"), pct=True),
+        srow("\\hspace{1em}CBCL internalizing: caregiver checklist (T units)",
+             {**dict(g.cbcl2_pt_inter_t.apply(lambda s: num(s).mean())),
+              "all": num(d.cbcl2_pt_inter_t).mean()}, dec=1),
+        "\\addlinespace",
+        "\\panel{6}{Panel C. Retention}"]
+    ret = dict(a.groupby("bin", observed=True).in2024.mean())
     ret["all"] = a.in2024.mean()
-    fila("Reentrevistado en 2024 (\\% de 2010)", ret, pct=True)
-    rows += ["\\bottomrule", "\\end{tabular}"]
-    write_tex("t1_descriptivos", rows)
+    body.append(srow("\\hspace{1em}Reinterviewed in 2024 (percent of 2010)",
+                     ret, pct=True))
+    header = [" & \\multicolumn{4}{c}{Age when the earthquake struck} & \\\\",
+              "\\cmidrule(lr){2-5}",
+              " & $<$1 year & 1 year & 2 years & 3--4 years & All \\\\",
+              " & (1) & (2) & (3) & (4) & (5) \\\\"]
+    notes = ("Means over the 10,003 adolescents of the 2024 ELPI wave, all "
+             "born 2006--2009 and therefore exposed to the 27 February 2010 "
+             "earthquake between 6 and 50 months of age, by age on the day "
+             "of the earthquake. \\phqdef{} \\zonedef{} Panel C uses the "
+             "14,855 children of the 2010 baseline with a valid birth date "
+             "and shows that retention into 2024 is flat across "
+             "exposure-age groups (Table~\\ref{tab:attrition}).")
+    table_env("t1_descriptivos",
+              "The Analysis Sample by Age at Exposure to the Earthquake",
+              "tab:sample",
+              "@{}p{190pt}" + numcols(5, 50) + "@{}",
+              header, body, notes)
+
+
+def t2_lp():
+    spec = importlib.util.spec_from_file_location(
+        "lp", HERE / "10_ec1_largo_plazo.py")
+    lp = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(lp)
+    df = lp.build()
+    body = []
+    ns = {}
+    for y, lab in [("z_tvip", "Receptive vocabulary: Peabody picture--word test (z)"),
+                   ("z_cbcl", "Internalizing problems: caregiver CBCL checklist (z)")]:
+        res = [lp.fit(df, y, c) for c in (1, 2, 3, 4)]
+        body += coef2(lab, [(r["b"], r["se"], r["p"]) for r in res])
+        body.append("\\addlinespace")
+        ns[y] = res
+        log("T2 LP", y, [f"{r['b']:+.3f}{stars(r['p'])}" for r in res])
+    body = body[:-1]
+    body += ["\\midrule",
+             "Commune, cohort and wave fixed effects & Yes & Yes & Yes & "
+             "Yes \\\\",
+             "Commune linear trends & No & No & No & Yes \\\\",
+             "Observations, vocabulary & "
+             + " & ".join(f"{r['n']:,}" for r in ns["z_tvip"]) + " \\\\",
+             "Observations, CBCL & "
+             + " & ".join(f"{r['n']:,}" for r in ns["z_cbcl"]) + " \\\\"]
+    header = [" & \\multicolumn{4}{c}{Affected $\\times$ affected zone} \\\\",
+              "\\cmidrule(lr){2-5}",
+              " & (1) & (2) & (3) & (4) \\\\"]
+    notes = ("Each cell reports the coefficient on Affected $\\times$ "
+             "affected zone from Gillmore's (2026) equation (1) taken to "
+             "the 14-year horizon: the affected group are the children "
+             "exposed in utero to age four, measured in the 2024 wave at "
+             "ages 14--18; the comparison group are children conceived "
+             "after the earthquake, measured in the 2017 wave. The CBCL "
+             "is oriented as in Gillmore (2026), so that positive values "
+             "mean fewer problems. Column 1 includes commune fixed "
+             "effects only; column 2 adds cohort and wave fixed effects; "
+             "column 3 adds the household controls; column 4 adds "
+             "commune linear trends. \\zonedef{} Standard errors "
+             "clustered by commune in parentheses; evaluation sampling "
+             "weights. \\starnote")
+    table_env("t2_largo_plazo",
+              "The Cognitive Scar Persists into Adolescence: Gillmore's "
+              "Equation at the 14-Year Horizon",
+              "tab:longrun",
+              "@{}p{185pt}" + numcols(4, 62) + "@{}",
+              header, body, notes)
 
 
 def t3_main(d):
-    for y, name in [("z_phq4", "t3a_phq4"), ("gad2_bin", "t3b_gad2"),
-                    ("phq2_bin", "t3c_phq2")]:
+    panels = [("z_phq4", "Panel A. PHQ-4 score: sum of four items, two on depressed mood and two on anxiety (0--12, z)", 3),
+              ("gad2_bin", "Panel B. Positive anxiety screen, GAD-2: the two anxiety items of the PHQ-4, subscore of 3 or more", 3),
+              ("phq2_bin", "Panel C. Positive depression screen, PHQ-2: the two depression items, subscore of 3 or more", 3)]
+    body = []
+    res3 = None
+    for y, plab, dec in panels:
         res = [fit(d, y, c) for c in (1, 2, 3, 4)]
-        rows = head4() + panel_rows(res) + ["\\bottomrule", "\\end{tabular}"]
-        write_tex(name, rows)
+        if y == "z_phq4":
+            res3 = res
+        body.append(f"\\panel{{5}}{{{plab}}}")
+        body += bins_block(res, 4, dec)
+        body.append("\\addlinespace")
         log(f"T3 {y} col3:",
             {k: f"{v[0]:+.3f}{stars(v[2])}" for k, v in res[2]["b"].items()},
             "contr", f"{res[2]['contr'][0]:+.3f}{stars(res[2]['contr'][2])}")
-    return
+    body = body[:-1]
+    body += foot_block(res3)
+    notes = ("Ordinary least squares estimates of equation~(1) on the "
+             "adolescents of the 2024 ELPI wave; seven of the 10,003 "
+             "adolescents of Table~\\ref{tab:sample} drop for "
+             "incomplete PHQ-4 answers; Appendix Table~\\ref{tab:a_mh} lists "
+             "every item verbatim. \\bindef{} "
+             "\\zonedef{} \\specdef{} The sample is the same in every "
+             "panel; column 4 has 6,430 adolescents in 67 communes. "
+             "Demanding inference for column 3 is reported in "
+             "Table~\\ref{tab:robust}. \\clusternote{} \\starnote")
+    table_env("t3_main",
+              "Age at Exposure to the Earthquake and Self-Reported Mental "
+              "Health at Ages 14--18",
+              "tab:main",
+              "@{}p{182pt}" + numcols(4, 64) + "@{}",
+              COLHEAD4, body, notes,
+              extra_pre="\\footnotesize"
+                        "\\renewcommand{\\arraystretch}{0.95}")
 
 
 def t4_informante(d):
-    for y, name in [("z_cbcl", "t4a_cbcl24"), ("d_cbcl", "t4b_dcbcl")]:
+    body = []
+    resA = None
+    for y, plab in [("z_cbcl",
+                     "Panel A. CBCL internalizing score in 2024: caregiver checklist of anxious--depressed, withdrawn and somatic items (T score, z)"),
+                    ("d_cbcl",
+                     "Panel B. Within-child change in the same CBCL score, 2017 to 2024 (z by wave)")]:
         res = [fit(d, y, c) for c in (1, 2, 3, 4)]
-        rows = head4() + panel_rows(res) + ["\\bottomrule", "\\end{tabular}"]
-        write_tex(name, rows)
+        if resA is None:
+            resA = res
+        body.append(f"\\panel{{5}}{{{plab}}}")
+        body += bins_block(res, 4)
+        body.append("\\addlinespace")
+        body.append("\\hspace{1em}Observations & "
+                    + " & ".join(f"{r['n']:,}" for r in res) + " \\\\")
+        body.append("\\addlinespace")
+    body = body[:-1]
+    body += ["\\midrule",
+             "Selection communes (clusters) & "
+             + " & ".join(str(r["ncl"]) for r in resA) + " \\\\"]
+    notes = ("Same design and specifications as Table~\\ref{tab:main}, "
+             "with the caregiver's report of the child as the outcome. "
+             "\\cbcldef{} Panel B uses the change between the 2017 "
+             "measurement (ages 7--11) and the 2024 measurement (ages "
+             "14--18) of the same child, each standardized within its "
+             "wave and age; with two periods this is equivalent to a "
+             "child fixed-effects estimate. Neither panel shows an "
+             "exposure-age gradient: the scar of "
+             "Table~\\ref{tab:main} appears only in what adolescents "
+             "report in private. \\bindef{} \\specdef{} \\clusternote{} "
+             "\\starnote")
+    table_env("t4_informante",
+              "The Caregiver Does Not See It: Parent-Reported Outcomes",
+              "tab:caregiver",
+              "@{}p{182pt}" + numcols(4, 64) + "@{}",
+              COLHEAD4, body, notes)
 
 
 def t5_dosis(d):
     if "pga_z" not in d or d.pga_z.isna().all():
         log("T5: sin PGA, omitida")
-        return None
-    doses = [("EQ", "Regi\\'on afectada (0/1)"),
-             ("pga_z", "PGA (z)"), ("mmi_z", "Intensidad MMI (z)"),
-             ("ldist_z", "$-\\log$ dist.\\ epicentro (z)")]
-    for y, name in [("z_phq4", "t5a_dosis_phq4"), ("gad2_bin", "t5b_dosis_gad2")]:
+        return
+    doses = [("EQ", "Affected zone (0/1)"), ("pga_z", "PGA (z)"),
+             ("mmi_z", "MMI intensity (z)"),
+             ("ldist_z", "$-$log distance to epicenter (z)")]
+    body = []
+    resA = None
+    for y, plab in [("z_phq4", "Panel A. PHQ-4 score: sum of four depression--anxiety items (z)"),
+                    ("gad2_bin", "Panel B. Positive GAD-2 screen: two anxiety items, subscore of 3 or more")]:
         res = [fit(d, y, 3, dose=dv) for dv, _ in doses]
-        rows = ["\\begin{tabular}{l rl rl rl rl}", "\\toprule",
-                " & " + " & ".join(f"\\multicolumn{{2}}{{c}}{{({i+1})}}"
-                                   for i in range(4)) + " \\\\",
-                " & " + " & ".join(f"\\multicolumn{{2}}{{c}}{{{lab}}}"
-                                   for _, lab in doses) + " \\\\",
-                "\\midrule"] + panel_rows(res) + \
-               ["\\bottomrule", "\\end{tabular}"]
-        write_tex(name, rows)
+        if resA is None:
+            resA = res
+        body.append(f"\\panel{{5}}{{{plab}}}")
+        body += bins_block(res, 4)
+        body.append("\\addlinespace")
         log(f"T5 {y}: PGA 24-35 {res[1]['b']['24-35m'][0]:+.3f}"
             f"{stars(res[1]['b']['24-35m'][2])}, contr "
             f"{res[1]['contr'][0]:+.3f}{stars(res[1]['contr'][2])}")
-    return True
+    body = body[:-1]
+    body += foot_block(resA)
+    header = [" & \\multicolumn{4}{c}{Seismic dose of the commune of "
+              "selection} \\\\", "\\cmidrule(lr){2-5}",
+              " & Affected zone (0/1) & PGA (z) & MMI (z) & $-$log dist.\\ "
+              "to epicenter (z) \\\\",
+              " & (1) & (2) & (3) & (4) \\\\"]
+    notes = ("Estimates of equation~(1) under four measures of the seismic "
+             "dose $D_m$, all with the controls of column 3 of "
+             "Table~\\ref{tab:main}. Column 1 repeats the official binary "
+             "affected zone. Column 2 uses the peak ground acceleration "
+             "of the USGS ShakeMap of the 2010 Maule earthquake at the "
+             "centroid of the commune of selection, standardized; column "
+             "3 the instrumental intensity (MMI) of the same ShakeMap; "
+             "column 4 minus the log of the distance from the centroid "
+             "to the epicenter. The continuous doses vary across the 116 "
+             "communes, within affected regions, which addresses "
+             "inference concerns with a regional treatment. \\bindef{} "
+             "\\clusternote{} \\starnote")
+    table_env("t5_dosis",
+              "The Gradient Under Continuous Seismic Doses",
+              "tab:dose",
+              "@{}p{170pt}" + numcols(4, 67) + "@{}",
+              header, body, notes)
 
 
 def t6_placebo(d):
-    outs = [("z_peso", "Peso al nacer (z)"),
-            ("z_talla", "Talla al nacer (z)"),
-            ("z_gest", "Semanas de gestaci\\'on (z)"),
-            ("prematuro", "Parto prematuro (0/1)"),
-            ("z_apgar", "Apgar 5 min.\\ (z)")]
-    rows = ["\\begin{tabular}{l rl rl rl c}", "\\toprule",
-            " & \\multicolumn{2}{c}{1 a\\~no$\\times$EQ} & "
-            "\\multicolumn{2}{c}{2 a\\~nos$\\times$EQ} & "
-            "\\multicolumn{2}{c}{3--4 a\\~nos$\\times$EQ} & n \\\\",
-            "\\midrule"]
+    outs = [("z_peso", "Birth weight (z)"),
+            ("z_talla", "Birth length (z)"),
+            ("z_gest", "Weeks of gestation (z)"),
+            ("prematuro", "Premature birth (0/1)"),
+            ("z_apgar", "Apgar score at five minutes (z)")]
+    body = []
     for y, lab in outs:
         r = fit(d, y, 2)
-        cells = " & ".join(cell(*r["b"][b]) for b in IV)
-        rows.append(f"{lab} & {cells} & {r['n']:,} \\\\")
+        rows = coef2(lab, [r["b"][b] for b in IV])
+        rows[0] = rows[0][:-3] + f" & {r['n']:,} \\\\"
+        rows[1] = rows[1][:-3] + " & \\\\"
+        body += rows + ["\\addlinespace"]
         log("T6 placebo", y,
             {k: f"{v[0]:+.3f}{stars(v[2])}" for k, v in r["b"].items()})
-    rows += ["\\bottomrule", "\\end{tabular}"]
-    write_tex("t6_placebo", rows)
+    body = body[:-1]
+    header = [" & \\multicolumn{3}{c}{Age at exposure $\\times$ affected "
+              "zone} & \\\\", "\\cmidrule(lr){2-4}",
+              " & Age 1 & Age 2 & Ages 3--4 & Observations \\\\",
+              " & (1) & (2) & (3) & (4) \\\\"]
+    notes = ("Each row estimates equation~(1) on an outcome fixed at "
+             "birth, one to four years \\emph{before} the earthquake for "
+             "every cohort in the sample, as reported by the mother in "
+             "2010; the design should find nothing. Of fifteen "
+             "coefficients, two are significant at the 10 percent level "
+             "(1.5 expected by chance), and their sign --- a worse birth "
+             "endowment of the age-two group in affected communes --- "
+             "would work \\emph{against} the trough of "
+             "Table~\\ref{tab:main}; the birth-endowment row of "
+             "Table~\\ref{tab:robust} confirms the result does not move. "
+             "Specification of column 2 of Table~\\ref{tab:main}. "
+             "\\bindef{} \\clusternote{} \\starnote")
+    table_env("t6_placebo",
+              "Placebo: Outcomes Fixed at Birth, Before the Earthquake",
+              "tab:placebo",
+              "@{}p{170pt}" + numcols(3, 64) + ">{\\centering"
+              "\\arraybackslash}p{58pt}@{}",
+              header, body, notes)
 
 
 def t7_robustez(d, ipw, nrep):
     base = fit(d, "z_phq4", 3, keep_model=True)
     variantes = [
-        ("Especificaci\\'on preferida (col.\\ 3)", base),
-        ("Sin controles (solo EF)", fit(d, "z_phq4", 1)),
-        ("Sin Regi\\'on Metropolitana", fit(d, "z_phq4", 4)),
-        ("Sin pesos muestrales", fit(d, "z_phq4", 3, weights=False)),
-        ("PHQ-4 en puntos (0--12), sin estandarizar",
+        ("Preferred specification (column 3)", base),
+        ("Fixed effects only", fit(d, "z_phq4", 1)),
+        ("Excluding the Metropolitan Region", fit(d, "z_phq4", 4)),
+        ("Unweighted", fit(d, "z_phq4", 3, weights=False)),
+        ("PHQ-4 in points (0--12), not standardized",
          fit(d, "phq4_score", 3)),
-        ("Muestra con CBCL 2017 (balanceada)",
+        ("Balanced sample with a 2017 CBCL",
          fit(d, "z_phq4", 3, sample=lambda x: x.z_cbcl17.notna())),
-        ("Controlando dotaci\\'on al nacer (peso, gestaci\\'on, prematuro)",
+        ("Controlling for the birth endowment",
          fit(d, "z_phq4", 3, extra_x=["z_peso", "z_gest", "prematuro"])),
     ]
     if ipw is not None:
         d2 = d.merge(ipw, on="folio", how="left")
         d2["w"] = d2.w * d2.ipw.fillna(1.0)
-        variantes.append(("Reponderada por atrici\\'on (IPW)",
+        variantes.append(("Reweighted for attrition (IPW)",
                           fit(d2, "z_phq4", 3)))
     if "pga_z" in d and not d.pga_z.isna().all():
-        variantes.append(("Dosis continua: PGA (z) en vez de EQ",
+        variantes.append(("Continuous dose: PGA (z) instead of the zone",
                           fit(d, "z_phq4", 3, dose="pga_z")))
-    # leave-one-region-out (solo regiones EQ)
+    body = []
+    for lab, r in variantes:
+        rows = coef2(lab, [r["b"]["24-35m"], r["contr"]])
+        rows[0] = rows[0][:-3] + f" & {r['n']:,} \\\\"
+        rows[1] = rows[1][:-3] + " & \\\\"
+        body += rows + ["\\addlinespace"]
+        log("T7", lab,
+            f"{r['b']['24-35m'][0]:+.3f}{stars(r['b']['24-35m'][2])}",
+            f"contr {r['contr'][0]:+.3f}{stars(r['contr'][2])}")
     lor = []
     for rg in (5, 6, 7, 8, 9, 13):
         r = fit(d, "z_phq4", 3, sample=lambda x, rg=rg: x.region != rg)
         lor.append((r["b"]["24-35m"][0], r["contr"][0]))
-    rows = ["\\begin{tabular}{l rl rl c}", "\\toprule",
-            " & \\multicolumn{2}{c}{2 a\\~nos$\\times$EQ} & "
-            "\\multicolumn{2}{c}{Contraste 3--4$-$2} & n \\\\",
-            "\\midrule"]
-    for lab, r in variantes:
-        rows.append(f"{lab} & {cell(*r['b']['24-35m'])} & "
-                    f"{cell(*r['contr'])} & {r['n']:,} \\\\")
-        log("T7", lab, f"{r['b']['24-35m'][0]:+.3f}{stars(r['b']['24-35m'][2])}",
-            f"contr {r['contr'][0]:+.3f}{stars(r['contr'][2])}")
-    rows.append("\\addlinespace")
-    rows.append("Excluyendo una regi\\'on afectada a la vez (rango) & "
-                f"\\multicolumn{{2}}{{c}}{{[{min(x[0] for x in lor):.3f}, "
-                f"{max(x[0] for x in lor):.3f}]}} & "
-                f"\\multicolumn{{2}}{{c}}{{[{min(x[1] for x in lor):.3f}, "
-                f"{max(x[1] for x in lor):.3f}]}} & \\\\")
-    # inferencia
+    body.append("Dropping one affected region at a time (range) & "
+                f"[{fnum(min(x[0] for x in lor))}, "
+                f"{fnum(max(x[0] for x in lor))}] & "
+                f"[{fnum(min(x[1] for x in lor))}, "
+                f"{fnum(max(x[1] for x in lor))}] & \\\\")
     pp = perm_test(base, nrep)
     pw, nreg = wild_region(base, nrep)
-    rows.append("\\midrule")
-    rows.append("$p$ de permutaci\\'on comunal & "
-                f"\\multicolumn{{2}}{{c}}{{{pp['24']:.3f}}} & "
-                f"\\multicolumn{{2}}{{c}}{{{pp['ct']:.3f}}} & \\\\")
-    rows.append(f"$p$ wild bootstrap por regi\\'on ({nreg} reg.) & "
-                f"\\multicolumn{{2}}{{c}}{{{pw['24']:.3f}}} & "
-                f"\\multicolumn{{2}}{{c}}{{{pw['ct']:.3f}}} & \\\\")
-    rows += ["\\bottomrule", "\\end{tabular}"]
-    write_tex("t7_robustez", rows)
+    body += ["\\midrule",
+             "\\panel{4}{Demanding inference for the preferred "
+             "specification ($p$-values)}",
+             "\\hspace{1em}Permutation of the affected zone across "
+             f"communes & {pp['24']:.3f} & {pp['ct']:.3f} & \\\\",
+             "\\hspace{1em}Wild cluster bootstrap by region "
+             f"({nreg} regions) & {pw['24']:.3f} & {pw['ct']:.3f} & \\\\"]
+    header = [" & Age 2 $\\times$ zone & Ages 3--4 $-$ age 2 & "
+              "Observations \\\\",
+              " & (1) & (2) & (3) \\\\"]
+    notes = ("Each row re-estimates the preferred specification of "
+             "Table~\\ref{tab:main}, Panel A, changing one thing. "
+             "Column 1 reports the coefficient on exposure at age two "
+             "$\\times$ affected zone and column 2 the contrast between "
+             "ages 3--4 and age two. The IPW row reweights by the "
+             "inverse of the estimated probability of remaining in the "
+             "2024 wave (Table~\\ref{tab:attrition}). The permutation "
+             "test reassigns the affected-zone status across the 116 "
+             "communes of selection, keeping the number of treated "
+             "communes, 2,000 times. The wild cluster bootstrap by "
+             "region uses Webb weights and clusters at the level of the "
+             "regional treatment. \\clusternote{} \\starnote")
+    table_env("t7_robustez",
+              "Robustness and Demanding Inference for the Main Result",
+              "tab:robust",
+              "@{}p{215pt}" + numcols(2, 85) + ">{\\centering"
+              "\\arraybackslash}p{62pt}@{}",
+              header, body, notes)
     log("T7 inferencia: perm", pp, "| wild region", pw)
 
 
 def t8_rw(d, nrep):
-    fam = {"z_phq4": "PHQ-4 (z)", "phq2_bin": "PHQ-2 positivo",
-           "gad2_bin": "GAD-2 positivo", "z_cbcl": "CBCL 2024 (z)"}
+    fam = {"z_phq4": "PHQ-4 score: four items (z)",
+           "phq2_bin": "PHQ-2 positive: two depression items",
+           "gad2_bin": "GAD-2 positive: two anxiety items",
+           "z_cbcl": "CBCL internalizing: caregiver checklist (z)"}
     results = {y: fit(d, y, 3, keep_model=True) for y in fam}
     stats, rwp = rw_stepdown(results, nrep)
-    rows = ["\\begin{tabular}{l cc cc}", "\\toprule",
-            " & \\multicolumn{2}{c}{2 a\\~nos$\\times$EQ} & "
-            "\\multicolumn{2}{c}{Contraste 3--4$-$2} \\\\",
-            " & $p$ anal\\'itico & $p$ RW & $p$ anal\\'itico & $p$ RW \\\\",
-            "\\midrule"]
+    body = []
     for y, lab in fam.items():
         r = results[y]
-        rows.append(f"{lab} & {r['b']['24-35m'][2]:.3f} & "
+        body.append(f"{lab} & {r['b']['24-35m'][2]:.3f} & "
                     f"{rwp[(y, '24')]:.3f} & {r['contr'][2]:.3f} & "
                     f"{rwp[(y, 'ct')]:.3f} \\\\")
         log("T8 RW", y, "24:", f"{rwp[(y, '24')]:.3f}",
             "ct:", f"{rwp[(y, 'ct')]:.3f}")
-    rows += ["\\bottomrule", "\\end{tabular}"]
-    write_tex("t8_romanowolf", rows)
+    header = [" & \\multicolumn{2}{c}{Age 2 $\\times$ zone} & "
+              "\\multicolumn{2}{c}{Ages 3--4 $-$ age 2} \\\\",
+              "\\cmidrule(lr){2-3}\\cmidrule(lr){4-5}",
+              " & Unadjusted $p$ & Romano--Wolf $p$ & Unadjusted $p$ & "
+              "Romano--Wolf $p$ \\\\",
+              " & (1) & (2) & (3) & (4) \\\\"]
+    notes = ("Romano--Wolf stepdown $p$-values over the family of four "
+             "mental-health outcomes, estimated with the preferred "
+             "specification of Table~\\ref{tab:main}. The adjustment "
+             "uses a joint wild cluster bootstrap by commune (Rademacher "
+             "weights, 2,000 replications, the same sign flips for "
+             "every outcome), separately for the age-two coefficient "
+             "and for the contrast between ages 3--4 and age two.")
+    table_env("t8_romanowolf",
+              "Multiple-Hypothesis Adjustment Across Mental-Health "
+              "Outcomes",
+              "tab:rw",
+              "@{}p{175pt}" + numcols(4, 66) + "@{}",
+              header, body, notes)
 
 
 def t9_atricion(a):
@@ -528,56 +760,83 @@ def t9_atricion(a):
     f = ("in2024 ~ " + " + ".join(list(IV.values()))
          + " + C(bin) + C(reg) + " + " + ".join(tx))
     r = smf.ols(f, data=d).fit(cov_type="HC1")
-    rows = ["\\begin{tabular}{l rl}", "\\toprule",
-            " & \\multicolumn{2}{c}{Pr(reentrevistado 2024)} \\\\",
-            "\\midrule"]
+    body = []
     for lab, v in IV.items():
-        rows.append(f"{LAB[lab]} $\\times$ EQ & "
-                    f"{cell(r.params[v], r.bse[v], r.pvalues[v])} \\\\")
+        body += coef2(ROWLAB[lab] + " $\\times$ zone",
+                      [(r.params[v], r.bse[v], r.pvalues[v])])
+        body.append("\\addlinespace")
         log("T9 atricion", v, f"{r.params[v]:+.3f}{stars(r.pvalues[v])}")
     ct = r.t_test(CONTR)
-    rows.append("Contraste 3--4 $-$ 2 & " + cell(
-        float(np.ravel(ct.effect)[0]), float(np.ravel(ct.sd)[0]),
-        float(np.ravel(ct.pvalue)[0])) + " \\\\")
-    rows.append("\\midrule")
-    rows.append(f"Ni\\~nos de la l\\'inea base 2010 & "
-                f"\\multicolumn{{2}}{{c}}{{{int(r.nobs):,}}} \\\\")
-    rows.append(f"Retenci\\'on media 2010$\\to$2024 & "
-                f"\\multicolumn{{2}}{{c}}{{{d.in2024.mean():.1%}}} \\\\"
-                .replace("%", "\\%"))
-    rows += ["\\bottomrule", "\\end{tabular}"]
-    write_tex("t9_atricion", rows)
-    # pesos IPW para robustez
+    body += coef2(CONTRLAB, [(float(np.ravel(ct.effect)[0]),
+                              float(np.ravel(ct.sd)[0]),
+                              float(np.ravel(ct.pvalue)[0]))])
+    body += ["\\midrule",
+             "Exposure-age and region fixed effects & Yes \\\\",
+             "Mother's education and age in 2010 & Yes \\\\",
+             f"Children of the 2010 baseline & {int(r.nobs):,} \\\\",
+             "Mean retention into 2024 & "
+             f"{d.in2024.mean() * 100:.1f} percent \\\\"]
+    header = [" & Pr(reinterviewed in 2024) \\\\", " & (1) \\\\"]
+    notes = ("Linear probability model over the children of the 2010 "
+             "baseline with a valid birth date. The outcome is an "
+             "indicator for being reinterviewed in the 2024 wave. The "
+             "small and insignificant coefficients show that the loss "
+             "of the sample (32.7 percent) does not concentrate in any "
+             "treatment-by-age cell; the fitted probabilities feed the "
+             "IPW row of Table~\\ref{tab:robust}. The affected zone "
+             "enters through the region of residence reported in 2010. "
+             "Robust standard errors in parentheses. \\starnote")
+    table_env("t9_atricion",
+              "Attrition from 2010 to 2024 Is Not Differential by "
+              "Exposure Age and Zone",
+              "tab:attrition",
+              "@{}p{250pt}>{\\centering\\arraybackslash}p{130pt}@{}",
+              header, body, notes)
     phat = r.predict(d).clip(0.05, 0.98)
-    ipw = pd.DataFrame({"folio": d.folio, "ipw": 1.0 / phat})
-    return ipw
+    return pd.DataFrame({"folio": d.folio, "ipw": 1.0 / phat})
 
 
 def t10_mecanismos(d):
-    outs = [("z_resil", "Resiliencia BRS (z; $+$ = m\\'as resiliente)"),
-            ("z_satisf", "Satisfacci\\'on con la vida (z)"),
-            ("z_salud", "Salud f\\'isica autorreportada (z; $+$ = peor)"),
-            ("z_bull", "Bullying escolar (z)"),
-            ("ciber_any", "Cibervictimizaci\\'on (0/1)"),
-            ("viol_pareja", "Violencia en la pareja (0/1)"),
-            ("fuma", "Fum\\'o tabaco, 12 m.\\ (0/1)"),
-            ("alcohol", "Bebi\\'o alcohol, 12 m.\\ (0/1)"),
-            ("cannabis", "Consumi\\'o cannabis, 12 m.\\ (0/1)")]
-    rows = ["\\begin{tabular}{l rl rl rl c}", "\\toprule",
-            " & \\multicolumn{2}{c}{1 a\\~no$\\times$EQ} & "
-            "\\multicolumn{2}{c}{2 a\\~nos$\\times$EQ} & "
-            "\\multicolumn{2}{c}{3--4 a\\~nos$\\times$EQ} & n \\\\",
-            "\\midrule"]
+    outs = [("z_resil", "Resilience: mean of six BRS items (z; $+$ = more resilient)"),
+            ("z_satisf", "Life satisfaction: single 1--7 item (z)"),
+            ("z_salud", "Poor self-rated health: single item, reversed (z)"),
+            ("z_bull", "School bullying: mean of eight items, one reverse-coded (z)"),
+            ("ciber_any", "Cyber-victimization: any of six items (0/1)"),
+            ("viol_pareja", "Dating violence: any of three items (0/1)"),
+            ("fuma", "Smoked tobacco, last 12 months (0/1)"),
+            ("alcohol", "Drank alcohol: any of four beverage items, 12 months (0/1)"),
+            ("cannabis", "Used cannabis, last 12 months (0/1)")]
+    body = []
     for y, lab in outs:
         if y not in d or d[y].isna().all():
             continue
         r = fit(d, y, 3)
-        cells = " & ".join(cell(*r["b"][b]) for b in IV)
-        rows.append(f"{lab} & {cells} & {r['n']:,} \\\\")
+        rows = coef2(lab, [r["b"][b] for b in IV])
+        rows[0] = rows[0][:-3] + f" & {r['n']:,} \\\\"
+        rows[1] = rows[1][:-3] + " & \\\\"
+        body += rows + ["\\addlinespace"]
         log("T10", y,
             {k: f"{v[0]:+.3f}{stars(v[2])}" for k, v in r["b"].items()})
-    rows += ["\\bottomrule", "\\end{tabular}"]
-    write_tex("t10_mecanismos", rows)
+    body = body[:-1]
+    header = [" & \\multicolumn{3}{c}{Age at exposure $\\times$ affected "
+              "zone} & \\\\", "\\cmidrule(lr){2-4}",
+              " & Age 1 & Age 2 & Ages 3--4 & Observations \\\\",
+              " & (1) & (2) & (3) & (4) \\\\"]
+    notes = ("Each row estimates equation~(1) with the preferred "
+             "specification of Table~\\ref{tab:main} on another outcome "
+             "of the 2024 wave. Appendix Table~\\ref{tab:a_other} lists "
+             "every item and scale verbatim. The absence of gradients "
+             "in behavior, victimization and substance use indicates "
+             "that the scar of Table~\\ref{tab:main} is specific to "
+             "internalizing symptoms. \\bindef{} \\clusternote{} "
+             "\\starnote")
+    table_env("t10_mecanismos",
+              "Other Adolescent Outcomes: The Scar Is Specific to "
+              "Internalizing Symptoms",
+              "tab:mechanisms",
+              "@{}p{170pt}" + numcols(3, 64) + ">{\\centering"
+              "\\arraybackslash}p{58pt}@{}",
+              header, body, notes)
 
 
 def t11_madre(d):
@@ -588,29 +847,38 @@ def t11_madre(d):
     for y in ("z_phq4", "gad2_bin"):
         res[(y, 1)] = fit(d, y, 3, sample=lambda x: x.vuln == 1)
         res[(y, 0)] = fit(d, y, 3, sample=lambda x: x.vuln == 0)
-    rows = ["\\begin{tabular}{l rl rl rl rl}", "\\toprule",
-            " & \\multicolumn{4}{c}{PHQ-4 (z)} & "
-            "\\multicolumn{4}{c}{GAD-2 positivo} \\\\",
-            "\\cmidrule(lr){2-5} \\cmidrule(lr){6-9}",
-            " & \\multicolumn{2}{c}{Madre vulnerable} & "
-            "\\multicolumn{2}{c}{Madre no vulnerable} & "
-            "\\multicolumn{2}{c}{Madre vulnerable} & "
-            "\\multicolumn{2}{c}{Madre no vulnerable} \\\\",
-            "\\midrule"]
+    order = [("z_phq4", 1), ("z_phq4", 0), ("gad2_bin", 1), ("gad2_bin", 0)]
+    body = []
     for lab in IV:
-        cells = " & ".join(cell(*res[(y, v)]["b"][lab])
-                           for y in ("z_phq4", "gad2_bin") for v in (1, 0))
-        rows.append(f"{LAB[lab]} & {cells} \\\\")
-    rows.append("\\addlinespace")
-    cells = " & ".join(cell(*res[(y, v)]["contr"])
-                       for y in ("z_phq4", "gad2_bin") for v in (1, 0))
-    rows.append("Contraste 3--4 $-$ 2 & " + cells + " \\\\")
-    rows.append("\\midrule")
-    rows.append("Adolescentes & " + " & ".join(
-        f"\\multicolumn{{2}}{{c}}{{{res[(y, v)]['n']:,}}}"
-        for y in ("z_phq4", "gad2_bin") for v in (1, 0)) + " \\\\")
-    rows += ["\\bottomrule", "\\end{tabular}"]
-    write_tex("t11_madre", rows)
+        body += coef2(ROWLAB[lab], [res[k]["b"][lab] for k in order])
+        body.append("\\addlinespace")
+    body += coef2(CONTRLAB, [res[k]["contr"] for k in order])
+    body += ["\\midrule",
+             "Adolescents & " + " & ".join(f"{res[k]['n']:,}"
+                                           for k in order) + " \\\\"]
+    header = [" & \\multicolumn{2}{c}{PHQ-4 score (z)} & "
+              "\\multicolumn{2}{c}{Positive GAD-2 screen} \\\\",
+              "\\cmidrule(lr){2-3}\\cmidrule(lr){4-5}",
+              " & Vulnerable mother & Other mothers & Vulnerable mother & "
+              "Other mothers \\\\",
+              " & (1) & (2) & (3) & (4) \\\\"]
+    notes = ("Split-sample estimates of the preferred specification of "
+             "Table~\\ref{tab:main}. A vulnerable mother reported, in "
+             "2010, a diagnosis of depression, anxiety or post-traumatic "
+             "stress during the pregnancy of the child, a psychological "
+             "or psychiatric referral, or diagnosed postpartum "
+             "depression --- all predating the earthquake by years "
+             "(Appendix Table~\\ref{tab:a_mother}). The contrast is "
+             "similar in both groups for the PHQ-4 and not smaller among "
+             "children of non-vulnerable mothers for the GAD-2: the "
+             "gradient is not a recomposition of pre-existing family "
+             "mental-health burden. \\bindef{} \\clusternote{} \\starnote")
+    table_env("t11_madre",
+              "The Gradient Is Not Explained by the Mother's Pre-Earthquake "
+              "Mental Health",
+              "tab:mother",
+              "@{}p{168pt}" + numcols(4, 67) + "@{}",
+              header, body, notes)
     for y in ("z_phq4", "gad2_bin"):
         log("T11", y, "vuln contr:",
             f"{res[(y, 1)]['contr'][0]:+.3f}{stars(res[(y, 1)]['contr'][2])}",
@@ -619,46 +887,41 @@ def t11_madre(d):
 
 
 def t12_heterogeneidad(d):
-    grupos = [("Mujeres", lambda x: x.mujer == 1),
-              ("Hombres", lambda x: x.mujer == 0),
-              ("Madre con educ.\\ media o menos (2010)",
+    grupos = [("Girls", lambda x: x.mujer == 1),
+              ("Boys", lambda x: x.mujer == 0),
+              ("Mother with secondary education or less",
                lambda x: num(x.educ_madre10) <= 12),
-              ("Madre con educ.\\ superior (2010)",
+              ("Mother with tertiary education",
                lambda x: num(x.educ_madre10) > 12),
-              ("Hogar urbano 2010", lambda x: x.rural10 == 0),
-              ("Hogar rural 2010", lambda x: x.rural10 == 1)]
-    rows = ["\\begin{tabular}{l rl rl c}", "\\toprule",
-            " & \\multicolumn{2}{c}{2 a\\~nos$\\times$EQ} & "
-            "\\multicolumn{2}{c}{Contraste 3--4$-$2} & n \\\\",
-            "\\midrule"]
+              ("Urban household in 2010", lambda x: x.rural10 == 0),
+              ("Rural household in 2010", lambda x: x.rural10 == 1)]
+    body = []
     for lab, sel in grupos:
         r = fit(d, "z_phq4", 3, sample=sel)
-        rows.append(f"{lab} & {cell(*r['b']['24-35m'])} & "
-                    f"{cell(*r['contr'])} & {r['n']:,} \\\\")
-        log("T12", lab, f"{r['b']['24-35m'][0]:+.3f}{stars(r['b']['24-35m'][2])}",
+        rows = coef2(lab, [r["b"]["24-35m"], r["contr"]])
+        rows[0] = rows[0][:-3] + f" & {r['n']:,} \\\\"
+        rows[1] = rows[1][:-3] + " & \\\\"
+        body += rows + ["\\addlinespace"]
+        log("T12", lab,
+            f"{r['b']['24-35m'][0]:+.3f}{stars(r['b']['24-35m'][2])}",
             f"contr {r['contr'][0]:+.3f}{stars(r['contr'][2])}")
-    rows += ["\\bottomrule", "\\end{tabular}"]
-    write_tex("t12_heterogeneidad", rows)
-
-
-def t2_lp():
-    spec = importlib.util.spec_from_file_location(
-        "lp", HERE / "10_ec1_largo_plazo.py")
-    lp = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(lp)
-    df = lp.build()
-    rows = head4()
-    for y, lab in [("z_tvip", "Vocabulario (Peabody, z)"),
-                   ("z_cbcl", "Problemas internalizantes (CBCL, z)")]:
-        res = [lp.fit(df, y, c) for c in (1, 2, 3, 4)]
-        cells = " & ".join(cell(r["b"], r["se"], r["p"]) for r in res)
-        rows.append(f"{lab} & {cells} \\\\")
-        rows.append("\\quad Adolescentes & " + " & ".join(
-            f"\\multicolumn{{2}}{{c}}{{{r['n']:,}}}" for r in res) + " \\\\")
-        rows.append("\\addlinespace")
-        log("T2 LP", y, [f"{r['b']:+.3f}{stars(r['p'])}" for r in res])
-    rows += ["\\bottomrule", "\\end{tabular}"]
-    write_tex("t2_largo_plazo", rows)
+    body = body[:-1]
+    header = [" & Age 2 $\\times$ zone & Ages 3--4 $-$ age 2 & "
+              "Observations \\\\",
+              " & (1) & (2) & (3) \\\\"]
+    notes = ("Each pair of rows estimates the preferred specification of "
+             "Table~\\ref{tab:main}, Panel A, on the subsample named in "
+             "the row. The baseline level of symptoms is much higher "
+             "among girls --- 33.9 versus 19.5 percent screen positive "
+             "for moderate or severe symptoms in the full wave --- so "
+             "similar coefficients imply larger relative effects for "
+             "boys. \\clusternote{} \\starnote")
+    table_env("t12_heterogeneidad",
+              "Heterogeneity of the Main Result",
+              "tab:het",
+              "@{}p{215pt}" + numcols(2, 85) + ">{\\centering"
+              "\\arraybackslash}p{62pt}@{}",
+              header, body, notes)
 
 
 def figuras(d):
@@ -666,12 +929,13 @@ def figuras(d):
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
     FIG.mkdir(parents=True, exist_ok=True)
-    INK, BLUE, GRID = "#0B0B0B", "#2A78D6", "#D9D9D9"
+    INK, BLUE, GRID = "#0B0B0B", "#2A78D6", "#C9C9C9"
     x = np.arange(4)
+    xt_lab = ["$<$1 year\n(omitted)", "Age 1", "Age 2", "Ages 3–4"]
     fig, ax = plt.subplots(figsize=(6.3, 3.6))
-    for y, colr, lab, off in [("z_phq4", INK, "PHQ-4 (z), autorreporte", -0.07),
-                              ("gad2_bin", BLUE,
-                               "GAD-2 positivo (pp/100)", 0.07)]:
+    for y, colr, lab, off in [
+            ("z_phq4", INK, "PHQ-4 score (z), self-report", -0.07),
+            ("gad2_bin", BLUE, "Positive GAD-2 screen (probability)", 0.07)]:
         r = fit(d, y, 3)
         bs = [0.0] + [r["b"][b][0] for b in IV]
         ses = [0.0] + [r["b"][b][1] for b in IV]
@@ -679,9 +943,9 @@ def figuras(d):
                     color=colr, ecolor=colr, elinewidth=1.4, capsize=0,
                     markersize=5, label=lab)
     ax.axhline(0, color=GRID, lw=1, zorder=0)
-    ax.set_xticks(x, ["$<$1 año\n(ref.)", "1 año", "2 años", "3–4 años"])
-    ax.set_xlabel("Edad cuando golpeó el terremoto del 27-F")
-    ax.set_ylabel("Efecto vs. expuestos de bebé")
+    ax.set_xticks(x, xt_lab)
+    ax.set_xlabel("Age when the earthquake struck")
+    ax.set_ylabel("Effect relative to exposure in infancy")
     ax.legend(frameon=False, fontsize=9, loc="lower left")
     for s in ("top", "right"):
         ax.spines[s].set_visible(False)
@@ -700,9 +964,9 @@ def figuras(d):
         ax.errorbar(x, bs, yerr=[1.96 * s for s in ses], fmt="o", color=INK,
                     elinewidth=1.4, markersize=5)
         ax.axhline(0, color=GRID, lw=1, zorder=0)
-        ax.set_xticks(x, ["$<$1 año\n(ref.)", "1 año", "2 años", "3–4 años"])
-        ax.set_xlabel("Edad cuando golpeó el 27-F")
-        ax.set_ylabel("Efecto de +1 DE de PGA sobre PHQ-4 (z)")
+        ax.set_xticks(x, xt_lab)
+        ax.set_xlabel("Age when the earthquake struck")
+        ax.set_ylabel("Effect of one SD of PGA on the PHQ-4 (z)")
         for s in ("top", "right"):
             ax.spines[s].set_visible(False)
         ax.spines["left"].set_color(GRID)
@@ -711,6 +975,69 @@ def figuras(d):
         fig.savefig(FIG / "f2_dosis_pga.pdf")
         plt.close(fig)
         log("-> paper/figures/f2_dosis_pga.pdf")
+
+
+def mapas(d):
+    """Dos mapas de puntos (las 116 comunas de selección trazan Chile):
+    dosis sísmica (PGA) y síntomas por comuna (GAD-2 positivo)."""
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+    pfile = Path("data/processed/pga_comuna.csv")
+    if not pfile.exists():
+        log("mapas: sin pga_comuna.csv, omitidos")
+        return
+    p = pd.read_csv(pfile)
+    g = (d.assign(cut=num(d.cut_comuna_seleccion))
+         .groupby("cut").agg(gad=("gad2_bin", "mean")).reset_index())
+    m = p.merge(g, on="cut", how="left").dropna(subset=["lat", "lon"])
+    m["eq"] = (m.cut // 1000).isin([5, 6, 7, 8, 9, 13])
+    cities = {"Santiago": None, "Concepción": None, "Valparaíso": None,
+              "Temuco": None, "Antofagasta": None, "Talca": None}
+    for c in cities:
+        row = m[m.nombre == c]
+        if len(row):
+            cities[c] = (row.lon.iloc[0], row.lat.iloc[0])
+    epi = (-72.898, -36.122)
+
+    def base_map(vals, cmap, cbar_label, fname, epi_star):
+        fig, ax = plt.subplots(figsize=(3.3, 7.6))
+        ec = np.where(m["eq"].to_numpy(), "#0B0B0B", "#B0B0B0")
+        sc = ax.scatter(m.lon, m.lat, c=vals, cmap=cmap, s=34,
+                        edgecolors=ec, linewidths=0.7, zorder=3)
+        import matplotlib.patheffects as pe
+        halo = [pe.withStroke(linewidth=2.2, foreground="white")]
+        if epi_star:
+            ax.scatter(*epi, marker="*", s=170, color="#0B0B0B", zorder=4)
+            ax.annotate("Epicenter", epi, textcoords="offset points",
+                        xytext=(-10, -13), fontsize=8, ha="right",
+                        path_effects=halo, zorder=5)
+        for c, xy in cities.items():
+            if xy and c != "Talca":
+                ax.annotate(c, xy, textcoords="offset points",
+                            xytext=(9, -2), fontsize=8,
+                            path_effects=halo, zorder=5)
+        ax.set_aspect(1.22)
+        ax.set_xlim(m.lon.min() - 1.6, m.lon.max() + 3.4)
+        ax.set_ylim(m.lat.min() - 1.0, m.lat.max() + 1.0)
+        ax.set_xlabel("Longitude", fontsize=9)
+        ax.set_ylabel("Latitude", fontsize=9)
+        ax.tick_params(labelsize=8, color="#C9C9C9")
+        for s in ax.spines.values():
+            s.set_color("#C9C9C9")
+        cb = fig.colorbar(sc, ax=ax, shrink=0.55, pad=0.04)
+        cb.set_label(cbar_label, fontsize=9)
+        cb.ax.tick_params(labelsize=8)
+        cb.outline.set_color("#C9C9C9")
+        fig.tight_layout()
+        fig.savefig(FIG / fname)
+        plt.close(fig)
+        log(f"-> paper/figures/{fname}")
+    base_map(m.pga, "Reds", "Peak ground acceleration (percent of g)",
+             "f3_mapa_dosis.pdf", epi_star=True)
+    base_map(m.gad * 100, "Blues",
+             "Positive GAD-2 anxiety screen (percent)",
+             "f4_mapa_sintomas.pdf", epi_star=False)
 
 
 def main():
@@ -751,6 +1078,7 @@ def main():
         t12_heterogeneidad(d)
     if go("fig"):
         figuras(d)
+        mapas(d)
     if go("t2"):
         t2_lp()
     Path("reports").mkdir(exist_ok=True)

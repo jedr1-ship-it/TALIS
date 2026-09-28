@@ -85,7 +85,10 @@ def extras_2024():
     e["z_satisf"] = zstd(num(df.get("d3_1")).where(lambda s: s.between(1, 7)))
     e["z_salud"] = zstd(-num(df.get("d1")).where(lambda s: s.between(1, 5)))
     g1 = df[[c for c in df.columns if c.startswith("g1_")]].apply(num)
-    e["z_bull"] = zstd(g1.where(g1.le(8)).mean(axis=1))
+    g1 = g1.where((g1 >= 1) & (g1 <= 4))
+    if "g1_3" in g1:                      # ítem positivo: se invierte
+        g1["g1_3"] = 5 - g1["g1_3"]
+    e["z_bull"] = zstd(g1.mean(axis=1))
     g2 = df[[c for c in df.columns if c.startswith("g2_")]].apply(sino)
     e["ciber_any"] = g2.max(axis=1)
     # g9: violencia en la pareja (módulo de pololeo), codificada 0/1

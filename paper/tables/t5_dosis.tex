@@ -1,0 +1,48 @@
+% ---- begin paper/tables/t5_dosis.tex
+\begin{table}[htbp]\centering
+\caption{The Gradient Under Continuous Seismic Doses}
+\label{tab:dose}
+\begin{threeparttable}
+\begin{tabular}{@{}p{170pt}*{4}{>{\centering\arraybackslash}p{67pt}}@{}}
+\toprule
+ & \multicolumn{4}{c}{Seismic dose of the commune of selection} \\
+\cmidrule(lr){2-5}
+ & Affected zone (0/1) & PGA (z) & MMI (z) & $-$log dist.\ to epicenter (z) \\
+ & (1) & (2) & (3) & (4) \\
+\midrule
+\panel{5}{Panel A. PHQ-4 score: sum of four depression--anxiety items (z)}
+Exposed at age 1 (12--23 months) & $-$0.045 & $-$0.035 & $-$0.028 & $-$0.029 \\
+ & (0.078) & (0.033) & (0.032) & (0.029) \\
+\addlinespace[3pt]
+Exposed at age 2 (24--35 months) & $-$0.147\sym{**} & $-$0.068\sym{**} & $-$0.062\sym{***} & $-$0.062\sym{**} \\
+ & (0.069) & (0.027) & (0.023) & (0.025) \\
+\addlinespace[3pt]
+Exposed at ages 3--4 (36--59 months) & $-$0.044 & $-$0.037 & $-$0.039 & $-$0.025 \\
+ & (0.060) & (0.027) & (0.024) & (0.023) \\
+\addlinespace[3pt]
+Ages 3--4 $-$ age 2 & 0.103\sym{*} & 0.031 & 0.023 & 0.037 \\
+ & (0.060) & (0.026) & (0.023) & (0.023) \\
+\addlinespace
+\panel{5}{Panel B. Positive GAD-2 screen: two anxiety items, subscore of 3 or more}
+Exposed at age 1 (12--23 months) & $-$0.012 & $-$0.015 & $-$0.013 & $-$0.022\sym{*} \\
+ & (0.033) & (0.014) & (0.013) & (0.013) \\
+\addlinespace[3pt]
+Exposed at age 2 (24--35 months) & $-$0.073\sym{**} & $-$0.039\sym{***} & $-$0.029\sym{**} & $-$0.036\sym{***} \\
+ & (0.032) & (0.015) & (0.013) & (0.013) \\
+\addlinespace[3pt]
+Exposed at ages 3--4 (36--59 months) & $-$0.016 & $-$0.016 & $-$0.010 & $-$0.014 \\
+ & (0.028) & (0.013) & (0.010) & (0.011) \\
+\addlinespace[3pt]
+Ages 3--4 $-$ age 2 & 0.058\sym{**} & 0.023\sym{**} & 0.019\sym{*} & 0.022\sym{**} \\
+ & (0.027) & (0.011) & (0.011) & (0.010) \\
+\midrule
+Adolescents & 9,996 & 9,996 & 9,996 & 9,996 \\
+Selection communes (clusters) & 116 & 116 & 116 & 116 \\
+\bottomrule
+\end{tabular}
+\begin{wpnotes}
+\textit{Notes:} Estimates of equation~(1) under four measures of the seismic dose $D_m$, all with the controls of column 3 of Table~\ref{tab:main}. Column 1 repeats the official binary affected zone. Column 2 uses the peak ground acceleration of the USGS ShakeMap of the 2010 Maule earthquake at the centroid of the commune of selection, standardized; column 3 the instrumental intensity (MMI) of the same ShakeMap; column 4 minus the log of the distance from the centroid to the epicenter. The continuous doses vary across the 116 communes, within affected regions, which addresses inference concerns with a regional treatment. \bindef{} \clusternote{} \starnote
+\end{wpnotes}
+\end{threeparttable}
+\end{table}
+% ---- end paper/tables/t5_dosis.tex

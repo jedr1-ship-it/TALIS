@@ -1,0 +1,28 @@
+% ---- begin paper/tables/a5_nacimiento.tex
+\begin{table}[htbp]\centering
+\caption{Placebo Outcomes Fixed at Birth: Items and Scales}
+\label{tab:a_birth}
+\footnotesize\renewcommand{\arraystretch}{1.0}
+\begin{threeparttable}
+\begin{tabular}{@{}p{68pt}p{212pt}p{150pt}@{}}
+\toprule
+ & Question, verbatim & Response scale \\
+ & (1) & (2) \\
+\midrule
+\texttt{g24} & ?`Cuál fue el peso del(de la) niño(a) al nacer? & Open numeric answer (kilograms); special codes: 88 = dato impugnado; 99 = no sabe no responde \\
+\addlinespace[1pt]
+\texttt{g23} & ?`Cuál fue la talla, altura del niño(a) al nacer? & Open numeric answer (centimeters); special codes: 88 = dato impugnado; 99 = no sabe no responde \\
+\addlinespace[1pt]
+\texttt{g20} & ?`Cuántas semanas de embarazo tenía Ud. cuando nació el(la) niño(a)? & Open numeric answer (weeks); special codes: 88 = dato impugnado; 99 = no sabe no responde \\
+\addlinespace[1pt]
+\texttt{g17\_6} & Parto prematuro (antes de las 37 semanas). Al momento del nacimiento, ?`ex\,\dots & 1 = sí; 2 = no; 9 = no sabe no responde \\
+\addlinespace[1pt]
+\texttt{g25b1} & b1)Medición 2 (5 Minutos). ?`Cuál fue su puntuación en el Test de Apgar? & Open numeric answer (score 0--10); special codes: 99 = no sabe no responde \\
+\bottomrule
+\end{tabular}
+\begin{wpnotes}
+\textit{Notes:} Question wording and response labels are reproduced verbatim in the original Spanish of the questionnaire, from the variable and value labels of the public microdata; wording the microdata truncates at 80 characters is marked with an ellipsis. Cleaning: birth weight kept between 0.5 and 6.5 kilograms, length between 30 and 65 centimeters, gestation between 24 and 45 weeks, Apgar between 0 and 10; the survey codes 99 for a forgotten answer, treated as missing. All five outcomes are fixed at birth, one to four years before the earthquake for every cohort of the analysis sample.
+\end{wpnotes}
+\end{threeparttable}
+\end{table}
+% ---- end paper/tables/a5_nacimiento.tex

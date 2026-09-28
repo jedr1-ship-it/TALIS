@@ -1,13 +1,34 @@
-\begin{tabular}{l rl}
+% ---- begin paper/tables/t9_atricion.tex
+\begin{table}[htbp]\centering
+\caption{Attrition from 2010 to 2024 Is Not Differential by Exposure Age and Zone}
+\label{tab:attrition}
+\begin{threeparttable}
+\begin{tabular}{@{}p{250pt}>{\centering\arraybackslash}p{130pt}@{}}
 \toprule
- & \multicolumn{2}{c}{Pr(reentrevistado 2024)} \\
+ & Pr(reinterviewed in 2024) \\
+ & (1) \\
 \midrule
-Expuesto con 1 a\~no (12--23 m.) $\times$ EQ & 0.038 & (0.029) \\
-Expuesto con 2 a\~nos (24--35 m.) $\times$ EQ & 0.028 & (0.029) \\
-Expuesto con 3--4 a\~nos (36--59 m.) $\times$ EQ & 0.038 & (0.029) \\
-Contraste 3--4 $-$ 2 & 0.010 & (0.024) \\
+Exposed at age 1 (12--23 months) $\times$ zone & 0.038 \\
+ & (0.029) \\
+\addlinespace
+Exposed at age 2 (24--35 months) $\times$ zone & 0.028 \\
+ & (0.029) \\
+\addlinespace
+Exposed at ages 3--4 (36--59 months) $\times$ zone & 0.038 \\
+ & (0.029) \\
+\addlinespace
+Ages 3--4 $-$ age 2 & 0.010 \\
+ & (0.024) \\
 \midrule
-Ni\~nos de la l\'inea base 2010 & \multicolumn{2}{c}{14,855} \\
-Retenci\'on media 2010$\to$2024 & \multicolumn{2}{c}{67.3\%} \\
+Exposure-age and region fixed effects & Yes \\
+Mother's education and age in 2010 & Yes \\
+Children of the 2010 baseline & 14,855 \\
+Mean retention into 2024 & 67.3 percent \\
 \bottomrule
 \end{tabular}
+\begin{wpnotes}
+\textit{Notes:} Linear probability model over the children of the 2010 baseline with a valid birth date. The outcome is an indicator for being reinterviewed in the 2024 wave. The small and insignificant coefficients show that the loss of the sample (32.7 percent) does not concentrate in any treatment-by-age cell; the fitted probabilities feed the IPW row of Table~\ref{tab:robust}. The affected zone enters through the region of residence reported in 2010. Robust standard errors in parentheses. \starnote
+\end{wpnotes}
+\end{threeparttable}
+\end{table}
+% ---- end paper/tables/t9_atricion.tex
