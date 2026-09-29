@@ -504,43 +504,63 @@ def t2_lp():
     lp = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(lp)
     df = lp.build()
+    # Col 3 publicada de su tabla de mediano plazo (EER 2026, T3; docs/
+    # gillmore_metodologia_robustez.md §8): coeficiente, EE, stars, n.
+    GILL = {"z_tvip": (-0.174, 0.069, "**", "14,069"),
+            "z_cbcl": (-0.129, 0.076, "*", "11,568")}
     body = []
     for y, plab in [("z_tvip", "Panel A. Receptive vocabulary: Peabody "
                      "picture--word test (z)"),
                     ("z_cbcl", "Panel B. Internalizing problems: "
                      "caregiver CBCL checklist (z)")]:
-        res = [lp.fit(df, y, c) for c in (1, 2, 3, 4)]
-        body.append(f"\\panel{{5}}{{{plab}}}")
-        body += coef2("Affected $\\times$ affected zone",
-                      [(r["b"], r["se"], r["p"]) for r in res])
+        res = [lp.fit(df, y, c) for c in (3, 4)]
+        gb, gse, gst, gn = GILL[y]
+        body.append(f"\\panel{{4}}{{{plab}}}")
+        body.append("Affected $\\times$ affected zone & "
+                    f"{fnum(gb)}\\sym{{{gst}}} & "
+                    + " & ".join(bcell(r["b"], r["p"]) for r in res)
+                    + " \\\\")
+        body.append(f" & {secell(gse)} & "
+                    + " & ".join(secell(r["se"]) for r in res) + " \\\\")
         body.append("\\addlinespace[3pt]")
-        body.append("\\hspace{1em}Observations & "
+        body.append(f"\\hspace{{1em}}Observations & {gn} & "
                     + " & ".join(f"{r['n']:,}" for r in res) + " \\\\")
         body.append("\\addlinespace")
         log("T2 LP", y, [f"{r['b']:+.3f}{stars(r['p'])}" for r in res])
     body = body[:-1]
     body += ["\\midrule",
-             "Municipality fixed effects & Yes & Yes & Yes & Yes \\\\",
-             "Cohort and wave fixed effects & No & Yes & Yes & Yes \\\\",
-             "Household controls & No & No & Yes & Yes \\\\",
-             "Municipality linear trends & No & No & No & Yes \\\\"]
-    header = [" & (1) & (2) & (3) & (4) \\\\"]
-    notes = ("Gillmore's (2026) specification taken to the 14-year "
-             "horizon: the affected group are children exposed between "
-             "conception and age four, measured in 2024 at ages 14--18; "
-             "the comparison group are children conceived after the "
-             "earthquake, measured in 2017. The estimation therefore "
-             "pools two waves --- hence the wave fixed effects --- as "
-             "Gillmore's own short-term table pools the 2012 and 2017 "
-             "waves. The CBCL is oriented as in Gillmore (2026), positive "
-             "meaning fewer problems. The municipality linear trends of "
-             "column 4 are our addition; his tables end at the household "
-             "controls. \\zonedef{} Standard errors clustered "
-             "by municipality; evaluation weights. \\starnote")
+             "Municipality fixed effects & Yes & Yes & Yes \\\\",
+             "Cohort and wave fixed effects & Yes & Yes & Yes \\\\",
+             "Household controls & Yes & Yes & Yes \\\\",
+             "Municipality linear trends & No & No & Yes \\\\"]
+    header = [" & \\multicolumn{1}{c}{Gillmore (2026)} & "
+              "\\multicolumn{2}{c}{This paper} \\\\",
+              "\\cmidrule(lr){2-2}\\cmidrule(lr){3-4}",
+              " & Ages 7--11 & Ages 14--18 & Ages 14--18 \\\\",
+              " & (1) & (2) & (3) \\\\"]
+    notes = ("Column 1 reproduces, verbatim, the preferred column of "
+             "the published medium-term table of Gillmore (2026): "
+             "children exposed between conception and age four, "
+             "measured in 2017 at ages 7--11, against children "
+             "conceived after the earthquake; "
+             "Table~\\ref{tab:gillmore} shows that our replication of "
+             "that column on the public files comes within 0.03 of "
+             "it. Columns 2--3 update the same specification with the "
+             "new wave: the affected children are now measured in "
+             "2024 at ages 14--18, the comparison group stays "
+             "measured in 2017, and pooling the two waves is why the "
+             "wave fixed effects matter, as in his own short-term "
+             "table, which pools 2012 and 2017. Column 3 adds "
+             "municipality linear trends, mirroring the robustness "
+             "column of his own tables, where he reports $-$0.280 for "
+             "vocabulary and $-$0.220 for the CBCL. The CBCL is "
+             "oriented as in Gillmore (2026), positive meaning fewer "
+             "problems. \\zonedef{} Standard errors clustered by "
+             "municipality; evaluation weights. \\starnote")
     table_env("t2_largo_plazo",
-              "Long-Run Estimates of Gillmore's (2026) Specification",
+              "Updating Gillmore's (2026) Estimates to Ages 14--18",
               "tab:longrun",
-              "@{}p{185pt}" + numcols(4, 62) + "@{}",
+              "@{}p{185pt}" + numcols(3, 72) + "@{}",
               header, body, notes)
 
 
