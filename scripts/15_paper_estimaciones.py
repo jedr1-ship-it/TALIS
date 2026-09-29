@@ -757,8 +757,8 @@ def t7_robustez(d, ipw, nrep):
     body += ["\\midrule",
              "\\panel{3}{Demanding inference for the preferred "
              "specification ($p$-values)}",
-             "\\hspace{1em}Permutation of the affected zone across "
-             f"municipalities & {pp['24']:.3f} & \\\\",
+             "\\hspace{1em}Permutation of the affected zone & "
+             f"{pp['24']:.3f} & \\\\",
              "\\hspace{1em}Wild cluster bootstrap by region "
              f"({nreg} regions) & {pw['24']:.3f} & \\\\"]
     header = [" & Dependent variable: PHQ-4 score (z) & \\\\",
@@ -781,7 +781,9 @@ def t7_robustez(d, ipw, nrep):
               "tab:robust",
               "@{}p{215pt}" + numcols(1, 120) + ">{\\centering"
               "\\arraybackslash}p{62pt}@{}",
-              header, body, notes)
+              header, body, notes,
+              extra_pre="\\footnotesize"
+                        "\\renewcommand{\\arraystretch}{0.95}")
     log("T7 inferencia: perm", pp, "| wild region", pw)
 
 
@@ -1012,7 +1014,7 @@ def t12_heterogeneidad(d):
     table_env("t12_heterogeneidad",
               "Heterogeneity of the Main Result",
               "tab:het",
-              "@{}p{200pt}" + numcols(1, 100) + ">{\\centering"
+              "@{}p{240pt}" + numcols(1, 100) + ">{\\centering"
               "\\arraybackslash}p{62pt}@{}",
               header, body, notes)
 

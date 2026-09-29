@@ -2,19 +2,19 @@
 
 ```
 datos: 10,003 adolescentes | PGA: ok
--> paper/tables/t1_descriptivos.tex
--> paper/tables/t11_madre.tex
-T11 z_phq4 vuln contr: +0.097 | no-vuln contr: +0.107
-T11 gad2_bin vuln contr: +0.008 | no-vuln contr: +0.072**
-T12A Girls -0.300*** contr +0.182**
-T12A Boys -0.016 contr +0.042
-T12A Mother with secondary education or less -0.107 contr +0.071
-T12A Mother with tertiary education -0.201 contr +0.182
-T12A Urban household in 2010 -0.139* contr +0.129**
-T12A Rural household in 2010 -0.238 contr -0.213
-T12B gad2_bin Girls -0.137***
-T12B gad2_bin Boys -0.026
-T12B phq2_bin Girls -0.117**
-T12B phq2_bin Boys +0.016
--> paper/tables/t12_heterogeneidad.tex
+T9 atricion I_12 +0.038
+T9 atricion I_24 +0.028
+T9 atricion I_36 +0.038
+-> paper/tables/t9_atricion.tex
+T7 Preferred specification (column 3) -0.147** contr +0.103*
+T7 Fixed effects only -0.144** contr +0.106*
+T7 Excluding the Metropolitan Region -0.120 contr +0.109*
+T7 Unweighted -0.129* contr +0.097
+T7 PHQ-4 in points (0--12), not standardized -0.391** contr +0.277*
+T7 Balanced sample with a 2017 CBCL -0.114 contr +0.083
+T7 Controlling for the birth endowment -0.144** contr +0.100*
+T7 Reweighted for attrition (IPW) -0.149** contr +0.104*
+T7 Continuous dose: PGA (z) instead of the zone -0.068** contr +0.031
+-> paper/tables/t7_robustez.tex
+T7 inferencia: perm {'24': 0.0455, 'ct': 0.107} | wild region {'24': 0.132, 'ct': 0.069}
 ```

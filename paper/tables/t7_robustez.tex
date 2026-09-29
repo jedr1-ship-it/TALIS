@@ -2,51 +2,52 @@
 \begin{table}[htbp]\centering
 \caption{Robustness and Demanding Inference for the Main Result}
 \label{tab:robust}
+\footnotesize\renewcommand{\arraystretch}{0.95}
 \begin{threeparttable}
-\begin{tabular}{@{}p{215pt}*{2}{>{\centering\arraybackslash}p{85pt}}>{\centering\arraybackslash}p{62pt}@{}}
+\begin{tabular}{@{}p{215pt}*{1}{>{\centering\arraybackslash}p{120pt}}>{\centering\arraybackslash}p{62pt}@{}}
 \toprule
- & \multicolumn{2}{c}{Dependent variable: PHQ-4 score (z)} & \\
-\cmidrule(lr){2-3}
- & Age 2 $\times$ affected & Ages 3--4 $-$ age 2 & Observations \\
- & (1) & (2) & (3) \\
+ & Dependent variable: PHQ-4 score (z) & \\
+\cmidrule(lr){2-2}
+ & Age 2 $\times$ affected & Observations \\
+ & (1) & (2) \\
 \midrule
-Preferred specification (column 3) & $-$0.147\sym{**} & 0.103\sym{*} & 9,996 \\
- & (0.069) & (0.060) & \\
+Preferred specification (column 3) & $-$0.147\sym{**} & 9,996 \\
+ & (0.069) & \\
 \addlinespace
-Fixed effects only & $-$0.144\sym{**} & 0.106\sym{*} & 9,996 \\
- & (0.072) & (0.060) & \\
+Fixed effects only & $-$0.144\sym{**} & 9,996 \\
+ & (0.072) & \\
 \addlinespace
-Excluding the Metropolitan Region & $-$0.120 & 0.109\sym{*} & 6,430 \\
- & (0.076) & (0.066) & \\
+Excluding the Metropolitan Region & $-$0.120 & 6,430 \\
+ & (0.076) & \\
 \addlinespace
-Unweighted & $-$0.129\sym{*} & 0.097 & 9,996 \\
- & (0.071) & (0.063) & \\
+Unweighted & $-$0.129\sym{*} & 9,996 \\
+ & (0.071) & \\
 \addlinespace
-PHQ-4 in points (0--12), not standardized & $-$0.391\sym{**} & 0.277\sym{*} & 9,996 \\
- & (0.183) & (0.162) & \\
+PHQ-4 in points (0--12), not standardized & $-$0.391\sym{**} & 9,996 \\
+ & (0.183) & \\
 \addlinespace
-Balanced sample with a 2017 CBCL & $-$0.114 & 0.083 & 7,188 \\
- & (0.082) & (0.075) & \\
+Balanced sample with a 2017 CBCL & $-$0.114 & 7,188 \\
+ & (0.082) & \\
 \addlinespace
-Controlling for the birth endowment & $-$0.144\sym{**} & 0.100\sym{*} & 9,996 \\
- & (0.069) & (0.060) & \\
+Controlling for the birth endowment & $-$0.144\sym{**} & 9,996 \\
+ & (0.069) & \\
 \addlinespace
-Reweighted for attrition (IPW) & $-$0.149\sym{**} & 0.104\sym{*} & 9,996 \\
- & (0.069) & (0.060) & \\
+Reweighted for attrition (IPW) & $-$0.149\sym{**} & 9,996 \\
+ & (0.069) & \\
 \addlinespace
-Continuous dose: PGA (z) instead of the zone & $-$0.068\sym{**} & 0.031 & 9,996 \\
- & (0.027) & (0.026) & \\
+Continuous dose: PGA (z) instead of the zone & $-$0.068\sym{**} & 9,996 \\
+ & (0.027) & \\
 \addlinespace
-Dropping one affected region at a time (range) & [$-$0.172, $-$0.120] & [0.080, 0.114] & \\
-Municipality and birth-cohort fixed effects (all rows) & \multicolumn{2}{c}{Yes} & \\
+Dropping one affected region at a time (range) & [$-$0.172, $-$0.120] & \\
+Municipality and birth-cohort fixed effects (all rows) & Yes & \\
 \midrule
-\panel{4}{Demanding inference for the preferred specification ($p$-values)}
-\hspace{1em}Permutation of the affected zone across municipalities & 0.045 & 0.107 & \\
-\hspace{1em}Wild cluster bootstrap by region (15 regions) & 0.132 & 0.069 & \\
+\panel{3}{Demanding inference for the preferred specification ($p$-values)}
+\hspace{1em}Permutation of the affected zone & 0.045 & \\
+\hspace{1em}Wild cluster bootstrap by region (15 regions) & 0.132 & \\
 \bottomrule
 \end{tabular}
 \begin{wpnotes}
-\textit{Notes:} Each row re-estimates the preferred specification of Table~\ref{tab:main}, Panel A, changing one thing. Column 1 reports the coefficient on exposure at age two $\times$ affected zone and column 2 the contrast between ages 3--4 and age two. The IPW row reweights by the inverse of the estimated probability of remaining in the 2024 wave (Table~\ref{tab:attrition}). The permutation test reassigns the affected-zone status across the 116 municipalities of selection, keeping the number of treated municipalities, 2,000 times. The wild cluster bootstrap by region uses Webb weights and clusters at the level of the regional treatment. \clusternote{} \starnote
+\textit{Notes:} Each row re-estimates the preferred specification of Table~\ref{tab:main}, Panel A, changing one thing. Column 1 reports the coefficient on exposure at age two $\times$ affected zone. The IPW row reweights by the inverse of the estimated probability of remaining in the 2024 wave (Table~\ref{tab:attrition}). The permutation test reassigns the affected-zone status across the 116 municipalities of selection, keeping the number of treated municipalities, 2,000 times. The wild cluster bootstrap by region uses Webb weights and clusters at the level of the regional treatment. \clusternote{} \starnote
 \end{wpnotes}
 \end{threeparttable}
 \end{table}

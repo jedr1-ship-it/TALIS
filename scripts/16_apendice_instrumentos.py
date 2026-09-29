@@ -95,12 +95,12 @@ def rows_for(m, code_vars, hspace=True):
     return rows
 
 
-def table_env(fname, caption, label, header, body, notes):
+def table_env(fname, caption, label, header, body, notes, stretch="1.0"):
     lines = [f"% ---- begin paper/tables/{fname}.tex",
              "\\begin{table}[htbp]\\centering",
              f"\\caption{{{caption}}}",
              f"\\label{{{label}}}",
-             "\\footnotesize\\renewcommand{\\arraystretch}{1.0}",
+             f"\\footnotesize\\renewcommand{{\\arraystretch}}{{{stretch}}}",
              "\\begin{threeparttable}",
              "\\begin{tabular}{@{}p{68pt}p{212pt}p{150pt}@{}}",
              "\\toprule"] + header + ["\\midrule"] + body + [
@@ -185,7 +185,7 @@ def a3(m24):
              "of the listed items is answered yes.")
     table_env("a3_conducta",
               "Victimization and Risk-Behavior Outcomes: Items and Scales",
-              "tab:a_other", HEAD, body, notes)
+              "tab:a_other", HEAD, body, notes, stretch="0.90")
 
 
 def a4(m10, m12):
