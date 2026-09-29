@@ -480,13 +480,15 @@ def t2rep():
              "Household controls & No & No & Yes \\\\"]
     header = [" & (1) & (2) & (3) \\\\"]
     notes = ("Replication on the public ELPI files of the medium-term "
-             "table of Gillmore (2026), in his exact design: a single "
+             "table of Gillmore (2026), in his design: a single "
              "wave (2017), with affected children aged 7--11 compared "
              "with children conceived after the earthquake, aged 2--6. "
              "Column 1 includes municipality fixed effects only; column "
              "2 adds birth-cohort fixed effects; column 3 the household "
-             "controls. His published coefficients in column 3 are "
-             "$-$0.174 for vocabulary and $-$0.129 for the CBCL. "
+             "controls. His published column-3 coefficients are "
+             "$-$0.174 for vocabulary (14,069 children) and $-$0.129 for "
+             "the CBCL (11,568); the small gaps to ours reflect cleaning "
+             "choices in his estimation code, which is not public. "
              "\\zonedef{} Standard errors clustered by municipality in "
              "parentheses; evaluation weights. \\starnote")
     table_env("t2rep_gillmore",
@@ -531,7 +533,9 @@ def t2_lp():
              "pools two waves --- hence the wave fixed effects --- as "
              "Gillmore's own short-term table pools the 2012 and 2017 "
              "waves. The CBCL is oriented as in Gillmore (2026), positive "
-             "meaning fewer problems. \\zonedef{} Standard errors clustered "
+             "meaning fewer problems. The municipality linear trends of "
+             "column 4 are our addition; his tables end at the household "
+             "controls. \\zonedef{} Standard errors clustered "
              "by municipality; evaluation weights. \\starnote")
     table_env("t2_largo_plazo",
               "Long-Run Estimates of Gillmore's (2026) Specification",
@@ -551,7 +555,7 @@ def t3_main(d):
         if y == "z_phq4":
             res3 = res
         body.append(f"\\panel{{5}}{{{plab}}}")
-        body += bins_block(res, 4, dec, contrast=True)
+        body += bins_block(res, 4, dec)
         body.append("\\addlinespace")
         log(f"T3 {y} col3:",
             {k: f"{v[0]:+.3f}{stars(v[2])}" for k, v in res[2]["b"].items()},
@@ -733,7 +737,7 @@ def t7_robustez(d, ipw, nrep):
                           fit(d, "z_phq4", 3, dose="pga_z")))
     body = []
     for lab, r in variantes:
-        rows = coef2(lab, [r["b"]["24-35m"], r["contr"]])
+        rows = coef2(lab, [r["b"]["24-35m"]])
         rows[0] = rows[0][:-3] + f" & {r['n']:,} \\\\"
         rows[1] = rows[1][:-3] + " & \\\\"
         body += rows + ["\\addlinespace"]
@@ -743,33 +747,28 @@ def t7_robustez(d, ipw, nrep):
     lor = []
     for rg in (5, 6, 7, 8, 9, 13):
         r = fit(d, "z_phq4", 3, sample=lambda x, rg=rg: x.region != rg)
-        lor.append((r["b"]["24-35m"][0], r["contr"][0]))
+        lor.append(r["b"]["24-35m"][0])
     body.append("Dropping one affected region at a time (range) & "
-                f"[{fnum(min(x[0] for x in lor))}, "
-                f"{fnum(max(x[0] for x in lor))}] & "
-                f"[{fnum(min(x[1] for x in lor))}, "
-                f"{fnum(max(x[1] for x in lor))}] & \\\\")
+                f"[{fnum(min(lor))}, {fnum(max(lor))}] & \\\\")
     body += ["Municipality and birth-cohort fixed effects (all rows) & "
-             "\\multicolumn{2}{c}{Yes} & \\\\"]
+             "Yes & \\\\"]
     pp = perm_test(base, nrep)
     pw, nreg = wild_region(base, nrep)
     body += ["\\midrule",
-             "\\panel{4}{Demanding inference for the preferred "
+             "\\panel{3}{Demanding inference for the preferred "
              "specification ($p$-values)}",
              "\\hspace{1em}Permutation of the affected zone across "
-             f"municipalities & {pp['24']:.3f} & {pp['ct']:.3f} & \\\\",
+             f"municipalities & {pp['24']:.3f} & \\\\",
              "\\hspace{1em}Wild cluster bootstrap by region "
-             f"({nreg} regions) & {pw['24']:.3f} & {pw['ct']:.3f} & \\\\"]
-    header = [" & \\multicolumn{2}{c}{Dependent variable: PHQ-4 "
-              "score (z)} & \\\\", "\\cmidrule(lr){2-3}",
-              " & Age 2 $\\times$ affected & Ages 3--4 $-$ age 2 & "
-              "Observations \\\\",
-              " & (1) & (2) & (3) \\\\"]
+             f"({nreg} regions) & {pw['24']:.3f} & \\\\"]
+    header = [" & Dependent variable: PHQ-4 score (z) & \\\\",
+              "\\cmidrule(lr){2-2}",
+              " & Age 2 $\\times$ affected & Observations \\\\",
+              " & (1) & (2) \\\\"]
     notes = ("Each row re-estimates the preferred specification of "
              "Table~\\ref{tab:main}, Panel A, changing one thing. "
              "Column 1 reports the coefficient on exposure at age two "
-             "$\\times$ affected zone and column 2 the contrast between "
-             "ages 3--4 and age two. The IPW row reweights by the "
+             "$\\times$ affected zone. The IPW row reweights by the "
              "inverse of the estimated probability of remaining in the "
              "2024 wave (Table~\\ref{tab:attrition}). The permutation "
              "test reassigns the affected-zone status across the 116 "
@@ -780,7 +779,7 @@ def t7_robustez(d, ipw, nrep):
     table_env("t7_robustez",
               "Robustness and Demanding Inference for the Main Result",
               "tab:robust",
-              "@{}p{215pt}" + numcols(2, 85) + ">{\\centering"
+              "@{}p{215pt}" + numcols(1, 120) + ">{\\centering"
               "\\arraybackslash}p{62pt}@{}",
               header, body, notes)
     log("T7 inferencia: perm", pp, "| wild region", pw)
@@ -797,28 +796,24 @@ def t8_rw(d, nrep):
     for y, lab in fam.items():
         r = results[y]
         body.append(f"{lab} & {r['b']['24-35m'][2]:.3f} & "
-                    f"{rwp[(y, '24')]:.3f} & {r['contr'][2]:.3f} & "
-                    f"{rwp[(y, 'ct')]:.3f} \\\\")
+                    f"{rwp[(y, '24')]:.3f} \\\\")
         log("T8 RW", y, "24:", f"{rwp[(y, '24')]:.3f}",
             "ct:", f"{rwp[(y, 'ct')]:.3f}")
-    header = [" & \\multicolumn{2}{c}{Age 2 $\\times$ affected} & "
-              "\\multicolumn{2}{c}{Ages 3--4 $-$ age 2} \\\\",
-              "\\cmidrule(lr){2-3}\\cmidrule(lr){4-5}",
-              " & Unadjusted $p$ & Romano--Wolf $p$ & Unadjusted $p$ & "
-              "Romano--Wolf $p$ \\\\",
-              " & (1) & (2) & (3) & (4) \\\\"]
+    header = [" & \\multicolumn{2}{c}{Age 2 $\\times$ affected} \\\\",
+              "\\cmidrule(lr){2-3}",
+              " & Unadjusted $p$ & Romano--Wolf $p$ \\\\",
+              " & (1) & (2) \\\\"]
     notes = ("Romano--Wolf stepdown $p$-values over the family of four "
              "mental-health outcomes, estimated with the preferred "
              "specification of Table~\\ref{tab:main}. The adjustment "
              "uses a joint wild cluster bootstrap by municipality (Rademacher "
              "weights, 2,000 replications, the same sign flips for "
-             "every outcome), separately for the age-two coefficient "
-             "and for the contrast between ages 3--4 and age two.")
+             "every outcome), for the age-two coefficient.")
     table_env("t8_romanowolf",
               "Multiple-Hypothesis Adjustment Across Mental-Health "
               "Outcomes",
               "tab:rw",
-              "@{}p{175pt}" + numcols(4, 66) + "@{}",
+              "@{}p{175pt}" + numcols(2, 90) + "@{}",
               header, body, notes)
 
 
@@ -978,24 +973,24 @@ def t12_heterogeneidad(d):
                lambda x: num(x.educ_madre10) > 12),
               ("Urban household in 2010", lambda x: x.rural10 == 0),
               ("Rural household in 2010", lambda x: x.rural10 == 1)]
-    body = ["\\panel{4}{Panel A. The PHQ-4 index (z)}"]
+    body = ["\\panel{3}{Panel A. The PHQ-4 index (z)}"]
     for lab, sel in grupos:
         r = fit(d, "z_phq4", 3, sample=sel)
-        rows = coef2(lab, [r["b"]["24-35m"], r["contr"]])
+        rows = coef2(lab, [r["b"]["24-35m"]])
         rows[0] = rows[0][:-3] + f" & {r['n']:,} \\\\"
         rows[1] = rows[1][:-3] + " & \\\\"
         body += rows + ["\\addlinespace[3pt]"]
         log("T12A", lab,
             f"{r['b']['24-35m'][0]:+.3f}{stars(r['b']['24-35m'][2])}",
             f"contr {r['contr'][0]:+.3f}{stars(r['contr'][2])}")
-    body.append("\\panel{4}{Panel B. The two halves of the index, "
+    body.append("\\panel{3}{Panel B. The two halves of the index, "
                 "girls versus boys}")
     for y, half in (("gad2_bin", "anxiety half (GAD-2 positive)"),
                     ("phq2_bin", "depression half (PHQ-2 positive)")):
         for sx, sxlab in ((1, "Girls"), (0, "Boys")):
             r = fit(d, y, 3, sample=lambda x, s=sx: x.mujer == s)
             rows = coef2(f"{sxlab}, {half}",
-                         [r["b"]["24-35m"], r["contr"]])
+                         [r["b"]["24-35m"]])
             rows[0] = rows[0][:-3] + f" & {r['n']:,} \\\\"
             rows[1] = rows[1][:-3] + " & \\\\"
             body += rows + ["\\addlinespace[3pt]"]
@@ -1003,13 +998,9 @@ def t12_heterogeneidad(d):
                 f"{r['b']['24-35m'][0]:+.3f}{stars(r['b']['24-35m'][2])}")
     body = body[:-1]
     body += ["\\midrule",
-             "Municipality and birth-cohort fixed effects & "
-             "\\multicolumn{2}{c}{Yes} & \\\\"]
-    header = [" & \\multicolumn{2}{c}{Dependent variable named in the "
-              "panel} & \\\\", "\\cmidrule(lr){2-3}",
-              " & Age 2 $\\times$ affected & Ages 3--4 $-$ age 2 & "
-              "Observations \\\\",
-              " & (1) & (2) & (3) \\\\"]
+             "Municipality and birth-cohort fixed effects & Yes & \\\\"]
+    header = [" & Age 2 $\\times$ affected & Observations \\\\",
+              " & (1) & (2) \\\\"]
     notes = ("Each pair of rows estimates the specification of column 3 "
              "of Table~\\ref{tab:main} on the subsample named in the "
              "row. Panel A uses the PHQ-4 index; Panel B splits the "
@@ -1021,7 +1012,7 @@ def t12_heterogeneidad(d):
     table_env("t12_heterogeneidad",
               "Heterogeneity of the Main Result",
               "tab:het",
-              "@{}p{200pt}" + numcols(2, 88) + ">{\\centering"
+              "@{}p{200pt}" + numcols(1, 100) + ">{\\centering"
               "\\arraybackslash}p{62pt}@{}",
               header, body, notes)
 
