@@ -431,14 +431,17 @@ def t1_descriptivos(d, a):
                      ret, pct=True))
     header = [" & \\multicolumn{4}{c}{Age when the earthquake struck} & \\\\",
               "\\cmidrule(lr){2-5}",
-              " & $<$1 & 1 & 2 & 3--4 & All \\\\",
+              " & $<$1 & 1 & 2 & 3--4 & All (0--4) \\\\",
               " & (1) & (2) & (3) & (4) & (5) \\\\"]
     notes = ("Means over the 10,003 adolescents of the 2024 ELPI wave, all "
              "born 2006--2009 and therefore exposed to the 27 February 2010 "
              "earthquake between 6 and 50 months of age, by age on the day "
-             "of the earthquake. The All column pools the four exposure-age "
-             "groups: every adolescent of the wave, struck between 6 and "
-             "50 months of age. \\phqdef{} \\zonedef{} Panel C uses the "
+             "of the earthquake. Column 5 is the sum of columns 1 to 4: the "
+             "10,003 adolescents of the wave, all of whom were between 6 "
+             "and 50 months old --- ages 0 to 4 --- on the day of the "
+             "earthquake; nobody else exists in the 2024 wave. The survey's "
+             "two-stage design samples 116 of Chile's 346 municipalities "
+             "and keeps them fixed across waves. \\phqdef{} \\zonedef{} Panel C uses the "
              "14,855 children of the 2010 baseline with a valid birth date "
              "and shows that retention into 2024 is flat across "
              "exposure-age groups (Table~\\ref{tab:attrition}).")
@@ -446,6 +449,50 @@ def t1_descriptivos(d, a):
               "The Analysis Sample by Age at Exposure to the Earthquake",
               "tab:sample",
               "@{}p{208pt}" + numcols(5, 46) + "@{}",
+              header, body, notes)
+
+
+def t2rep():
+    spec = importlib.util.spec_from_file_location(
+        "rep", HERE / "08_replicacion_gillmore.py")
+    rep = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(rep)
+    R = rep.load_raw()
+    st, mt = rep.assemble(R, rep.BEST)
+    body = []
+    for y, plab in (("z_tvip", "Panel A. Receptive vocabulary: Peabody "
+                     "picture--word test (z)"),
+                    ("z_cbcl2", "Panel B. Internalizing problems: "
+                     "caregiver CBCL checklist (z)")):
+        res = [rep.fit(mt, y, c, rep.BEST) for c in (1, 2, 3)]
+        body.append(f"\\panel{{4}}{{{plab}}}")
+        body += coef2("Affected $\\times$ affected zone",
+                      [(r["b"], r["se"], r["p"]) for r in res])
+        body.append("\\addlinespace[3pt]")
+        body.append("\\hspace{1em}Observations & "
+                    + " & ".join(f"{r['n']:,}" for r in res) + " \\\\")
+        body.append("\\addlinespace")
+        log("T2rep MT", y, [f"{r['b']:+.3f}{stars(r['p'])}" for r in res])
+    body = body[:-1]
+    body += ["\\midrule",
+             "Municipality fixed effects & Yes & Yes & Yes \\\\",
+             "Birth-cohort fixed effects & No & Yes & Yes \\\\",
+             "Household controls & No & No & Yes \\\\"]
+    header = [" & (1) & (2) & (3) \\\\"]
+    notes = ("Replication on the public ELPI files of the medium-term "
+             "table of Gillmore (2026), in his exact design: a single "
+             "wave (2017), with affected children aged 7--11 compared "
+             "with children conceived after the earthquake, aged 2--6. "
+             "Column 1 includes municipality fixed effects only; column "
+             "2 adds birth-cohort fixed effects; column 3 the household "
+             "controls. His published coefficients in column 3 are "
+             "$-$0.174 for vocabulary and $-$0.129 for the CBCL. "
+             "\\zonedef{} Standard errors clustered by municipality in "
+             "parentheses; evaluation weights. \\starnote")
+    table_env("t2rep_gillmore",
+              "Replication of Gillmore's (2026) Main Table",
+              "tab:gillmore",
+              "@{}p{200pt}" + numcols(3, 74) + "@{}",
               header, body, notes)
 
 
@@ -476,19 +523,18 @@ def t2_lp():
              "Household controls & No & No & Yes & Yes \\\\",
              "Municipality linear trends & No & No & No & Yes \\\\"]
     header = [" & (1) & (2) & (3) & (4) \\\\"]
-    notes = ("Each panel reports the coefficient on Affected $\\times$ "
-             "affected zone from Gillmore's (2026) equation (1) taken to "
-             "the 14-year horizon: the affected group are the children "
-             "exposed in utero to age four, measured in the 2024 wave at "
-             "ages 14--18; the comparison group are children conceived "
-             "after the earthquake, measured in the 2017 wave. The CBCL "
-             "is oriented as in Gillmore (2026), so that positive values "
-             "mean fewer problems. \\zonedef{} Standard errors "
-             "clustered by municipality in parentheses; evaluation "
-             "sampling weights. \\starnote")
+    notes = ("Gillmore's (2026) specification taken to the 14-year "
+             "horizon: the affected group are children exposed between "
+             "conception and age four, measured in 2024 at ages 14--18; "
+             "the comparison group are children conceived after the "
+             "earthquake, measured in 2017. The estimation therefore "
+             "pools two waves --- hence the wave fixed effects --- as "
+             "Gillmore's own short-term table pools the 2012 and 2017 "
+             "waves. The CBCL is oriented as in Gillmore (2026), positive "
+             "meaning fewer problems. \\zonedef{} Standard errors clustered "
+             "by municipality; evaluation weights. \\starnote")
     table_env("t2_largo_plazo",
-              "The Cognitive Scar Persists into Adolescence: Gillmore's "
-              "Equation at the 14-Year Horizon",
+              "Long-Run Estimates of Gillmore's (2026) Specification",
               "tab:longrun",
               "@{}p{185pt}" + numcols(4, 62) + "@{}",
               header, body, notes)
@@ -565,7 +611,7 @@ def t4_informante(d):
              "report in private. \\bindef{} \\specdef{} \\clusternote{} "
              "\\starnote")
     table_env("t4_informante",
-              "The Caregiver Does Not See It: Parent-Reported Outcomes",
+              "Caregiver-Reported Outcomes",
               "tab:caregiver",
               "@{}p{182pt}" + numcols(4, 64) + "@{}",
               COLHEAD4, body, notes)
@@ -811,8 +857,7 @@ def t9_atricion(a):
              "enters through the region of residence reported in 2010. "
              "Robust standard errors in parentheses. \\starnote")
     table_env("t9_atricion",
-              "Attrition from 2010 to 2024 Is Not Differential by "
-              "Exposure Age and Zone",
+              "Attrition from 2010 to 2024 by Exposure Age and Zone",
               "tab:attrition",
               "@{}p{250pt}>{\\centering\\arraybackslash}p{130pt}@{}",
               header, body, notes)
@@ -908,14 +953,12 @@ def t11_madre(d):
              "stress during the pregnancy of the child, a psychological "
              "or psychiatric referral, or diagnosed postpartum "
              "depression --- all predating the earthquake by years "
-             "(Appendix Table~\\ref{tab:a_mother}). The contrast is "
-             "similar in both groups for the PHQ-4 and not smaller among "
-             "children of non-vulnerable mothers for the GAD-2: the "
+             "(Appendix Table~\\ref{tab:a_mother}). The age-2 coefficient is "
+             "nearly identical in the two groups, for both outcomes: the "
              "gradient is not a recomposition of pre-existing family "
              "mental-health burden. \\bindef{} \\clusternote{} \\starnote")
     table_env("t11_madre",
-              "The Gradient Is Not Explained by the Mother's Pre-Earthquake "
-              "Mental Health",
+              "Estimates by the Mother's Pre-Earthquake Mental Health",
               "tab:mother",
               "@{}p{168pt}" + numcols(4, 67) + "@{}",
               header, body, notes)
@@ -935,36 +978,50 @@ def t12_heterogeneidad(d):
                lambda x: num(x.educ_madre10) > 12),
               ("Urban household in 2010", lambda x: x.rural10 == 0),
               ("Rural household in 2010", lambda x: x.rural10 == 1)]
-    body = []
+    body = ["\\panel{4}{Panel A. The PHQ-4 index (z)}"]
     for lab, sel in grupos:
         r = fit(d, "z_phq4", 3, sample=sel)
         rows = coef2(lab, [r["b"]["24-35m"], r["contr"]])
         rows[0] = rows[0][:-3] + f" & {r['n']:,} \\\\"
         rows[1] = rows[1][:-3] + " & \\\\"
-        body += rows + ["\\addlinespace"]
-        log("T12", lab,
+        body += rows + ["\\addlinespace[3pt]"]
+        log("T12A", lab,
             f"{r['b']['24-35m'][0]:+.3f}{stars(r['b']['24-35m'][2])}",
             f"contr {r['contr'][0]:+.3f}{stars(r['contr'][2])}")
+    body.append("\\panel{4}{Panel B. The two halves of the index, "
+                "girls versus boys}")
+    for y, half in (("gad2_bin", "anxiety half (GAD-2 positive)"),
+                    ("phq2_bin", "depression half (PHQ-2 positive)")):
+        for sx, sxlab in ((1, "Girls"), (0, "Boys")):
+            r = fit(d, y, 3, sample=lambda x, s=sx: x.mujer == s)
+            rows = coef2(f"{sxlab}, {half}",
+                         [r["b"]["24-35m"], r["contr"]])
+            rows[0] = rows[0][:-3] + f" & {r['n']:,} \\\\"
+            rows[1] = rows[1][:-3] + " & \\\\"
+            body += rows + ["\\addlinespace[3pt]"]
+            log("T12B", y, sxlab,
+                f"{r['b']['24-35m'][0]:+.3f}{stars(r['b']['24-35m'][2])}")
     body = body[:-1]
     body += ["\\midrule",
              "Municipality and birth-cohort fixed effects & "
              "\\multicolumn{2}{c}{Yes} & \\\\"]
-    header = [" & \\multicolumn{2}{c}{Dependent variable: PHQ-4 "
-              "score (z)} & \\\\", "\\cmidrule(lr){2-3}",
+    header = [" & \\multicolumn{2}{c}{Dependent variable named in the "
+              "panel} & \\\\", "\\cmidrule(lr){2-3}",
               " & Age 2 $\\times$ affected & Ages 3--4 $-$ age 2 & "
               "Observations \\\\",
               " & (1) & (2) & (3) \\\\"]
-    notes = ("Each pair of rows estimates the preferred specification of "
-             "Table~\\ref{tab:main}, Panel A, on the subsample named in "
-             "the row. The baseline level of symptoms is much higher "
-             "among girls --- 33.9 versus 19.5 percent screen positive "
-             "for moderate or severe symptoms in the full wave --- so "
-             "similar coefficients imply larger relative effects for "
-             "boys. \\clusternote{} \\starnote")
+    notes = ("Each pair of rows estimates the specification of column 3 "
+             "of Table~\\ref{tab:main} on the subsample named in the "
+             "row. Panel A uses the PHQ-4 index; Panel B splits the "
+             "index into its anxiety and depression halves, expressed "
+             "as clinical screens, separately for girls and boys. The "
+             "baseline level of symptoms is much higher among girls "
+             "--- the index averages 4.88 points for girls and 3.76 "
+             "for boys. \\clusternote{} \\starnote")
     table_env("t12_heterogeneidad",
               "Heterogeneity of the Main Result",
               "tab:het",
-              "@{}p{215pt}" + numcols(2, 85) + ">{\\centering"
+              "@{}p{200pt}" + numcols(2, 88) + ">{\\centering"
               "\\arraybackslash}p{62pt}@{}",
               header, body, notes)
 
@@ -976,7 +1033,7 @@ def figuras(d):
     FIG.mkdir(parents=True, exist_ok=True)
     INK, BLUE, GRID = "#0B0B0B", "#2A78D6", "#C9C9C9"
     x = np.arange(4)
-    xt_lab = ["$<$1\n(omitted)", "Age 1", "Age 2", "Ages 3–4"]
+    xt_lab = ["$<$1\n(reference)", "Age 1", "Age 2", "Ages 3–4"]
     fig, ax = plt.subplots(figsize=(6.3, 3.6))
     for y, colr, lab, off in [
             ("z_phq4", INK, "PHQ-4 mental-health index (z)", -0.07),
@@ -1166,6 +1223,8 @@ def main():
         mapas(d)
     if go("t2"):
         t2_lp()
+    if go("t2rep"):
+        t2rep()
     Path("reports").mkdir(exist_ok=True)
     (Path("reports") / "paper_numeros.md").write_text(
         "# Log de estimaciones del paper\n\n```\n" + "\n".join(LOG)
