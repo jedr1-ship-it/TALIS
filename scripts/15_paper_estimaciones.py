@@ -495,9 +495,9 @@ def t2_lp():
 
 
 def t3_main(d):
-    panels = [("z_phq4", "Panel A. PHQ-4 score: sum of four items, two on depressed mood and two on anxiety (0--12, z)", 3),
-              ("gad2_bin", "Panel B. Positive anxiety screen, GAD-2: the two anxiety items of the PHQ-4, subscore of 3 or more", 3),
-              ("phq2_bin", "Panel C. Positive depression screen, PHQ-2: the two depression items, subscore of 3 or more", 3)]
+    panels = [("z_phq4", "Panel A. Mental health: PHQ-4 index, four questions on low mood, loss of interest, nervousness and worry (0--12, z)", 3),
+              ("gad2_bin", "Panel B. The anxiety half of the index: positive GAD-2 screen (its two anxiety questions, subscore of 3 or more)", 3),
+              ("phq2_bin", "Panel C. The depression half of the index: positive PHQ-2 screen (its two depression questions, subscore of 3 or more)", 3)]
     body = []
     res3 = None
     for y, plab, dec in panels:
@@ -515,8 +515,10 @@ def t3_main(d):
     notes = ("Ordinary least squares estimates of equation~(1) on the "
              "adolescents of the 2024 ELPI wave; seven of the 10,003 "
              "adolescents of Table~\\ref{tab:sample} drop for "
-             "incomplete PHQ-4 answers; Appendix Table~\\ref{tab:a_mh} lists "
-             "every item verbatim. \\bindef{} "
+             "incomplete PHQ-4 answers. Panels B and C disaggregate the Panel A "
+             "index into its two pairs of questions, expressed as "
+             "clinical screens; Appendix Table~\\ref{tab:a_mh} lists "
+             "every question verbatim. \\bindef{} "
              "\\zonedef{} \\specdef{} The sample is the same in every "
              "panel; column 4 has 6,430 adolescents in 67 municipalities. "
              "Demanding inference for column 3 is reported in "
@@ -739,10 +741,10 @@ def t7_robustez(d, ipw, nrep):
 
 
 def t8_rw(d, nrep):
-    fam = {"z_phq4": "PHQ-4 score: four items (z)",
-           "phq2_bin": "PHQ-2 positive: two depression items",
-           "gad2_bin": "GAD-2 positive: two anxiety items",
-           "z_cbcl": "CBCL internalizing: caregiver checklist (z)"}
+    fam = {"z_phq4": "PHQ-4 mental-health index (z)",
+           "phq2_bin": "Its depression half: PHQ-2 positive",
+           "gad2_bin": "Its anxiety half: GAD-2 positive",
+           "z_cbcl": "CBCL internalizing, caregiver (z)"}
     results = {y: fit(d, y, 3, keep_model=True) for y in fam}
     stats, rwp = rw_stepdown(results, nrep)
     body = []
@@ -977,8 +979,9 @@ def figuras(d):
     xt_lab = ["$<$1\n(omitted)", "Age 1", "Age 2", "Ages 3–4"]
     fig, ax = plt.subplots(figsize=(6.3, 3.6))
     for y, colr, lab, off in [
-            ("z_phq4", INK, "PHQ-4 score (z), self-report", -0.07),
-            ("gad2_bin", BLUE, "Positive GAD-2 screen (probability)", 0.07)]:
+            ("z_phq4", INK, "PHQ-4 mental-health index (z)", -0.07),
+            ("gad2_bin", BLUE,
+             "Positive anxiety screen, GAD-2 (probability)", 0.07)]:
         r = fit(d, y, 3)
         bs = [0.0] + [r["b"][b][0] for b in IV]
         ses = [0.0] + [r["b"][b][1] for b in IV]
@@ -988,7 +991,7 @@ def figuras(d):
     ax.axhline(0, color=GRID, lw=1, zorder=0)
     ax.set_xticks(x, xt_lab)
     ax.set_xlabel("Age when the earthquake struck")
-    ax.set_ylabel("Effect relative to exposure before age 1")
+    ax.set_ylabel("Effect relative to children\nstruck before age 1")
     ax.legend(frameon=False, fontsize=9, loc="lower left")
     for s in ("top", "right"):
         ax.spines[s].set_visible(False)
@@ -1009,7 +1012,7 @@ def figuras(d):
         ax.axhline(0, color=GRID, lw=1, zorder=0)
         ax.set_xticks(x, xt_lab)
         ax.set_xlabel("Age when the earthquake struck")
-        ax.set_ylabel("Effect of one SD of PGA on the PHQ-4 (z)")
+        ax.set_ylabel("Effect of one SD of ground shaking\non the PHQ-4 index (z)")
         for s in ("top", "right"):
             ax.spines[s].set_visible(False)
         ax.spines["left"].set_color(GRID)
