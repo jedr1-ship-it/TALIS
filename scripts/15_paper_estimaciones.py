@@ -414,7 +414,7 @@ def t1_descriptivos(d, a):
         srow("\\hspace{1em}Mother's years of education in 2010",
              stat("educ_madre10")),
         "\\addlinespace",
-        "\\panel{6}{Panel B. Mental health at ages 14--18}",
+        "\\panel{6}{Panel B. Mental health at ages 15--18}",
         srow("\\hspace{1em}PHQ-4 score: sum of four items (0--12)", stat("phq4_score")),
         srow("\\hspace{1em}Positive depression screen, PHQ-2 (\\%)",
              stat("phq2_bin"), pct=True),
@@ -434,12 +434,14 @@ def t1_descriptivos(d, a):
               " & $<$1 & 1 & 2 & 3--4 & All (0--4) \\\\",
               " & (1) & (2) & (3) & (4) & (5) \\\\"]
     notes = ("Means over the 10,003 adolescents of the 2024 ELPI wave, all "
-             "born 2006--2009 and therefore exposed to the 27 February 2010 "
-             "earthquake between 6 and 50 months of age, by age on the day "
-             "of the earthquake. Column 5 is the sum of columns 1 to 4: the "
-             "10,003 adolescents of the wave, all of whom were between 6 "
-             "and 50 months old --- ages 0 to 4 --- on the day of the "
-             "earthquake; nobody else exists in the 2024 wave. The survey's "
+             "born between January 2006 and August 2009 and therefore "
+             "exposed to the 27 February 2010 earthquake between 6 and 49 "
+             "months of age, by age on the day of the earthquake. Column 5 "
+             "is the sum of columns 1 to 4: the 10,003 adolescents of the "
+             "wave, all of whom were between 6 and 49 months old --- ages "
+             "0 to 4 --- on the day of the earthquake and 15.0 to 18.6 "
+             "years old at the 2024 interview; nobody else exists in the "
+             "2024 wave. The survey's "
              "two-stage design samples 116 of Chile's 346 municipalities "
              "and keeps them fixed across waves. \\phqdef{} \\zonedef{} Panel C uses the "
              "14,855 children of the 2010 baseline with a valid birth date "
@@ -536,7 +538,7 @@ def t2_lp():
     header = [" & \\multicolumn{1}{c}{Gillmore (2026)} & "
               "\\multicolumn{2}{c}{This paper} \\\\",
               "\\cmidrule(lr){2-2}\\cmidrule(lr){3-4}",
-              " & Ages 7--11 & Ages 14--18 & Ages 14--18 \\\\",
+              " & Ages 7--11 & Ages 15--18 & Ages 15--18 \\\\",
               " & (1) & (2) & (3) \\\\"]
     notes = ("Column 1 reproduces, verbatim, the preferred column of "
              "the published medium-term table of Gillmore (2026): "
@@ -547,7 +549,7 @@ def t2_lp():
              "that column on the public files comes within 0.03 of "
              "it. Columns 2--3 update the same specification with the "
              "new wave: the affected children are now measured in "
-             "2024 at ages 14--18, the comparison group stays "
+             "2024 at ages 15--18, the comparison group stays "
              "measured in 2017, and pooling the two waves is why the "
              "wave fixed effects matter, as in his own short-term "
              "table, which pools 2012 and 2017. Column 3 adds "
@@ -558,7 +560,7 @@ def t2_lp():
              "problems. \\zonedef{} Standard errors clustered by "
              "municipality; evaluation weights. \\starnote")
     table_env("t2_largo_plazo",
-              "Updating Gillmore's (2026) Estimates to Ages 14--18",
+              "Updating Gillmore's (2026) Estimates to Ages 15--18",
               "tab:longrun",
               "@{}p{185pt}" + numcols(3, 72) + "@{}",
               header, body, notes)
@@ -595,7 +597,7 @@ def t3_main(d):
              "Table~\\ref{tab:robust}. \\clusternote{} \\starnote")
     table_env("t3_main",
               "Age at Exposure to the Earthquake and Self-Reported Mental "
-              "Health at Ages 14--18",
+              "Health at Ages 15--18",
               "tab:main",
               "@{}p{182pt}" + numcols(4, 64) + "@{}",
               COLHEAD4, body, notes,
@@ -626,8 +628,8 @@ def t4_informante(d):
     notes = ("Same design and specifications as Table~\\ref{tab:main}, "
              "with the caregiver's report of the child as the outcome. "
              "\\cbcldef{} Panel B uses the change between the 2017 "
-             "measurement (ages 7--11) and the 2024 measurement (ages "
-             "14--18) of the same child, each standardized within its "
+             "measurement (ages 8--12) and the 2024 measurement (ages "
+             "15--18) of the same child, each standardized within its "
              "wave and age; with two periods this is equivalent to a "
              "child fixed-effects estimate. Neither panel shows an "
              "exposure-age gradient: the scar of "
