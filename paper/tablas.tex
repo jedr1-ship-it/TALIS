@@ -148,6 +148,12 @@ birth-cohort fixed effects; $X_i$ are household controls; and
 $\varepsilon_{imc}$ is the error term. The coefficients of interest are
 the $\beta_a$, the effect of having lived the earthquake in an affected
 municipality at age $a$ relative to the children exposed before age one.
+The main effects $\gamma_a$ absorb the outcome differences across
+exposure-age groups that are common to affected and unaffected
+municipalities, differences that exist mechanically because a child who
+was older at the earthquake is also older at the 2024 interview, and
+$\beta_a$ is therefore identified only from how that age profile differs
+between the two zones.
 Standard errors are clustered by municipality of selection, estimates use
 the 2024 sampling weights, and Table~\ref{tab:robust} adds permutation and
 wild-cluster inference for the preferred specification.
