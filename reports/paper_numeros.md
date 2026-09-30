@@ -12,4 +12,6 @@ T1 balance Children of the mother (2012) -0.010
 T1 balance Prior mental health, mother (2012) +0.034***
 T1 balance Prior mental health, father (2012) +0.004
 T1 balance Prior mental health, relative (2012) +0.029*
+T2 LP z_tvip ['-0.240**', '-0.412**'] r2 ['0.103', '0.126']
+T2 LP z_cbcl ['+0.084', '-0.066'] r2 ['0.0442', '0.0621']
 ```

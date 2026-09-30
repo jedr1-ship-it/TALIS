@@ -70,80 +70,91 @@
 {\large \today\par}
 \vspace{1cm}
 {\normalsize Tables and instrument appendix --- draft for discussion\par}
-\vspace{1.5cm}
-\begin{minipage}{0.9\textwidth}
-\singlespacing\normalsize
-\textit{The comparison in words.} Every adolescent of the 2024 ELPI wave lived
-through the 27 February 2010 earthquake as a child; what varies is how hard
-their municipality was shaken and how old they were when it
-struck, grouped as under age one (0--11 months), age one (12--23), age two
-(24--35) and ages three to four (36--59). The estimates answer one question. Take
-the gap in an outcome at ages 15--18 between two exposure ages, say the
-children struck at 24--35 months versus those struck at 0--11 months, among
-the municipalities the earthquake hit; take the same gap among the
-municipalities it did not hit; the coefficient is the first gap minus the
-second. We therefore never compare affected against unaffected municipalities
-directly, and never compare cohorts nationally: municipality fixed effects
-keep every comparison within a municipality, and cohort fixed effects strip
-out everything shared by a birth cohort, including its age at the survey.
-All tables estimate versions of
-\begin{equation}
-Y_{imc} \;=\; \alpha \;+\; \sum_{a}\beta_a\,\bigl(\text{Bin}_a^{\,i}\times D_m\bigr)
-\;+\; \gamma_a\,\text{Bin}_a^{\,i} \;+\; \psi_m \;+\; \theta_c \;+\; X_i'\delta \;+\; \varepsilon_{imc}
-\end{equation}
-where $i$ is an adolescent, $m$ the municipality where the household lived
-before the earthquake, and $c$ the birth cohort. $\text{Bin}_a$ marks the
-child's age, in months, when the earthquake struck. $D_m$ is a dummy equal to
-one when the municipality belongs to the affected zone, the six regions where
-the shaking was destructive (V to IX and the Metropolitan Region); in the
-dose tables it is replaced by the peak ground acceleration, that is, how
-strongly the ground actually shook in the municipality, expressed as a share
-of the acceleration of gravity and standardized. $\psi_m$ and $\theta_c$ are
-municipality and cohort fixed effects and $X_i$ are household controls.
-Standard errors are clustered by municipality and estimates use the 2024
-sampling weights.\end{minipage}
 \end{titlepage}
 
 \setcounter{page}{1}
 
 \begin{center}
-{\scshape The Main Coefficient in Words}
+{\scshape Overview}
 \end{center}
 
-Children who lived through the earthquake at age two (24--35 months old)
-reach adolescence (ages 15--18) with better mental health and less anxiety
-than children who lived through it before age one (0--11 months) or at ages
-three to four (36--59 months). In particular, mental health, measured with
-the PHQ-4, an internationally validated index that groups four questions on
-low mood, loss of interest, nervousness and uncontrollable worry, is 0.39
-points better on the index's 0-to-12 scale, or 0.147 standard deviations
-(column 3 of Table~\ref{tab:main}). This is a moderate effect: the index
-averages 4.31 points in the sample, so the gap equals 9 percent of the mean
-and a third of the 1.11-point divide between girls and boys in the same
-sample, while the gap by mother's education is essentially zero. Anxiety, the anxiety half of the same index, shows a
-probability of screening positive 7.3 percentage points lower, on a base of
-27.3 percent.
+The 27 February 2010 earthquake, of magnitude 8.8, struck every child in
+this paper between birth and age four. Fourteen years later the ELPI survey
+returned to the same children and, for the first time, asked the
+adolescents themselves about their mental health. We find that the
+earthquake left a scar whose depth depends on the age at which it struck.
+Adolescents who lived through it at age two report fewer anxiety and
+depression symptoms at ages 15--18 than adolescents struck as infants, when
+attachment and stress regulation are forming, or at ages three and four,
+when children form their first lasting memories, a U-shaped profile whose
+trough is consistent with the window of infantile amnesia (Terr 1988;
+Bauer 2007; Alberini and Travaglia 2017). The caregivers of the same
+adolescents report no gradient at any age, and almost all of the
+self-reported gradient belongs to girls.
 
-The age profile is a U (Figure~\ref{fig:ushape}). The scar concentrates on
-children struck before age one, when attachment and stress regulation are
-forming, and at ages three to four, when children form their first lasting
-memories; that the trough sits at age two is consistent with the window of
-infantile amnesia, within which events leave no lasting verbal memory (Terr 1988; Bauer 2007; Alberini
-and Travaglia 2017). The heterogeneity is concentrated in girls: among
-them the index gap doubles to 0.300 standard deviations
-and shows up in both halves of the index, anxiety (13.7 percentage points)
-and depression (11.7 points), while among boys every estimate is flat
-(Table~\ref{tab:het}). The result is flat in a placebo on outcomes fixed at
-birth, stable across every specification and dose, and holds under
-permutation inference ($p=0.045$); adjusting for the family of four
-outcomes leaves Romano--Wolf $p$-values at 0.10--0.12, so the full-sample
-evidence is solid rather than overwhelming and the girls' result is the
-sharpest finding.
+The magnitude is moderate. Measured with the PHQ-4, a four-question
+screener of low mood, loss of interest, nervousness and worry that the
+adolescents answer in private, exposure at age two lowers the score by 0.39
+points on its 0-to-12 scale relative to exposure before age one, or 0.147
+standard deviations, statistically significant at the 5 percent level
+(column 3 of Panel A in Table~\ref{tab:main}). The index averages 4.31
+points in the sample, so the gap corresponds to 9 percent of the mean and
+to about a third of the 1.11-point distance between girls and boys, and
+the distance by mother's education is essentially zero. The anxiety half
+of the index moves the most, since the probability of a positive GAD-2
+screen falls by 7.3 percentage points relative to a base of 27.3 percent.
+
+Among girls the PHQ-4 gap doubles to 0.300 standard deviations and appears
+in both halves of the index, with a fall of 13.7 percentage points in the
+anxiety screen and of 11.7 in the depression screen, while among boys
+every estimate is close to zero and statistically insignificant
+(Table~\ref{tab:het}). Among caregivers the same design finds nothing at
+any age (Table~\ref{tab:caregiver}), which is consistent with symptoms
+that adolescents feel and adults do not observe. Figure~\ref{fig:ushape}
+draws the full age profile. The estimates are flat in a placebo on five
+outcomes fixed at birth (Table~\ref{tab:placebo}) and stable across every
+specification we tried (Table~\ref{tab:robust}). Permutation of the
+affected zone across the 116 municipalities gives $p=0.045$, and adjusting
+the four mental-health outcomes as a family leaves Romano--Wolf $p$-values
+between 0.10 and 0.12, so we read the full-sample evidence as suggestive
+and the girls' result as the firm finding.
+
+\begin{center}
+{\scshape Empirical Strategy}
+\end{center}
+
+Every adolescent of the 2024 wave lived through the earthquake as a child,
+and identification rests on the two things that vary across them, how hard
+their municipality was shaken and how old they were when it struck, with
+age grouped as 0--11 months (the omitted group), 12--23, 24--35 and
+36--59. We compare the outcome gap between two exposure ages within the
+municipalities the earthquake hit against the same gap within the
+municipalities it did not hit, so municipality fixed effects keep every
+comparison local and birth-cohort fixed effects absorb everything a cohort
+shares, including its age at the survey. All tables estimate versions of
+\begin{equation}
+Y_{imc} \;=\; \alpha \;+\; \sum_{a}\beta_a\,\bigl(\text{Bin}_{ai}\times D_m\bigr)
+\;+\; \sum_{a}\gamma_a\,\text{Bin}_{ai} \;+\; \psi_m \;+\; \theta_c
+\;+\; X_i'\delta \;+\; \varepsilon_{imc},
+\end{equation}
+where $Y_{imc}$ is the outcome of adolescent $i$ of birth cohort $c$ in
+municipality $m$; $\text{Bin}_{ai}$ are the exposure-age groups; $D_m$
+equals one in the six regions where the official intensity study records
+destructive shaking (V to IX and the Metropolitan Region; Astroza et al.\
+2010), and the dose tables replace it with the standardized peak ground
+acceleration, the strength with which the ground actually shook in the
+municipality; $\psi_m$ and $\theta_c$ are municipality-of-selection and
+birth-cohort fixed effects; $X_i$ are household controls; and
+$\varepsilon_{imc}$ is the error term. The coefficients of interest are
+the $\beta_a$, the effect of having lived the earthquake in an affected
+municipality at age $a$ relative to the children exposed before age one.
+Standard errors are clustered by municipality of selection, estimates use
+the 2024 sampling weights, and Table~\ref{tab:robust} adds permutation and
+wild-cluster inference for the preferred specification.
 
 \clearpage
 
 \input{tables/t1_descriptivos}
-\input{tables/t_gillmore_clone}
 \input{tables/t2_largo_plazo}
 \input{tables/t3_main}
 

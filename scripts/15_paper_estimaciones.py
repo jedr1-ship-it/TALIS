@@ -432,11 +432,15 @@ def t1_descriptivos(d):
         "\\textit{Notes}: ELPI uses sampling weight at national level. "
         "The sample are the 10,003 adolescents of the 2024 wave, born "
         "January 2006--August 2009, aged 6 to 49 months on the day of "
-        "the earthquake and 15 to 18 at the 2024 interview. Every "
-        "characteristic predates the earthquake: sex and ages are "
-        "fixed, 2010 rows come from the baseline interview and 2012 "
-        "rows from the 2012 wave, missing for adolescents without that "
-        "interview. Earthquake municipalities are those of the six "
+        "the earthquake and 15 to 18 at the 2024 interview. Sex and "
+        "ages are fixed at birth and the 2010 rows come from the "
+        "pre-earthquake baseline; the 2012 rows are the family size "
+        "and the lifetime conditions reported in the 2012 wave, the "
+        "controls of the main specification, and are missing for "
+        "adolescents without that interview. Mental health rows mark "
+        "a reported diagnosis of depression, anxiety, bipolar "
+        "disorder, schizophrenia, a personality disorder or an autism "
+        "spectrum disorder. Earthquake municipalities are those of the six "
         "regions where the official intensity study records "
         "destructive shaking (V, VI, VII, VIII, IX and Metropolitan; "
         "Astroza et al. 2010). Column 3 is the difference from a "
@@ -499,7 +503,7 @@ def t2_lp():
         res = [lp.fit(df, y, c) for c in (3, 4)]
         g3, g4, gn = GILL[y]
         L += [f"\\textbf{{\\textit{{{plab}}}}} & & & & \\\\",
-              "Affected*Earthquake & " + g3[0] + " & " + g4[0] + " & "
+              "Affected$\\times$Earthquake & " + g3[0] + " & " + g4[0] + " & "
               + " & ".join(bcell(r["b"], r["p"]) for r in res) + " \\\\",
               " & " + g3[1] + " & " + g4[1] + " & "
               + " & ".join(se3g(r["se"]) for r in res) + " \\\\",
@@ -554,6 +558,8 @@ def t2_lp():
               "\\toprule",
               " & \\multicolumn{2}{@{}l}{Medium-term effect (Gillmore)} & "
               "\\multicolumn{2}{@{}l}{Long-term effect} \\\\",
+              " & \\multicolumn{2}{@{}l}{2017 wave} & "
+              "\\multicolumn{2}{@{}l}{2024 wave} \\\\",
               "\\cmidrule(r){2-3}\\cmidrule(l){4-5}",
               " & (1) & (2) & (3) & (4) \\\\",
               "\\midrule"] + L + [
