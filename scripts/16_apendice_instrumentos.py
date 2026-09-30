@@ -185,7 +185,7 @@ def a3(m24):
              "of the listed items is answered yes.")
     table_env("a3_conducta",
               "Victimization and Risk-Behavior Outcomes: Items and Scales",
-              "tab:a_other", HEAD, body, notes, stretch="0.90")
+              "tab:a_other", HEAD, body, notes, stretch="0.87")
 
 
 def a4(m10, m12):

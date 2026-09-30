@@ -1,36 +1,37 @@
 % ---- begin paper/tables/t2_largo_plazo.tex
 \begin{table}[htbp]\centering
-\caption{Updating Gillmore's (2026) Estimates to Ages 15--18}
+\begin{minipage}{460pt}
+\caption{The impact of the earthquake on cognitive and non-cognitive development in the medium- and long-term.}
 \label{tab:longrun}
-\begin{threeparttable}
-\begin{tabular}{@{}p{185pt}*{3}{>{\centering\arraybackslash}p{72pt}}@{}}
+{\small
+\begin{tabular*}{460pt}{@{}l@{\extracolsep{\fill}}llll@{}}
 \toprule
- & \multicolumn{1}{c}{Gillmore (2026)} & \multicolumn{2}{c}{This paper} \\
-\cmidrule(lr){2-2}\cmidrule(lr){3-4}
- & Ages 7--11 & Ages 15--18 & Ages 15--18 \\
- & (1) & (2) & (3) \\
+ & \multicolumn{2}{@{}l}{Medium-term effect (Gillmore)} & \multicolumn{2}{@{}l}{Long-term effect} \\
+\cmidrule(r){2-3}\cmidrule(l){4-5}
+ & (1) & (2) & (3) & (4) \\
 \midrule
-\panel{4}{Panel A. Receptive vocabulary: Peabody picture--word test (z)}
-Affected $\times$ affected zone & $-$0.174\sym{**} & $-$0.240\sym{**} & $-$0.412\sym{**} \\
- & (0.069) & (0.104) & (0.180) \\
-\addlinespace[3pt]
-\hspace{1em}Observations & 14,069 & 13,779 & 13,779 \\
-\addlinespace
-\panel{4}{Panel B. Internalizing problems: caregiver CBCL checklist (z)}
-Affected $\times$ affected zone & $-$0.129\sym{*} & 0.084 & $-$0.066 \\
- & (0.076) & (0.088) & (0.125) \\
-\addlinespace[3pt]
-\hspace{1em}Observations & 11,568 & 11,038 & 11,038 \\
-\midrule
-Municipality fixed effects & Yes & Yes & Yes \\
-Cohort and wave fixed effects & Yes & Yes & Yes \\
-Household controls & Yes & Yes & Yes \\
-Municipality linear trends & No & No & Yes \\
+\textbf{\textit{Panel A: Peabody}} & & & & \\
+Affected*Earthquake & $-$0.174\sym{**} & $-$0.280\sym{***} & $-$0.240\sym{**} & $-$0.412\sym{**} \\
+ & (0.0686) & (0.0866) & (0.104) & (0.180) \\
+\addlinespace[9pt]
+Observations & 14,069 & 14,069 & 13,779 & 13,779 \\
+\addlinespace[9pt]
+\textbf{\textit{Panel B: CBCL2}} & & & & \\
+Affected*Earthquake & $-$0.129\sym{*} & $-$0.220\sym{**} & 0.084 & $-$0.066 \\
+ & (0.0763) & (0.105) & (0.0884) & (0.125) \\
+\addlinespace[9pt]
+Observations & 11,568 & 11,568 & 11,038 & 11,038 \\
+\addlinespace[9pt]
+Municipality FE & \checkmark & \checkmark & \checkmark & \checkmark \\
+Birth Cohort FE & \checkmark & \checkmark & \checkmark & \checkmark \\
+Child-Mother-HH control & \checkmark & \checkmark & \checkmark & \checkmark \\
+Municipality linear trends & $\times$ & \checkmark & $\times$ & \checkmark \\
 \bottomrule
-\end{tabular}
-\begin{wpnotes}
-\textit{Notes:} Column 1 reproduces, verbatim, the preferred column of the published medium-term table of Gillmore (2026): children exposed between conception and age four, measured in 2017 at ages 7--11, against children conceived after the earthquake; Table~\ref{tab:gillmore} shows that our replication of that column on the public files comes within 0.03 of it. Columns 2--3 update the same specification with the new wave: the affected children are now measured in 2024 at ages 15--18, the comparison group stays measured in 2017, and pooling the two waves is why the wave fixed effects matter, as in his own short-term table, which pools 2012 and 2017. Column 3 adds municipality linear trends, mirroring the robustness column of his own tables, where he reports $-$0.280 for vocabulary and $-$0.220 for the CBCL. The CBCL is oriented as in Gillmore (2026), positive meaning fewer problems. \zonedef{} Standard errors clustered by municipality; evaluation weights. \starnote
-\end{wpnotes}
-\end{threeparttable}
+\end{tabular*}\par}
+\vspace{4pt}
+{\footnotesize
+\textit{Notes}: Each column represents a separate regression. The dependent variable is the test score measured in standard deviations. Peabody is the Peabody Test Score and CBCL is the Child Behavior Check List measure, oriented so that higher means fewer problems. Columns 1 and 2 reproduce Columns 3 and 4 of Table 3 in Gillmore (2026): children exposed between in utero and age four, with scores measured seven years later, at ages 7--11; our replication of his Column 3 on the public ELPI files gives $-$0.160 for Peabody and $-$0.103 for CBCL2. Columns 3 and 4 estimate the same two specifications on the 2024 wave: the same exposed children measured fourteen years later, at ages 15--18, against the comparison group conceived after the earthquake and measured in 2017; pooling the two waves adds survey-wave fixed effects, as in Gillmore's short-term table. Standard errors clustered at the municipal level appear in parentheses---number of clusters: 145 in Columns 1 and 2 and 116 in Columns 3 and 4. The estimates use sampling weights. Child/Mother/HH characteristics include gender, age at the moment of the test (in months), birth order, mothers' age and schooling, father present, number of household members, prior mental health condition for mother, father and relative. * p $<$ 0.1, ** p $<$ 0.05, *** p $<$ 0.01.
+\par}
+\end{minipage}
 \end{table}
 % ---- end paper/tables/t2_largo_plazo.tex

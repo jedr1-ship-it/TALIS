@@ -7,6 +7,7 @@
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage{mathptmx}
+\usepackage{amssymb}
 \usepackage[margin=1in]{geometry}
 \usepackage{booktabs,threeparttable}
 \usepackage{graphicx}
@@ -27,8 +28,10 @@
 
 %---- Tablas al estilo AER: TABLE 1—TÍTULO, versalitas, sin dos puntos -------
 \DeclareCaptionLabelSeparator{emdash}{---}
-\captionsetup[table]{labelsep=emdash,labelfont=sc,textfont=sc,
- justification=centering,singlelinecheck=false,skip=6pt}
+% Captions de tabla al estilo de Gillmore (2026, EER): "Table N" en negrita,
+% salto de linea y frase descriptiva en redonda, alineadas a la izquierda.
+\captionsetup[table]{labelsep=newline,labelfont=bf,textfont=normalfont,
+ justification=raggedright,singlelinecheck=false,skip=4pt}
 \captionsetup[figure]{labelsep=period,justification=centering,
  singlelinecheck=false,skip=6pt}
 
@@ -140,7 +143,7 @@ sharpest finding.
 \clearpage
 
 \input{tables/t1_descriptivos}
-\input{tables/t2rep_gillmore}
+\input{tables/t_gillmore_clone}
 \input{tables/t2_largo_plazo}
 \input{tables/t3_main}
 

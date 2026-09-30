@@ -1,0 +1,53 @@
+% ---- Clon LITERAL de la Table 3 de Gillmore (2026, EER 115, 102817, p. 10).
+% ---- Solo para validacion visual del formato; se elimina cuando el autor
+% ---- confirme que es igual. Todos los valores transcritos verbatim.
+\begin{table}[htbp]\centering
+\begin{minipage}{345pt}
+{\raggedright
+\textbf{Table 3}\\
+The impact of the earthquake on cognitive and non-cognitive development in
+the medium-term.\par}
+\vspace{4pt}
+{\small
+\begin{tabular*}{345pt}{@{}l@{\extracolsep{\fill}}llll@{}}
+\toprule
+ & (1) & (2) & (3) & (4) \\
+\midrule
+\textbf{\textit{Panel A: Peabody}} & & & & \\
+Affected*Earthquake & $-$0.180\sym{**} & $-$0.190\sym{**} & $-$0.174\sym{**} & $-$0.280\sym{***} \\
+ & (0.0752) & (0.0732) & (0.0686) & (0.0866) \\
+\addlinespace[9pt]
+Observations & 14,069 & 14,069 & 14,069 & 14,069 \\
+$Adj-R^{2}$ & 0.115 & 0.132 & 0.185 & 0.197 \\
+\addlinespace[9pt]
+\textbf{\textit{Panel B: CBCL2}} & & & & \\
+Affected*Earthquake & $-$0.123\sym{*} & $-$0.126\sym{*} & $-$0.129\sym{*} & $-$0.220\sym{**} \\
+ & (0.0759) & (0.0762) & (0.0763) & (0.105) \\
+\addlinespace[9pt]
+Observations & 11,568 & 11,568 & 11,568 & 11,568 \\
+$Adj-R^{2}$ & 0.0659 & 0.0657 & 0.107 & 0.118 \\
+\addlinespace[9pt]
+Municipality FE & \checkmark & \checkmark & \checkmark & \checkmark \\
+Birth Cohort FE & $\times$ & \checkmark & \checkmark & \checkmark \\
+Child-Mother-HH control & $\times$ & $\times$ & \checkmark & \checkmark \\
+Municipality linear trends & $\times$ & $\times$ & $\times$ & \checkmark \\
+\bottomrule
+\end{tabular*}\par}
+\vspace{4pt}
+{\footnotesize
+\textit{Notes}: Each column represents a separate regression. The dependent
+variable is the test score measured in standard deviations. Peabody is the
+Peabody Test Score and CBCL is the Child Behavior Check List measure. These
+scores are measured seven years later. Observations are at the
+individual/municipality level. Column 1 includes an indicator variable
+$Affected_{it}$ that captures if the child was alive or in utero and the
+moment of the earthquake. Standard errors clustered at the municipal level
+appear in parentheses---number of clusters: 145. The estimates use sampling
+weights representative at the national level. Child/Mother/HH
+characteristics include gender, age at the moment of the test (in months),
+birth order, mothers' age and schooling, father present, number member of
+the household, prior mental health condition for mother, father and
+relative. * p $<$ 0.1, ** p $<$ 0.05, *** p $<$ 0.01.\par}
+\end{minipage}
+\end{table}
+% ---- fin del clon

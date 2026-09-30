@@ -386,118 +386,97 @@ def foot_block(res_by_col, unit="Observations"):
             + " & ".join(str(r["ncl"]) for r in res_by_col) + " \\\\"]
 
 
-def t1_descriptivos(d, a):
-    g = d.groupby("bin", observed=True)
+def t1_descriptivos(d):
+    """Balance al estilo de la Table 1 de Gillmore (2026): medias por zona
+    (Non-Earthquake / Earthquake), (DE) debajo, y columna Difference con
+    EE cluster por comuna de seleccion. Solo caracteristicas pre-terremoto."""
+    import statsmodels.formula.api as smf
+    rows = [("Girl", "mujer"),
+            ("Age at the earthquake (months)", "edadq_m"),
+            ("Mother's age (2010)", "edad_madre10"),
+            ("Mother's schooling (2010)", "educ_madre10"),
+            ("HH size (2010)", "tot_per10"),
+            ("Rural household (2010)", "rural10"),
+            ("Children of the mother (2012)", "n_hijos"),
+            ("Prior mental health, mother (2012)", "mh_madre"),
+            ("Prior mental health, father (2012)", "mh_padre"),
+            ("Prior mental health, relative (2012)", "mh_ofam")]
+    g0, g1 = d[d.EQ == 0], d[d.EQ == 1]
 
-    def srow(name, s, dec=2, pct=False):
-        v = [s.get(b, np.nan) for b in BINS] + [s["all"]]
-        cells = " & ".join(
-            "--" if pd.isna(x) else
-            (f"{100 * x:.1f}" if pct else
-             (f"{x:,.0f}" if dec == 0 else f"{x:.{dec}f}")) for x in v)
-        return f"{name} & {cells} \\\\"
+    def wmean(s, w):
+        m = s.notna() & w.notna()
+        return float(np.average(s[m], weights=w[m]))
 
-    def stat(col):
-        s = dict(g[col].mean())
-        s["all"] = d[col].mean()
-        return s
-    body = [
-        "\\panel{6}{Panel A. Sample}",
-        srow("\\hspace{1em}Adolescents",
-             {**dict(g.size()), "all": len(d)}, dec=0),
-        srow("\\hspace{1em}In the affected zone (\\%)", stat("EQ"),
-             pct=True),
-        srow("\\hspace{1em}Female (\\%)", stat("mujer"), pct=True),
-        srow("\\hspace{1em}Age in 2024 (years)",
-             {**dict(g.edad_meses.mean() / 12),
-              "all": d.edad_meses.mean() / 12}, dec=1),
-        srow("\\hspace{1em}Mother's years of education in 2010",
-             stat("educ_madre10")),
-        "\\addlinespace",
-        "\\panel{6}{Panel B. Mental health at ages 15--18}",
-        srow("\\hspace{1em}PHQ-4 score: sum of four items (0--12)", stat("phq4_score")),
-        srow("\\hspace{1em}Positive depression screen, PHQ-2 (\\%)",
-             stat("phq2_bin"), pct=True),
-        srow("\\hspace{1em}Positive anxiety screen, GAD-2 (\\%)",
-             stat("gad2_bin"), pct=True),
-        srow("\\hspace{1em}CBCL internalizing, caregiver (T)",
-             {**dict(g.cbcl2_pt_inter_t.apply(lambda s: num(s).mean())),
-              "all": num(d.cbcl2_pt_inter_t).mean()}, dec=1),
-        "\\addlinespace",
-        "\\panel{6}{Panel C. Retention}"]
-    ret = dict(a.groupby("bin", observed=True).in2024.mean())
-    ret["all"] = a.in2024.mean()
-    body.append(srow("\\hspace{1em}Reinterviewed in 2024 (\\% of 2010)",
-                     ret, pct=True))
-    header = [" & \\multicolumn{4}{c}{Age when the earthquake struck} & \\\\",
-              "\\cmidrule(lr){2-5}",
-              " & $<$1 & 1 & 2 & 3--4 & All (0--4) \\\\",
-              " & (1) & (2) & (3) & (4) & (5) \\\\"]
-    notes = ("Means over the 10,003 adolescents of the 2024 ELPI wave, all "
-             "born between January 2006 and August 2009 and therefore "
-             "exposed to the 27 February 2010 earthquake between 6 and 49 "
-             "months of age, by age on the day of the earthquake. Column 5 "
-             "is the sum of columns 1 to 4: the 10,003 adolescents of the "
-             "wave, all of whom were between 6 and 49 months old --- ages "
-             "0 to 4 --- on the day of the earthquake and 15.0 to 18.6 "
-             "years old at the 2024 interview; nobody else exists in the "
-             "2024 wave. The survey's "
-             "two-stage design samples 116 of Chile's 346 municipalities "
-             "and keeps them fixed across waves. \\phqdef{} \\zonedef{} Panel C uses the "
-             "14,855 children of the 2010 baseline with a valid birth date "
-             "and shows that retention into 2024 is flat across "
-             "exposure-age groups (Table~\\ref{tab:attrition}).")
-    table_env("t1_descriptivos",
-              "The Analysis Sample by Age at Exposure to the Earthquake",
-              "tab:sample",
-              "@{}p{208pt}" + numcols(5, 46) + "@{}",
-              header, body, notes)
+    def wsd(s, w):
+        m = s.notna() & w.notna()
+        mu = np.average(s[m], weights=w[m])
+        return float(np.sqrt(np.average((s[m] - mu) ** 2, weights=w[m])))
+
+    L = []
+    for lab, v in rows:
+        m0, s0 = wmean(g0[v], g0.w), wsd(g0[v], g0.w)
+        m1, s1 = wmean(g1[v], g1.w), wsd(g1[v], g1.w)
+        dd = d.dropna(subset=[v, "w"]).copy()
+        r = smf.wls(f"{v} ~ EQ", data=dd, weights=dd.w).fit(
+            cov_type="cluster",
+            cov_kwds={"groups": dd.estrato.astype(int)})
+        b, se, p = r.params["EQ"], r.bse["EQ"], r.pvalues["EQ"]
+        st = stars(p)
+        L += [f"{lab} & {m0:.3f} & {m1:.3f} & {fnum(b)}"
+              + (f"\\sym{{{st}}}" if st else "") + " \\\\",
+              f" & ({s0:.3f}) & ({s1:.3f}) & ({se:.3f}) \\\\"]
+        log("T1 balance", lab, f"{b:+.3f}{st}")
+    L += ["\\addlinespace[6pt]",
+          f"Observations & {len(g0):,} & {len(g1):,} & {len(d):,} \\\\"]
+    notes = (
+        "\\textit{Notes}: ELPI uses sampling weight at national level. "
+        "The sample are the 10,003 adolescents of the 2024 wave, born "
+        "January 2006--August 2009, aged 6 to 49 months on the day of "
+        "the earthquake and 15 to 18 at the 2024 interview. Every "
+        "characteristic predates the earthquake: sex and ages are "
+        "fixed, 2010 rows come from the baseline interview and 2012 "
+        "rows from the 2012 wave, missing for adolescents without that "
+        "interview. Earthquake municipalities are those of the six "
+        "regions where the official intensity study records "
+        "destructive shaking (V, VI, VII, VIII, IX and Metropolitan; "
+        "Astroza et al. 2010). Column 3 is the difference from a "
+        "regression on the earthquake indicator; standard errors "
+        "clustered at the municipality of selection appear in "
+        "parentheses---number of clusters: 116. "
+        "* p $<$ 0.1, ** p $<$ 0.05, *** p $<$ 0.01.")
+    W = "360pt"
+    lines = (["% ---- begin paper/tables/t1_descriptivos.tex",
+              "\\begin{table}[htbp]\\centering",
+              f"\\begin{{minipage}}{{{W}}}",
+              "\\caption{Descriptive statistics.}",
+              "\\label{tab:sample}",
+              "{\\small",
+              f"\\begin{{tabular*}}{{{W}}}"
+              "{@{}l@{\\extracolsep{\\fill}}lll@{}}",
+              "\\toprule",
+              " & (1) & (2) & (3) \\\\",
+              " & Non-Earthquake & Earthquake & Difference \\\\",
+              "\\midrule"] + L + [
+              "\\bottomrule",
+              "\\end{tabular*}\\par}",
+              "\\vspace{4pt}",
+              "{\\footnotesize", notes, "\\par}",
+              "\\end{minipage}",
+              "\\end{table}",
+              "% ---- end paper/tables/t1_descriptivos.tex"])
+    TAB.mkdir(parents=True, exist_ok=True)
+    (TAB / "t1_descriptivos.tex").write_text("\n".join(lines) + "\n",
+                                             encoding="utf-8")
+    print("-> paper/tables/t1_descriptivos.tex")
 
 
-def t2rep():
-    spec = importlib.util.spec_from_file_location(
-        "rep", HERE / "08_replicacion_gillmore.py")
-    rep = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(rep)
-    R = rep.load_raw()
-    st, mt = rep.assemble(R, rep.BEST)
-    body = []
-    for y, plab in (("z_tvip", "Panel A. Receptive vocabulary: Peabody "
-                     "picture--word test (z)"),
-                    ("z_cbcl2", "Panel B. Internalizing problems: "
-                     "caregiver CBCL checklist (z)")):
-        res = [rep.fit(mt, y, c, rep.BEST) for c in (1, 2, 3)]
-        body.append(f"\\panel{{4}}{{{plab}}}")
-        body += coef2("Affected $\\times$ affected zone",
-                      [(r["b"], r["se"], r["p"]) for r in res])
-        body.append("\\addlinespace[3pt]")
-        body.append("\\hspace{1em}Observations & "
-                    + " & ".join(f"{r['n']:,}" for r in res) + " \\\\")
-        body.append("\\addlinespace")
-        log("T2rep MT", y, [f"{r['b']:+.3f}{stars(r['p'])}" for r in res])
-    body = body[:-1]
-    body += ["\\midrule",
-             "Municipality fixed effects & Yes & Yes & Yes \\\\",
-             "Birth-cohort fixed effects & No & Yes & Yes \\\\",
-             "Household controls & No & No & Yes \\\\"]
-    header = [" & (1) & (2) & (3) \\\\"]
-    notes = ("Replication on the public ELPI files of the medium-term "
-             "table of Gillmore (2026), in his design: a single "
-             "wave (2017), with affected children aged 7--11 compared "
-             "with children conceived after the earthquake, aged 2--6. "
-             "Column 1 includes municipality fixed effects only; column "
-             "2 adds birth-cohort fixed effects; column 3 the household "
-             "controls. His published column-3 coefficients are "
-             "$-$0.174 for vocabulary (14,069 children) and $-$0.129 for "
-             "the CBCL (11,568); the small gaps to ours reflect cleaning "
-             "choices in his estimation code, which is not public. "
-             "\\zonedef{} Standard errors clustered by municipality in "
-             "parentheses; evaluation weights. \\starnote")
-    table_env("t2rep_gillmore",
-              "Replication of Gillmore's (2026) Main Table",
-              "tab:gillmore",
-              "@{}p{200pt}" + numcols(3, 74) + "@{}",
-              header, body, notes)
+def se3g(x):
+    """EE con 3 cifras significativas, como los imprime Gillmore (2026)."""
+    return f"({x:.4f})" if x < 0.0995 else f"({x:.3f})"
+
+
+def r23g(x):
+    return f"{x:.4f}" if x < 0.0995 else f"{x:.3f}"
 
 
 def t2_lp():
@@ -506,64 +485,89 @@ def t2_lp():
     lp = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(lp)
     df = lp.build()
-    # Col 3 publicada de su tabla de mediano plazo (EER 2026, T3; docs/
-    # gillmore_metodologia_robustez.md §8): coeficiente, EE, stars, n.
-    GILL = {"z_tvip": (-0.174, 0.069, "**", "14,069"),
-            "z_cbcl": (-0.129, 0.076, "*", "11,568")}
-    body = []
-    for y, plab in [("z_tvip", "Panel A. Receptive vocabulary: Peabody "
-                     "picture--word test (z)"),
-                    ("z_cbcl", "Panel B. Internalizing problems: "
-                     "caregiver CBCL checklist (z)")]:
+    # Columnas 3 y 4 de la Table 3 de Gillmore (2026, p. 10), transcritas
+    # verbatim: (coef con stars, EE, Adj-R2) por columna, y n.
+    GILL = {"z_tvip": (("$-$0.174\\sym{**}", "(0.0686)", "0.185"),
+                       ("$-$0.280\\sym{***}", "(0.0866)", "0.197"),
+                       "14,069"),
+            "z_cbcl": (("$-$0.129\\sym{*}", "(0.0763)", "0.107"),
+                       ("$-$0.220\\sym{**}", "(0.105)", "0.118"),
+                       "11,568")}
+    L = []
+    for y, plab in [("z_tvip", "Panel A: Peabody"),
+                    ("z_cbcl", "Panel B: CBCL2")]:
         res = [lp.fit(df, y, c) for c in (3, 4)]
-        gb, gse, gst, gn = GILL[y]
-        body.append(f"\\panel{{4}}{{{plab}}}")
-        body.append("Affected $\\times$ affected zone & "
-                    f"{fnum(gb)}\\sym{{{gst}}} & "
-                    + " & ".join(bcell(r["b"], r["p"]) for r in res)
-                    + " \\\\")
-        body.append(f" & {secell(gse)} & "
-                    + " & ".join(secell(r["se"]) for r in res) + " \\\\")
-        body.append("\\addlinespace[3pt]")
-        body.append(f"\\hspace{{1em}}Observations & {gn} & "
-                    + " & ".join(f"{r['n']:,}" for r in res) + " \\\\")
-        body.append("\\addlinespace")
-        log("T2 LP", y, [f"{r['b']:+.3f}{stars(r['p'])}" for r in res])
-    body = body[:-1]
-    body += ["\\midrule",
-             "Municipality fixed effects & Yes & Yes & Yes \\\\",
-             "Cohort and wave fixed effects & Yes & Yes & Yes \\\\",
-             "Household controls & Yes & Yes & Yes \\\\",
-             "Municipality linear trends & No & No & Yes \\\\"]
-    header = [" & \\multicolumn{1}{c}{Gillmore (2026)} & "
-              "\\multicolumn{2}{c}{This paper} \\\\",
-              "\\cmidrule(lr){2-2}\\cmidrule(lr){3-4}",
-              " & Ages 7--11 & Ages 15--18 & Ages 15--18 \\\\",
-              " & (1) & (2) & (3) \\\\"]
-    notes = ("Column 1 reproduces, verbatim, the preferred column of "
-             "the published medium-term table of Gillmore (2026): "
-             "children exposed between conception and age four, "
-             "measured in 2017 at ages 7--11, against children "
-             "conceived after the earthquake; "
-             "Table~\\ref{tab:gillmore} shows that our replication of "
-             "that column on the public files comes within 0.03 of "
-             "it. Columns 2--3 update the same specification with the "
-             "new wave: the affected children are now measured in "
-             "2024 at ages 15--18, the comparison group stays "
-             "measured in 2017, and pooling the two waves is why the "
-             "wave fixed effects matter, as in his own short-term "
-             "table, which pools 2012 and 2017. Column 3 adds "
-             "municipality linear trends, mirroring the robustness "
-             "column of his own tables, where he reports $-$0.280 for "
-             "vocabulary and $-$0.220 for the CBCL. The CBCL is "
-             "oriented as in Gillmore (2026), positive meaning fewer "
-             "problems. \\zonedef{} Standard errors clustered by "
-             "municipality; evaluation weights. \\starnote")
-    table_env("t2_largo_plazo",
-              "Updating Gillmore's (2026) Estimates to Ages 15--18",
-              "tab:longrun",
-              "@{}p{185pt}" + numcols(3, 72) + "@{}",
-              header, body, notes)
+        g3, g4, gn = GILL[y]
+        L += [f"\\textbf{{\\textit{{{plab}}}}} & & & & \\\\",
+              "Affected*Earthquake & " + g3[0] + " & " + g4[0] + " & "
+              + " & ".join(bcell(r["b"], r["p"]) for r in res) + " \\\\",
+              " & " + g3[1] + " & " + g4[1] + " & "
+              + " & ".join(se3g(r["se"]) for r in res) + " \\\\",
+              "\\addlinespace[9pt]",
+              f"Observations & {gn} & {gn} & "
+              + " & ".join(f"{r['n']:,}" for r in res) + " \\\\",
+              "\\addlinespace[9pt]"]
+        log("T2 LP", y, [f"{r['b']:+.3f}{stars(r['p'])}" for r in res],
+            "r2", [r23g(r["r2"]) for r in res])
+    L += ["Municipality FE & \\checkmark & \\checkmark & \\checkmark & "
+          "\\checkmark \\\\",
+          "Birth Cohort FE & \\checkmark & \\checkmark & \\checkmark & "
+          "\\checkmark \\\\",
+          "Child-Mother-HH control & \\checkmark & \\checkmark & "
+          "\\checkmark & \\checkmark \\\\",
+          "Municipality linear trends & $\\times$ & \\checkmark & "
+          "$\\times$ & \\checkmark \\\\"]
+    notes = (
+        "\\textit{Notes}: Each column represents a separate regression. "
+        "The dependent variable is the test score measured in standard "
+        "deviations. Peabody is the Peabody Test Score and CBCL is the "
+        "Child Behavior Check List measure, oriented so that higher "
+        "means fewer problems. Columns 1 and 2 reproduce Columns 3 and 4 "
+        "of Table 3 in Gillmore (2026): children exposed between in "
+        "utero and age four, with scores measured seven years later, at "
+        "ages 7--11; our replication of his Column 3 on the public ELPI "
+        "files gives $-$0.160 for Peabody and $-$0.103 for CBCL2. "
+        "Columns 3 and 4 estimate the same two specifications on the "
+        "2024 wave: the same exposed children measured fourteen years "
+        "later, at ages 15--18, against the comparison group conceived "
+        "after the earthquake and measured in 2017; pooling the two "
+        "waves adds survey-wave fixed effects, as in Gillmore's "
+        "short-term table. Standard errors clustered at the municipal "
+        "level appear in parentheses---number of clusters: 145 in "
+        "Columns 1 and 2 and 116 in Columns 3 and 4. The estimates use "
+        "sampling weights. Child/Mother/HH characteristics include "
+        "gender, age at the moment of the test (in months), birth "
+        "order, mothers' age and schooling, father present, number of "
+        "household members, prior mental health condition for mother, "
+        "father and relative. * p $<$ 0.1, ** p $<$ 0.05, "
+        "*** p $<$ 0.01.")
+    W = "460pt"
+    lines = (["% ---- begin paper/tables/t2_largo_plazo.tex",
+              "\\begin{table}[htbp]\\centering",
+              f"\\begin{{minipage}}{{{W}}}",
+              "\\caption{The impact of the earthquake on cognitive and "
+              "non-cognitive development in the medium- and long-term.}",
+              "\\label{tab:longrun}",
+              "{\\small",
+              f"\\begin{{tabular*}}{{{W}}}"
+              "{@{}l@{\\extracolsep{\\fill}}llll@{}}",
+              "\\toprule",
+              " & \\multicolumn{2}{@{}l}{Medium-term effect (Gillmore)} & "
+              "\\multicolumn{2}{@{}l}{Long-term effect} \\\\",
+              "\\cmidrule(r){2-3}\\cmidrule(l){4-5}",
+              " & (1) & (2) & (3) & (4) \\\\",
+              "\\midrule"] + L + [
+              "\\bottomrule",
+              "\\end{tabular*}\\par}",
+              "\\vspace{4pt}",
+              "{\\footnotesize", notes, "\\par}",
+              "\\end{minipage}",
+              "\\end{table}",
+              "% ---- end paper/tables/t2_largo_plazo.tex"])
+    TAB.mkdir(parents=True, exist_ok=True)
+    (TAB / "t2_largo_plazo.tex").write_text("\n".join(lines) + "\n",
+                                            encoding="utf-8")
+    print("-> paper/tables/t2_largo_plazo.tex")
 
 
 def t3_main(d):
@@ -1214,7 +1218,7 @@ def main():
     if go("t9"):
         ipw = t9_atricion(a)
     if go("t1"):
-        t1_descriptivos(d, a)
+        t1_descriptivos(d)
     if go("t3"):
         t3_main(d)
     if go("t4"):
@@ -1238,8 +1242,6 @@ def main():
         mapas(d)
     if go("t2"):
         t2_lp()
-    if go("t2rep"):
-        t2rep()
     Path("reports").mkdir(exist_ok=True)
     (Path("reports") / "paper_numeros.md").write_text(
         "# Log de estimaciones del paper\n\n```\n" + "\n".join(LOG)
