@@ -2,16 +2,15 @@
 
 ```
 datos: 10,003 adolescentes | PGA: ok
-T1 balance Girl -0.000
-T1 balance Age at the earthquake (months) +0.169
-T1 balance Mother's age (2010) +0.695***
-T1 balance Mother's schooling (2010) -0.002
-T1 balance HH size (2010) +0.083
-T1 balance Rural household (2010) +0.014
-T1 balance Children of the mother (2012) -0.010
-T1 balance Prior mental health, mother (2012) +0.034***
-T1 balance Prior mental health, father (2012) +0.004
-T1 balance Prior mental health, relative (2012) +0.029*
-T2 LP z_tvip ['-0.240**', '-0.412**'] r2 ['0.103', '0.126']
-T2 LP z_cbcl ['+0.084', '-0.066'] r2 ['0.0442', '0.0621']
+T10 z_resil {'12-23m': '+0.061', '24-35m': '+0.141*', '36-59m': '+0.098'}
+T10 z_satisf {'12-23m': '+0.086*', '24-35m': '+0.098*', '36-59m': '+0.116*'}
+T10 z_salud {'12-23m': '-0.086', '24-35m': '-0.072', '36-59m': '-0.054'}
+T10 z_bull {'12-23m': '+0.028', '24-35m': '-0.047', '36-59m': '+0.037'}
+T10 ciber_any {'12-23m': '-0.015', '24-35m': '-0.007', '36-59m': '-0.005'}
+-> paper/tables/t10a_bienestar.tex
+T10 viol_pareja {'12-23m': '+0.025', '24-35m': '+0.005', '36-59m': '+0.028'}
+T10 fuma {'12-23m': '+0.012', '24-35m': '-0.002', '36-59m': '-0.022'}
+T10 alcohol {'12-23m': '-0.038', '24-35m': '-0.037', '36-59m': '-0.078**'}
+T10 cannabis {'12-23m': '+0.018', '24-35m': '+0.014', '36-59m': '+0.013'}
+-> paper/tables/t10b_riesgo.tex
 ```

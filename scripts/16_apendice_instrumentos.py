@@ -148,14 +148,15 @@ def a1(m24):
 
 def a2(m24):
     body = (["\\panel{3}{Panel A. Resilience: Brief Resilience Scale "
-             "(items 2, 4 and 6 reverse-coded)}"]
+             "(all six items worded positively)}"]
             + rows_for(m24, [f"d2_{i}" for i in range(1, 7)])
             + ["\\addlinespace",
                "\\panel{3}{Panel B. Life satisfaction and self-rated "
                "health}"]
             + rows_for(m24, ["d3_1", "d1"]))
-    notes = (VERB + " The resilience score is the mean of the six items "
-             "after reverse-coding items 2, 4 and 6, standardized; life "
+    notes = (VERB + " The resilience score is the mean of the six items, "
+             "standardized; the ELPI 2024 version words all six positively, "
+             "unlike the original scale, so none is reverse-coded. Life "
              "satisfaction and self-rated health are standardized, the "
              "latter with its sign reversed in the analysis so that "
              "higher values mean worse health.")

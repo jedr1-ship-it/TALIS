@@ -74,13 +74,10 @@ def extras_2024():
         if c in df:
             print(f"  {c} values:", num(df[c]).value_counts().head(6).to_dict())
     e = pd.DataFrame({"folio": df.folio})
-    # Brief Resilience Scale: 6 ítems 1-5, 2/4/6 invertidos (estándar BRS)
-    brs = []
-    for i in range(1, 7):
-        v = num(df.get(f"d2_{i}")).where(lambda s: s.between(1, 5))
-        if i in (2, 4, 6):
-            v = 6 - v
-        brs.append(v)
+    # Brief Resilience Scale: 6 ítems 1-5. La versión ELPI 2024 redacta los
+    # seis en positivo (el BRS original invierte 2/4/6): ninguno se invierte.
+    brs = [num(df.get(f"d2_{i}")).where(lambda s: s.between(1, 5))
+           for i in range(1, 7)]
     e["z_resil"] = zstd(pd.concat(brs, axis=1).mean(axis=1, skipna=False))
     e["z_satisf"] = zstd(num(df.get("d3_1")).where(lambda s: s.between(1, 7)))
     e["z_salud"] = zstd(-num(df.get("d1")).where(lambda s: s.between(1, 5)))
