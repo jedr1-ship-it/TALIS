@@ -124,13 +124,7 @@ every estimate is close to zero and statistically insignificant
 (Table~\ref{tab:het}). Among caregivers the same design finds nothing at
 any age (Table~\ref{tab:caregiver}), which is consistent with symptoms
 that adolescents feel and adults do not observe. Figure~\ref{fig:ushape}
-draws the full age profile. The estimates are flat in a placebo on five
-outcomes fixed at birth (Table~\ref{tab:placebo}) and stable across every
-specification we tried (Table~\ref{tab:robust}). Permutation of the
-affected zone across the 116 municipalities gives $p=0.045$, and adjusting
-the four mental-health outcomes as a family leaves Romano--Wolf $p$-values
-between 0.10 and 0.12, so we read the full-sample evidence as suggestive
-and the girls' result as the firm finding.
+draws the full age profile.
 
 \begin{center}
 {\scshape Empirical Strategy}
@@ -154,9 +148,7 @@ where $Y_{imc}$ is the outcome of adolescent $i$ of birth cohort $c$ in
 municipality $m$; $\text{Bin}_{ai}$ are the exposure-age groups; $D_m$
 equals one in the six regions where the official intensity study records
 destructive shaking (V to IX and the Metropolitan Region; Astroza et al.\
-2010), and the dose tables replace it with the standardized peak ground
-acceleration, the strength with which the ground actually shook in the
-municipality; $\psi_m$ and $\theta_c$ are municipality-of-selection and
+2010); $\psi_m$ and $\theta_c$ are municipality-of-selection and
 birth-cohort fixed effects; $X_i$ are household controls; and
 $\varepsilon_{imc}$ is the error term. The coefficients of interest are
 the $\beta_a$, the effect of having lived the earthquake in an affected
@@ -167,9 +159,8 @@ municipalities, differences that exist mechanically because a child who
 was older at the earthquake is also older at the 2024 interview, and
 $\beta_a$ is therefore identified only from how that age profile differs
 between the two zones.
-Standard errors are clustered by municipality of selection, estimates use
-the 2024 sampling weights, and Table~\ref{tab:robust} adds permutation and
-wild-cluster inference for the preferred specification.
+Standard errors are clustered by municipality of selection, and estimates use
+the 2024 sampling weights.
 
 \clearpage
 
@@ -196,58 +187,7 @@ probability units. \clusternote
 \input{tables/t3_main}
 
 \input{tables/t4_informante}
-\input{tables/t5_dosis}
 
-\begin{figure}[htbp]\centering
-  \includegraphics[width=0.9\textwidth]{f2_dosis_pga.pdf}
-  \caption{The Gradient Under the Continuous Seismic Dose}
-  \label{fig:pga}
-  \begin{fignotes}[0.9\textwidth]
-\textit{Notes:} Each marker is the coefficient on the exposure-age group
-interacted with the standardized peak ground acceleration, how strongly the
-ground shook, at the centroid of the municipality of selection, with
-its 95 percent confidence interval; specification of column 3 of
-Table~\ref{tab:main}. The dose varies across the 116 municipalities, within affected
-regions. \clusternote
-  \end{fignotes}
-\end{figure}
-
-\begin{figure}[htbp]\centering
-  \includegraphics[height=0.86\textheight]{f3_mapa_dosis.pdf}
-  \caption{The Seismic Dose Across the Municipalities of Selection}
-  \label{fig:mapdose}
-  \begin{fignotes}[0.86\textwidth]
-\textit{Notes:} Each colored municipality is one of the 116 municipalities of
-selection of the ELPI sample, colored by the peak ground acceleration, that
-is, how strongly the ground shook during the earthquake, expressed as a share
-of the acceleration of gravity (from the ShakeMap of the U.S. Geological
-Survey); the star marks the epicenter and light-gray municipalities are not
-in the sample. The map shows the two sources of identifying variation of
-Table~\ref{tab:dose}, the affected zone and the continuous dose within it.
-  \end{fignotes}
-\end{figure}
-
-\begin{figure}[htbp]\centering
-  \includegraphics[height=0.86\textheight]{f4_mapa_sintomas.pdf}
-  \caption{The Geography of Adolescent Anxiety in 2024}
-  \label{fig:mapanx}
-  \begin{fignotes}[0.86\textwidth]
-\textit{Notes:} Each colored municipality is one of the 116 municipalities of
-selection, colored by the share of its adolescents with a positive GAD-2
-anxiety screen in the 2024 wave; municipality shares range from 11.9 to 43.8
-percent, and light-gray municipalities are not in the sample. The map is
-descriptive and unadjusted; the regressions of the paper compare cohorts
-within municipality, never municipalities against each other.
-  \end{fignotes}
-\end{figure}
-
-\input{tables/t6_placebo}
-\input{tables/t7_robustez}
-\input{tables/t8_romanowolf}
-\input{tables/t9_atricion}
-\input{tables/t10a_bienestar}
-\input{tables/t10b_riesgo}
-\input{tables/t11_madre}
 \input{tables/t12_heterogeneidad}
 
 \clearpage
@@ -260,9 +200,5 @@ within municipality, never municipalities against each other.
 \end{center}
 
 \input{tables/a1_mh}
-\input{tables/a2_wellbeing}
-\input{tables/a3_conducta}
-\input{tables/a4_madre}
-\input{tables/a5_nacimiento}
 
 \end{document}

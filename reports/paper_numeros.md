@@ -2,16 +2,8 @@
 
 ```
 datos: 10,003 adolescentes | PGA: ok
-T12A Girls -0.300*** contr +0.182**
-T12A Boys -0.016 contr +0.042
-T12A Mother with secondary education or less -0.107 contr +0.071
-T12A Mother with tertiary education -0.201 contr +0.182
-T12A Urban household in 2010 -0.139* contr +0.129**
-T12A Rural household in 2010 -0.238 contr -0.213
-T12A cuota de las chicas: 95% del coef. edad 2, 81% de 3-4 frente a 2
-T12B gad2_bin Girls -0.137***
-T12B gad2_bin Boys -0.026
-T12B phq2_bin Girls -0.117**
-T12B phq2_bin Boys +0.016
--> paper/tables/t12_heterogeneidad.tex
+T3 z_phq4 col3: {'12-23m': '-0.045', '24-35m': '-0.147**', '36-59m': '-0.044'} contr +0.103*
+T3 gad2_bin col3: {'12-23m': '-0.012', '24-35m': '-0.073**', '36-59m': '-0.016'} contr +0.058**
+T3 phq2_bin col3: {'12-23m': '-0.014', '24-35m': '-0.048', '36-59m': '-0.010'} contr +0.038
+-> paper/tables/t3_main.tex
 ```

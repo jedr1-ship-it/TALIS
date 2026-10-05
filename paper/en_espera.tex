@@ -1,0 +1,104 @@
+% =====================================================================
+% EN ESPERA. Bloques retirados de tablas.tex el 5-oct-2026 para
+% reintroducirlos uno a uno, tras discutir si cada uno se sostiene.
+% Este archivo no se compila. Para reintroducir un bloque: devolver su
+% \input/figure a tablas.tex (antes de t12_heterogeneidad), su tabla de
+% apendice y su prosa al Overview o a la Empirical Strategy.
+% =====================================================================
+
+% ===== ROBUSTEZ =====
+
+% ---- 1. Placebo con outcomes fijados al nacer
+% Prosa retirada:
+%   Overview: The estimates are flat in a placebo on five outcomes fixed
+%   at birth (Table~\ref{tab:placebo})
+\input{tables/t6_placebo}
+\input{tables/a5_nacimiento}
+
+% ---- 2. Atricion 2010-2024
+\input{tables/t9_atricion}
+
+% ---- 3. Robustez de especificacion e inferencia exigente
+% Prosa retirada:
+%   Overview: and stable across every specification we tried
+%   (Table~\ref{tab:robust}). Permutation of the affected zone across the
+%   116 municipalities gives $p=0.045$
+%   Strategy: and Table~\ref{tab:robust} adds permutation and wild-cluster
+%   inference for the preferred specification.
+%   Nota de T3 (scripts/15, t3_main): Demanding inference for column 3 is
+%   reported in Table~\ref{tab:robust}.
+\input{tables/t7_robustez}
+
+% ---- 4. Romano-Wolf (familia de cuatro outcomes)
+% Prosa retirada:
+%   Overview: and adjusting the four mental-health outcomes as a family
+%   leaves Romano--Wolf $p$-values between 0.10 and 0.12, so we read the
+%   full-sample evidence as suggestive and the girls' result as the firm
+%   finding.
+\input{tables/t8_romanowolf}
+
+% ---- 5. Dosis sismica continua (PGA) y su mapa
+% Prosa retirada:
+%   Strategy (tras Astroza et al. 2010): and the dose tables replace it with
+%   the standardized peak ground acceleration, the strength with which the
+%   ground actually shook in the municipality;
+\input{tables/t5_dosis}
+
+\begin{figure}[htbp]\centering
+  \includegraphics[width=0.9\textwidth]{f2_dosis_pga.pdf}
+  \caption{The Gradient Under the Continuous Seismic Dose}
+  \label{fig:pga}
+  \begin{fignotes}[0.9\textwidth]
+\textit{Notes:} Each marker is the coefficient on the exposure-age group
+interacted with the standardized peak ground acceleration, how strongly the
+ground shook, at the centroid of the municipality of selection, with
+its 95 percent confidence interval; specification of column 3 of
+Table~\ref{tab:main}. The dose varies across the 116 municipalities, within affected
+regions. \clusternote
+  \end{fignotes}
+\end{figure}
+
+\begin{figure}[htbp]\centering
+  \includegraphics[height=0.86\textheight]{f3_mapa_dosis.pdf}
+  \caption{The Seismic Dose Across the Municipalities of Selection}
+  \label{fig:mapdose}
+  \begin{fignotes}[0.86\textwidth]
+\textit{Notes:} Each colored municipality is one of the 116 municipalities of
+selection of the ELPI sample, colored by the peak ground acceleration, that
+is, how strongly the ground shook during the earthquake, expressed as a share
+of the acceleration of gravity (from the ShakeMap of the U.S. Geological
+Survey); the star marks the epicenter and light-gray municipalities are not
+in the sample. The map shows the two sources of identifying variation of
+Table~\ref{tab:dose}, the affected zone and the continuous dose within it.
+  \end{fignotes}
+\end{figure}
+
+% ---- 6. Mapa descriptivo de ansiedad 2024
+\begin{figure}[htbp]\centering
+  \includegraphics[height=0.86\textheight]{f4_mapa_sintomas.pdf}
+  \caption{The Geography of Adolescent Anxiety in 2024}
+  \label{fig:mapanx}
+  \begin{fignotes}[0.86\textwidth]
+\textit{Notes:} Each colored municipality is one of the 116 municipalities of
+selection, colored by the share of its adolescents with a positive GAD-2
+anxiety screen in the 2024 wave; municipality shares range from 11.9 to 43.8
+percent, and light-gray municipalities are not in the sample. The map is
+descriptive and unadjusted; the regressions of the paper compare cohorts
+within municipality, never municipalities against each other.
+  \end{fignotes}
+\end{figure}
+
+% ===== MECANISMOS =====
+
+% ---- 7. Otros resultados adolescentes I: bienestar y victimizacion
+\input{tables/t10a_bienestar}
+\input{tables/a2_wellbeing}
+\input{tables/a3_conducta}
+
+% ---- 8. Otros resultados adolescentes II: violencia de pareja y sustancias
+\input{tables/t10b_riesgo}
+
+% ---- 9. Salud mental previa de la madre
+\input{tables/t11_madre}
+\input{tables/a4_madre}
+

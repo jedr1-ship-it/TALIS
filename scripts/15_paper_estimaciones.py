@@ -603,8 +603,7 @@ def t3_main(d):
              "every question verbatim. \\bindef{} "
              "\\zonedef{} \\specdef{} The sample is the same in every "
              "panel; column 4 has 6,430 adolescents in 67 municipalities. "
-             "Demanding inference for column 3 is reported in "
-             "Table~\\ref{tab:robust}. \\clusternote{} \\starnote")
+             "\\clusternote{} \\starnote")
     table_env("t3_main",
               "Age at Exposure to the Earthquake and Self-Reported Mental "
               "Health at Ages 15--18",
