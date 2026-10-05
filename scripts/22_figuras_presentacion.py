@@ -53,6 +53,7 @@ CHICAS, CHICOS = p21.CHICAS, p21.CHICOS
 # ------------------------------ estilo ------------------------------------
 BG, INK, ACC, MUTED = "#F6F5F1", "#17212B", "#2B5FA8", "#55606B"
 GRIS, GRID = "#7D8790", "#E2E0D8"
+NARANJA = "#B4561B"             # expuestas con 3-4 años
 S, DPI = 2, 200                 # 2 px de imagen por px de diapositiva
 FONTS = HERE / "fonts"
 REG = FONTS / "IBMPlexSans-Regular.ttf"
@@ -74,6 +75,8 @@ def fp(px, bold=False):
 
 
 def coma(x, dec=2, signo=True):
+    if round(x, dec) == 0:          # sin "−0"
+        x, signo = 0.0, False
     s = f"{x:+.{dec}f}" if signo else f"{x:.{dec}f}"
     return s.replace("-", "−").replace(".", ",")
 
@@ -105,12 +108,12 @@ def log(*a):
     OUT.append(s)
 
 
-def leyenda(ax, series, loc="upper left"):
+def leyenda(ax, series, loc="upper left", ancla=None):
     h = [Line2D([], [], marker="o", ls="none", ms=pt(16), color=s["color"],
                 label=s["name"]) for s in series]
     lg = ax.legend(handles=h, loc=loc, frameon=False, prop=fp(26),
                    handletextpad=0.3, borderaxespad=0.2, ncol=len(series),
-                   columnspacing=1.6)
+                   columnspacing=1.6, bbox_to_anchor=ancla)
     for t, s in zip(lg.get_texts(), series):
         t.set_color(INK)
 
@@ -203,10 +206,54 @@ def coef_horizontal(nombre, filas, series, titulo_eje, w=1664, h=520,
     for t in ax.get_xticklabels():
         t.set_fontproperties(fp(24))
         t.set_color(MUTED)
-    f.text(izq, 0.955, titulo_eje, fontproperties=fp(26), color=MUTED,
+    f.text(0.004, 0.955, titulo_eje, fontproperties=fp(26), color=MUTED,
            ha="left", va="top")
     if k > 1:
-        leyenda(ax, series, loc="lower right")
+        # encima del gráfico, en la línea del título del eje
+        leyenda(ax, series, loc="lower right", ancla=(1.0, 1.0))
+    guarda(f, nombre)
+
+
+def coef_paneles(nombre, filas, paneles, titulo_eje, w=1664, h=520,
+                 xlim=None, escala=1.0, dec=2, izq=0.34):
+    """Coefplot horizontal en paneles lado a lado (una serie por panel)."""
+    f = lienzo(w, h)
+    n, sep = len(paneles), 0.03
+    ancho = (0.98 - izq - sep * (n - 1)) / n
+    ys = np.arange(len(filas))[::-1].astype(float)
+    for j, pnl in enumerate(paneles):
+        ax = f.add_axes([izq + j * (ancho + sep), 0.15, ancho, 0.66])
+        ejes_limpios(ax, eje="x")
+        for i, p in enumerate(pnl["pts"]):
+            b, se = p[0] * escala, p[1] * escala
+            ax.plot([b - 1.96 * se, b + 1.96 * se], [ys[i], ys[i]],
+                    color=pnl["color"], lw=pt(5), solid_capstyle="round",
+                    zorder=3)
+            ax.plot(b, ys[i], "o", ms=pt(18), color=pnl["color"], mec=BG,
+                    mew=pt(2), zorder=4)
+            ax.text(b + 1.96 * se, ys[i], "  " + coma(b, dec), ha="left",
+                    va="center", fontproperties=fp(24, bold=True),
+                    color=pnl["color"], zorder=5)
+        ax.axvline(0, color=MUTED, lw=pt(2.5), zorder=2)
+        ax.set_ylim(-0.6, len(filas) - 0.4)
+        ax.set_yticks(ys)
+        ax.set_yticklabels(filas if j == 0 else [])
+        for t in ax.get_yticklabels():
+            t.set_fontproperties(fp(28))
+            t.set_color(INK)
+        if xlim:
+            ax.set_xlim(*xlim)
+        ax.xaxis.set_major_locator(matplotlib.ticker.MultipleLocator(10))
+        ax.xaxis.set_major_formatter(
+            matplotlib.ticker.FuncFormatter(
+                lambda v, _: coma(v, 0 if escala == 100 else 1, v != 0)))
+        for t in ax.get_xticklabels():
+            t.set_fontproperties(fp(24))
+            t.set_color(MUTED)
+        ax.set_title(pnl["name"], fontproperties=fp(26, bold=True),
+                     color=pnl["color"], loc="left", pad=pt(12))
+    f.text(0.004, 0.965, titulo_eje, fontproperties=fp(26), color=MUTED,
+           ha="left", va="top")
     guarda(f, nombre)
 
 
@@ -301,23 +348,26 @@ def main():
                   "Síntomas PHQ-4 a los 15–18 años frente a los expuestos "
                   "con dos años (desv. estándar)", ylim=(-0.35, 0.62))
 
-    # 2. Tamizajes, bebés frente a dos años, por sexo
+    # 2. Tamizajes en las chicas: bebés y 3-4 años frente a dos años
     filas = ["Ansiedad\n(GAD-2 positivo)", "Depresión\n(PHQ-2 positivo)"]
-    series = []
-    for nom, s, col in (("Chicas", CHICAS, ACC), ("Chicos", CHICOS, GRIS)):
-        pts = []
-        for y in ("gad2_bin", "phq2_bin"):
-            b, n, _, _ = reg(d, y, sample=s)
-            dd = d[s(d)].dropna(subset=[y, "w"])
-            base = np.average(dd[y], weights=dd.w)
-            log(f"- {nom}, {y}: bebés frente a 2 {fmt(b['0-11m'])}; "
-                f"media ponderada {base:.3f}; N={n}")
-            pts.append(b["0-11m"])
-        series.append({"name": nom, "color": col, "pts": pts})
+    res = {y: reg(d, y, sample=CHICAS) for y in ("gad2_bin", "phq2_bin")}
+    for y in res:
+        dd = d[CHICAS(d)].dropna(subset=[y, "w"])
+        base = np.average(dd[y], weights=dd.w)
+        b = res[y][0]
+        log(f"- chicas, {y}: bebés {fmt(b['0-11m'])}; 3-4 {fmt(b['36-59m'])};"
+            f" media ponderada {base:.3f}; N={res[y][1]}")
+    for y in ("gad2_bin", "phq2_bin"):
+        b, n, _, _ = reg(d, y, sample=CHICOS)
+        log(f"- chicos, {y}: bebés {fmt(b['0-11m'])}; 3-4 {fmt(b['36-59m'])}")
+    series = [{"name": "Bebés de 6–11 meses", "color": ACC,
+               "pts": [res[y][0]["0-11m"] for y in ("gad2_bin", "phq2_bin")]},
+              {"name": "3–4 años", "color": NARANJA,
+               "pts": [res[y][0]["36-59m"] for y in ("gad2_bin", "phq2_bin")]}]
     coef_horizontal("tamizajes.png", filas, series,
-                    "Expuestos de bebés frente a expuestos con dos años "
+                    "Chicas, frente a las expuestas con dos años "
                     "(puntos porcentuales)", escala=100, dec=0,
-                    xlim=(-14, 32), h=440, izq=0.24)
+                    xlim=(-6, 32), h=440, izq=0.24)
 
     # 3. Especificidad en las chicas: síntomas frente a vocabulario
     series = []
@@ -370,8 +420,8 @@ def main():
                     "Desv. estándar: zona afectada × tomaba pecho, bebés de "
                     "6–11 meses", xlim=(-0.55, 0.65), h=520, izq=0.30)
 
-    # 6. Lo que no lo explica, chicas, bebés frente a dos años
-    filas, pts = [], []
+    # 6. Lo que no lo explica, chicas, bebés y 3-4 frente a dos años
+    filas, pts, pts34 = [], [], []
     for y, lab in (("peleas17", "Presenció peleas en casa (2017)"),
                    ("grito12", "La madre le grita (2012)"),
                    ("amenaza12", "La madre la amenaza (2012)"),
@@ -379,14 +429,17 @@ def main():
                    ("grito17", "La gritaron o insultaron (2017)"),
                    ("golpes17", "La sacudieron o golpearon (2017)")):
         b, n, _, _ = reg(d, y, sample=CHICAS)
-        log(f"- chicas {lab}: bebés frente a 2 {fmt(b['0-11m'])}; N={n}")
+        log(f"- chicas {lab}: bebés frente a 2 {fmt(b['0-11m'])}; 3-4 "
+            f"frente a 2 {fmt(b['36-59m'])}; N={n}")
         filas.append(lab)
         pts.append(b["0-11m"])
-    coef_horizontal("descartado.png", filas,
-                    [{"name": "", "color": GRIS, "pts": pts}],
-                    "Chicas expuestas de bebés frente a expuestas con dos "
-                    "años (puntos porcentuales)", escala=100, dec=0,
-                    xlim=(-30, 22), h=520, izq=0.36)
+        pts34.append(b["36-59m"])
+    coef_paneles("descartado.png", filas,
+                 [{"name": "Bebés de 6–11 meses", "color": ACC, "pts": pts},
+                  {"name": "3–4 años", "color": NARANJA, "pts": pts34}],
+                 "Chicas, frente a las expuestas con dos años "
+                 "(puntos porcentuales)", escala=100, dec=0,
+                 xlim=(-24, 18), h=520, izq=0.30)
     base = d.dropna(subset=["peleas17", "peleas24"])
     r0, _, _, _ = reg(base, "z_phq4", sample=CHICAS)
     r1, _, _, _ = reg(base, "z_phq4", sample=CHICAS,
