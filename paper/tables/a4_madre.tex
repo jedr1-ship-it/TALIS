@@ -1,6 +1,6 @@
 % ---- begin paper/tables/a4_madre.tex
 \begin{table}[htbp]\centering
-\caption{Maternal Mental-Health Questions: Items and Scales}
+\caption{Family Mental-Health Controls: Items and Scales}
 \label{tab:a_mother}
 \footnotesize\renewcommand{\arraystretch}{1.0}
 \begin{threeparttable}
@@ -9,27 +9,25 @@
  & Question, verbatim & Response scale \\
  & (1) & (2) \\
 \midrule
-\panel{3}{Panel A. Reported by the mother in 2010, about the pregnancy and postpartum of the sampled child}
-\hspace{1em}\texttt{g4a\_1} & Depresión. ?`Durante el embarazo le diagnosticaron alguna de las siguient\,\dots & Marked = yes; not marked = no \\
-\addlinespace[1pt]
-\hspace{1em}\texttt{g4a\_3} & Trastorno de ansiedad generalizada. ?`Durante el embarazo le diagnosticar\,\dots & Marked = yes; not marked = no \\
-\addlinespace[1pt]
-\hspace{1em}\texttt{g4a\_7} & Trastorno estrés postraumático. ?`Durante el embarazo le diagnosticaron a\,\dots & Marked = yes; not marked = no \\
-\addlinespace[1pt]
-\hspace{1em}\texttt{g4b} & ?`Tuvo alguna derivación psicológica o psiquiátrica? & 1 = sí; 2 = no; 9 = no sabe no responde \\
-\addlinespace[1pt]
-\hspace{1em}\texttt{g19} & Posterior al embarazo, ?`se le diagnosticó por un especialista, depresión po\,\dots & 1 = sí; 2 = no; 9 = no sabe \\
-\addlinespace
-\panel{3}{Panel B. Reported by the caregiver in 2012}
-\hspace{1em}\texttt{b64} & Últimamente, algún especialista, ?`le ha diagnosticado a Ud. depresión? & 1 = sí; 2 = no; 8 = no responde \\
-\addlinespace[1pt]
+\panel{3}{Panel A. Family history of mental illness, asked about the mother (2012)}
 \hspace{1em}\texttt{b55o\_madre} & Depresión. Le mencionaré una lista de enfermedades, ?`me podrí\,\dots & 1 = sí; 2 = no; 9 = no sabe \\
 \addlinespace[1pt]
-\hspace{1em}\texttt{b55p\_madre} & Ansiedad. Le mencionaré una lista de enfermedades, ?`me podría\,\dots & 1 = sí; 2 = no; 9 = no sabe \\
+\hspace{1em}\texttt{b55p\_madre} & Ansiedad. Le mencionaré una lista de enfermedades, ?`me podría\,\dots & \textit{Same scale} \\
+\addlinespace[1pt]
+\hspace{1em}\texttt{b55q\_madre} & Trastorno bipolar o bipolaridad. Le mencionaré una lista de e\,\dots & \textit{Same scale} \\
+\addlinespace[1pt]
+\hspace{1em}\texttt{b55r\_madre} & Esquizofrenia. Le mencionaré una lista de enfermedades, ?`me p\,\dots & \textit{Same scale} \\
+\addlinespace[1pt]
+\hspace{1em}\texttt{b55s\_madre} & Trastornos de la personalidad. Le mencionaré una lista de enf\,\dots & \textit{Same scale} \\
+\addlinespace[1pt]
+\hspace{1em}\texttt{b55t\_madre} & Trastornos de la esfera autista (autismo o síndrome de asperg\,\dots & \textit{Same scale} \\
+\addlinespace
+\panel{3}{Panel B. Number of children of the mother (2012)}
+\hspace{1em}\texttt{b71} & ?`Cuántos hijos nacidos vivos tiene la madre biológica del niño (a) seleccio\,\dots & Open numeric answer (number of children); special codes: 88 = no responde; 99 = no sabe \\
 \bottomrule
 \end{tabular}
 \begin{wpnotes}
-\textit{Notes:} Question wording and response labels are reproduced verbatim in the original Spanish of the questionnaire, from the variable and value labels of the public microdata; wording the microdata truncates at 80 characters is marked with an ellipsis. A mother is vulnerable in Table~\ref{tab:mother} if any Panel A item is answered yes. The 2012 items enter the family mental-health controls of the main specification.
+\textit{Notes:} Question wording and response labels are reproduced verbatim in the original Spanish of the questionnaire, from the variable and value labels of the public microdata; wording the microdata truncates at 80 characters is marked with an ellipsis. The same six items are asked about the father (b55o\_padre to b55t\_padre) and about another relative (b55o\_ofam to b55t\_ofam). Each of the three indicators of family mental illness is one if any of the six conditions is reported, and the three enter the 2012 controls of the main specification together with the number of children.
 \end{wpnotes}
 \end{threeparttable}
 \end{table}

@@ -57,7 +57,7 @@ def zstd(s):
 
 
 def extras_2024():
-    cols = (["folio", "d1", "d3_1", "g11"]
+    cols = (["folio", "d1", "d3_6", "g11"]
             + [f"d2_{i}" for i in range(1, 7)]
             + [f"g1_{i}" for i in range(1, 9)]
             + [f"g2_{i}" for i in range(1, 9)]
@@ -79,7 +79,7 @@ def extras_2024():
     brs = [num(df.get(f"d2_{i}")).where(lambda s: s.between(1, 5))
            for i in range(1, 7)]
     e["z_resil"] = zstd(pd.concat(brs, axis=1).mean(axis=1, skipna=False))
-    e["z_satisf"] = zstd(num(df.get("d3_1")).where(lambda s: s.between(1, 7)))
+    e["z_satisf"] = zstd(num(df.get("d3_6")).where(lambda s: s.between(1, 7)))
     e["z_salud"] = zstd(-num(df.get("d1")).where(lambda s: s.between(1, 5)))
     g1 = df[[c for c in df.columns if c.startswith("g1_")]].apply(num)
     g1 = g1.where((g1 >= 1) & (g1 <= 4))
@@ -95,8 +95,7 @@ def extras_2024():
     e["fuma"] = sino(df.get("g11"))
     g12 = df[[c for c in df.columns if c.startswith("g12_")]].apply(sino)
     e["alcohol"] = g12.max(axis=1)
-    g13 = df[[c for c in df.columns if c.startswith("g13_")]].apply(sino)
-    e["cannabis"] = g13.max(axis=1)
+    e["cannabis"] = sino(df.get("g13_1"))
     return e
 
 
