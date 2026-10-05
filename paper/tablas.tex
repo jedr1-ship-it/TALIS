@@ -58,6 +58,7 @@
 
 \doublespacing
 
+\usepackage{placeins}
 \begin{document}
 
 \begin{titlepage}
@@ -174,7 +175,7 @@ wild-cluster inference for the preferred specification.
 
 \input{tables/t1_descriptivos}
 \input{tables/t2_largo_plazo}
-\input{tables/t3_main}
+\FloatBarrier
 
 \begin{figure}[htbp]\centering
   \includegraphics[width=0.9\textwidth]{f1_gradiente_u.pdf}
@@ -190,6 +191,9 @@ earthquake are not in the 2024 wave, which follows only the cohort born
 probability units. \clusternote
   \end{fignotes}
 \end{figure}
+\FloatBarrier
+
+\input{tables/t3_main}
 
 \input{tables/t4_informante}
 \input{tables/t5_dosis}
