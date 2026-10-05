@@ -1,51 +1,44 @@
 % ---- begin paper/tables/t12_heterogeneidad.tex
 \begin{table}[htbp]\centering
-\caption{Heterogeneity of the Main Result}
+\begin{minipage}{460pt}
+\caption{The effect of exposure at age two on adolescent mental health, by sex, mother's education and area of residence.}
 \label{tab:het}
-\begin{threeparttable}
-\begin{tabular}{@{}p{240pt}*{1}{>{\centering\arraybackslash}p{100pt}}>{\centering\arraybackslash}p{62pt}@{}}
+{\small
+\begin{tabular*}{460pt}{@{}l@{\extracolsep{\fill}}llllll@{}}
 \toprule
- & Age 2 $\times$ affected & Observations \\
- & (1) & (2) \\
+ & \multicolumn{2}{@{}l}{Sex} & \multicolumn{2}{@{}l}{Mother's education} & \multicolumn{2}{@{}l}{Household in 2010} \\
+\cmidrule(r){2-3}\cmidrule(lr){4-5}\cmidrule(l){6-7}
+ & Girls & Boys & Secondary & Tertiary & Urban & Rural \\
+ & (1) & (2) & (3) & (4) & (5) & (6) \\
 \midrule
-\panel{3}{Panel A. The PHQ-4 index (z)}
-Girls & $-$0.300\sym{***} & 4,961 \\
- & (0.100) & \\
-\addlinespace[3pt]
-Boys & $-$0.016 & 5,035 \\
- & (0.098) & \\
-\addlinespace[3pt]
-Mother with secondary education or less & $-$0.107 & 7,755 \\
- & (0.074) & \\
-\addlinespace[3pt]
-Mother with tertiary education & $-$0.201 & 2,053 \\
- & (0.188) & \\
-\addlinespace[3pt]
-Urban household in 2010 & $-$0.139\sym{*} & 9,005 \\
- & (0.076) & \\
-\addlinespace[3pt]
-Rural household in 2010 & $-$0.238 & 991 \\
- & (0.172) & \\
-\addlinespace[3pt]
-\panel{3}{Panel B. The two halves of the index, girls versus boys}
-Girls, anxiety half (GAD-2 positive) & $-$0.137\sym{***} & 4,961 \\
- & (0.047) & \\
-\addlinespace[3pt]
-Boys, anxiety half (GAD-2 positive) & $-$0.026 & 5,035 \\
- & (0.048) & \\
-\addlinespace[3pt]
-Girls, depression half (PHQ-2 positive) & $-$0.117\sym{**} & 4,961 \\
- & (0.057) & \\
-\addlinespace[3pt]
-Boys, depression half (PHQ-2 positive) & 0.016 & 5,035 \\
- & (0.045) & \\
-\midrule
-Municipality and birth-cohort fixed effects & Yes & \\
+\multicolumn{7}{@{}l}{\textbf{\textit{Panel A: PHQ-4 index}}} \\
+Exposed at age 2 & $-$0.300\sym{***} & $-$0.016 & $-$0.107 & $-$0.201 & $-$0.139\sym{*} & $-$0.238 \\
+ & (0.100) & (0.098) & (0.074) & (0.188) & (0.076) & (0.172) \\
+\addlinespace[6pt]
+Observations & 4,961 & 5,035 & 7,755 & 2,053 & 9,005 & 991 \\
+\addlinespace[9pt]
+\multicolumn{7}{@{}l}{\textbf{\textit{Panel B: Anxiety, positive GAD-2 screen}}} \\
+Exposed at age 2 & $-$0.137\sym{***} & $-$0.026 & $-$0.082\sym{**} & $-$0.021 & $-$0.068\sym{**} & $-$0.113 \\
+ & (0.047) & (0.048) & (0.034) & (0.098) & (0.034) & (0.092) \\
+\addlinespace[6pt]
+Observations & 4,961 & 5,035 & 7,755 & 2,053 & 9,005 & 991 \\
+\addlinespace[9pt]
+\multicolumn{7}{@{}l}{\textbf{\textit{Panel C: Depression, positive PHQ-2 screen}}} \\
+Exposed at age 2 & $-$0.117\sym{**} & 0.016 & $-$0.030 & $-$0.082 & $-$0.046 & $-$0.073 \\
+ & (0.057) & (0.045) & (0.043) & (0.089) & (0.045) & (0.084) \\
+\addlinespace[6pt]
+Observations & 4,961 & 5,035 & 7,755 & 2,053 & 9,005 & 991 \\
+\addlinespace[9pt]
+Municipality FE & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark \\
+Birth Cohort FE & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark \\
+Pre-earthquake controls & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark \\
+2012 controls & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark \\
 \bottomrule
-\end{tabular}
-\begin{wpnotes}
-\textit{Notes:} Each pair of rows estimates the specification of column 3 of Table~\ref{tab:main} on the subsample named in the row. Panel A uses the PHQ-4 index; Panel B splits the index into its anxiety and depression halves, expressed as clinical screens, separately for girls and boys. Weighting girls and boys by their shares of the sample, girls account for 95 percent of the age-two coefficient and for 81 percent of the gap between exposure at ages 3--4 and at age two. The baseline level of symptoms is much higher among girls --- the index averages 4.88 points for girls and 3.76 for boys. \clusternote{} \starnote
-\end{wpnotes}
-\end{threeparttable}
+\end{tabular*}\par}
+\vspace{4pt}
+{\footnotesize
+\textit{Notes}: Each column represents a separate regression of equation~(1) with the controls of column 3 of Table~\ref{tab:main}, estimated on the subsample named in the column heading. The coefficient reported is the effect of exposure at age two in an affected municipality, relative to exposure at 0--11 months. The PHQ-4 index is measured in standard deviations; the GAD-2 and PHQ-2 screens equal one for a subscore of three or more on the corresponding pair of questions. Mother's education is measured in 2010, and secondary means twelve years of schooling or less. Weighting girls and boys by their shares of the sample, girls account for 95 percent of the age-two coefficient and for 81 percent of the gap between exposure at ages 3--4 and at age two. The PHQ-4 index averages 4.88 points for girls and 3.76 for boys. Standard errors clustered by municipality of selection appear in parentheses. The estimates use sampling weights. * p $<$ 0.1, ** p $<$ 0.05, *** p $<$ 0.01.
+\par}
+\end{minipage}
 \end{table}
 % ---- end paper/tables/t12_heterogeneidad.tex

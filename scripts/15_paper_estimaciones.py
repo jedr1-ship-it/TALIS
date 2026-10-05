@@ -998,70 +998,99 @@ def t11_madre(d):
 
 
 def t12_heterogeneidad(d):
-    grupos = [("Girls", lambda x: x.mujer == 1),
-              ("Boys", lambda x: x.mujer == 0),
-              ("Mother with secondary education or less",
-               lambda x: num(x.educ_madre10) <= 12),
-              ("Mother with tertiary education",
-               lambda x: num(x.educ_madre10) > 12),
-              ("Urban household in 2010", lambda x: x.rural10 == 0),
-              ("Rural household in 2010", lambda x: x.rural10 == 1)]
-    body = ["\\panel{3}{Panel A. The PHQ-4 index (z)}"]
+    cols = [("Girls", lambda x: x.mujer == 1),
+            ("Boys", lambda x: x.mujer == 0),
+            ("Secondary", lambda x: num(x.educ_madre10) <= 12),
+            ("Tertiary", lambda x: num(x.educ_madre10) > 12),
+            ("Urban", lambda x: x.rural10 == 0),
+            ("Rural", lambda x: x.rural10 == 1)]
+    panels = [("z_phq4", "Panel A: PHQ-4 index"),
+              ("gad2_bin", "Panel B: Anxiety, positive GAD-2 screen"),
+              ("phq2_bin", "Panel C: Depression, positive PHQ-2 screen")]
     sexo = {}
-    for lab, sel in grupos:
-        r = fit(d, "z_phq4", 3, sample=sel, keep_model=True)
-        if lab in ("Girls", "Boys"):
-            sexo[lab] = (r["_w"].sum(), r["b"]["24-35m"][0], r["contr"][0])
-        rows = coef2(lab, [r["b"]["24-35m"]])
-        rows[0] = rows[0][:-3] + f" & {r['n']:,} \\\\"
-        rows[1] = rows[1][:-3] + " & \\\\"
-        body += rows + ["\\addlinespace[3pt]"]
-        log("T12A", lab,
-            f"{r['b']['24-35m'][0]:+.3f}{stars(r['b']['24-35m'][2])}",
-            f"contr {r['contr'][0]:+.3f}{stars(r['contr'][2])}")
+    L = []
+    for y, plab in panels:
+        res = []
+        for lab, sel in cols:
+            guarda = y == "z_phq4" and lab in ("Girls", "Boys")
+            r = fit(d, y, 3, sample=sel, keep_model=guarda)
+            if guarda:
+                sexo[lab] = (r["_w"].sum(), r["b"]["24-35m"][0],
+                             r["contr"][0])
+            res.append(r)
+            b24 = r["b"]["24-35m"]
+            log("T12", y, lab, f"{b24[0]:+.3f}{stars(b24[2])}",
+                f"contr {r['contr'][0]:+.3f}{stars(r['contr'][2])}")
+        L += [f"\\multicolumn{{7}}{{@{{}}l}}{{\\textbf{{\\textit{{{plab}}}}}}} \\\\",
+              "Exposed at age 2 & "
+              + " & ".join(bcell(r["b"]["24-35m"][0], r["b"]["24-35m"][2])
+                           for r in res) + " \\\\",
+              " & " + " & ".join(secell(r["b"]["24-35m"][1]) for r in res)
+              + " \\\\",
+              "\\addlinespace[6pt]",
+              "Observations & " + " & ".join(f"{r['n']:,}" for r in res)
+              + " \\\\",
+              "\\addlinespace[9pt]"]
     wg = sexo["Girls"][0] / (sexo["Girls"][0] + sexo["Boys"][0])
     pct = []
     for k in (1, 2):
         cg, cb = wg * sexo["Girls"][k], (1 - wg) * sexo["Boys"][k]
         pct.append(100 * cg / (cg + cb))
-    log("T12A cuota de las chicas:", f"{pct[0]:.0f}% del coef. edad 2,",
+    log("T12 cuota de las chicas:", f"{pct[0]:.0f}% del coef. edad 2,",
         f"{pct[1]:.0f}% de 3-4 frente a 2")
-    body.append("\\panel{3}{Panel B. The two halves of the index, "
-                "girls versus boys}")
-    for y, half in (("gad2_bin", "anxiety half (GAD-2 positive)"),
-                    ("phq2_bin", "depression half (PHQ-2 positive)")):
-        for sx, sxlab in ((1, "Girls"), (0, "Boys")):
-            r = fit(d, y, 3, sample=lambda x, s=sx: x.mujer == s)
-            rows = coef2(f"{sxlab}, {half}",
-                         [r["b"]["24-35m"]])
-            rows[0] = rows[0][:-3] + f" & {r['n']:,} \\\\"
-            rows[1] = rows[1][:-3] + " & \\\\"
-            body += rows + ["\\addlinespace[3pt]"]
-            log("T12B", y, sxlab,
-                f"{r['b']['24-35m'][0]:+.3f}{stars(r['b']['24-35m'][2])}")
-    body = body[:-1]
-    body += ["\\midrule",
-             "Municipality and birth-cohort fixed effects & Yes & \\\\"]
-    header = [" & Age 2 $\\times$ affected & Observations \\\\",
-              " & (1) & (2) \\\\"]
-    notes = ("Each pair of rows estimates the specification of column 3 "
-             "of Table~\\ref{tab:main} on the subsample named in the "
-             "row. Panel A uses the PHQ-4 index; Panel B splits the "
-             "index into its anxiety and depression halves, expressed "
-             "as clinical screens, separately for girls and boys. "
-             "Weighting girls and boys by their shares of the sample, "
-             f"girls account for {pct[0]:.0f} percent of the age-two "
-             f"coefficient and for {pct[1]:.0f} percent of the gap "
-             "between exposure at ages 3--4 and at age two. The "
-             "baseline level of symptoms is much higher among girls "
-             "--- the index averages 4.88 points for girls and 3.76 "
-             "for boys. \\clusternote{} \\starnote")
-    table_env("t12_heterogeneidad",
-              "Heterogeneity of the Main Result",
-              "tab:het",
-              "@{}p{240pt}" + numcols(1, 100) + ">{\\centering"
-              "\\arraybackslash}p{62pt}@{}",
-              header, body, notes)
+    tick = " & ".join(["\\checkmark"] * 6) + " \\\\"
+    L += ["Municipality FE & " + tick,
+          "Birth Cohort FE & " + tick,
+          "Pre-earthquake controls & " + tick,
+          "2012 controls & " + tick]
+    notes = (
+        "\\textit{Notes}: Each column represents a separate regression of "
+        "equation~(1) with the controls of column 3 of "
+        "Table~\\ref{tab:main}, estimated on the subsample named in the "
+        "column heading. The coefficient reported is the effect of "
+        "exposure at age two in an affected municipality, relative to "
+        "exposure at 0--11 months. The PHQ-4 index is measured in "
+        "standard deviations; the GAD-2 and PHQ-2 screens equal one for "
+        "a subscore of three or more on the corresponding pair of "
+        "questions. Mother's education is measured in 2010, and "
+        "secondary means twelve years of schooling or less. Weighting "
+        "girls and boys by their shares of the sample, girls account "
+        f"for {pct[0]:.0f} percent of the age-two coefficient and for "
+        f"{pct[1]:.0f} percent of the gap between exposure at ages 3--4 "
+        "and at age two. The PHQ-4 index averages 4.88 points for girls "
+        "and 3.76 for boys. Standard errors clustered by municipality of "
+        "selection appear in parentheses. The estimates use sampling "
+        "weights. * p $<$ 0.1, ** p $<$ 0.05, *** p $<$ 0.01.")
+    W = "460pt"
+    lines = (["% ---- begin paper/tables/t12_heterogeneidad.tex",
+              "\\begin{table}[htbp]\\centering",
+              f"\\begin{{minipage}}{{{W}}}",
+              "\\caption{The effect of exposure at age two on adolescent "
+              "mental health, by sex, mother's education and area of "
+              "residence.}",
+              "\\label{tab:het}",
+              "{\\small",
+              f"\\begin{{tabular*}}{{{W}}}"
+              "{@{}l@{\\extracolsep{\\fill}}llllll@{}}",
+              "\\toprule",
+              " & \\multicolumn{2}{@{}l}{Sex} & "
+              "\\multicolumn{2}{@{}l}{Mother's education} & "
+              "\\multicolumn{2}{@{}l}{Household in 2010} \\\\",
+              "\\cmidrule(r){2-3}\\cmidrule(lr){4-5}\\cmidrule(l){6-7}",
+              " & Girls & Boys & Secondary & Tertiary & Urban & Rural \\\\",
+              " & (1) & (2) & (3) & (4) & (5) & (6) \\\\",
+              "\\midrule"] + L + [
+              "\\bottomrule",
+              "\\end{tabular*}\\par}",
+              "\\vspace{4pt}",
+              "{\\footnotesize", notes, "\\par}",
+              "\\end{minipage}",
+              "\\end{table}",
+              "% ---- end paper/tables/t12_heterogeneidad.tex"])
+    TAB.mkdir(parents=True, exist_ok=True)
+    (TAB / "t12_heterogeneidad.tex").write_text("\n".join(lines) + "\n",
+                                                encoding="utf-8")
+    print("-> paper/tables/t12_heterogeneidad.tex")
 
 
 def figuras(d):
