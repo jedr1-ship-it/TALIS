@@ -1,0 +1,41 @@
+% ---- begin paper/tables/t13_especificidad.tex
+\begin{table}[htbp]\centering
+\begin{minipage}{460pt}
+\caption{The age profile of the earthquake in mental health and in vocabulary at ages 15--18.}
+\label{tab:specific}
+{\small
+\begin{tabular*}{460pt}{@{}l@{\extracolsep{\fill}}llllll@{}}
+\toprule
+ & \multicolumn{3}{@{}l}{All adolescents} & \multicolumn{3}{@{}l}{Girls} \\
+\cmidrule(r){2-4}\cmidrule(l){5-7}
+ & PHQ-4 & Vocabulary & Difference & PHQ-4 & Vocabulary & Difference \\
+ & index & deficit & & index & deficit & \\
+ & (1) & (2) & (3) & (4) & (5) & (6) \\
+\midrule
+Exposed at age 1 & $-$0.045 & 0.085 & $-$0.135 & $-$0.129 & 0.153 & $-$0.291\sym{*} \\
+ & (0.078) & (0.089) & (0.099) & (0.124) & (0.133) & (0.152) \\
+\addlinespace[3pt]
+Exposed at age 2 & $-$0.147\sym{**} & 0.086 & $-$0.236\sym{**} & $-$0.300\sym{***} & 0.103 & $-$0.418\sym{**} \\
+ & (0.069) & (0.079) & (0.102) & (0.100) & (0.127) & (0.165) \\
+\addlinespace[3pt]
+Exposed at ages 3--4 & $-$0.044 & $-$0.034 & $-$0.019 & $-$0.119 & $-$0.040 & $-$0.092 \\
+ & (0.060) & (0.077) & (0.095) & (0.104) & (0.125) & (0.144) \\
+\addlinespace[3pt]
+Ages 3--4 $-$ age 2 & 0.103\sym{*} & $-$0.119\sym{**} & 0.218\sym{***} & 0.182\sym{**} & $-$0.143\sym{**} & 0.326\sym{***} \\
+ & (0.060) & (0.053) & (0.084) & (0.086) & (0.072) & (0.122) \\
+\addlinespace[6pt]
+Observations & 9,996 & 9,990 & 9,986 & 4,961 & 4,956 & 4,956 \\
+\addlinespace[6pt]
+Municipality FE & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark \\
+Birth Cohort FE & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark \\
+Pre-earthquake controls & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark \\
+2012 controls & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark \\
+\bottomrule
+\end{tabular*}\par}
+\vspace{4pt}
+{\footnotesize
+\textit{Notes}: Each column represents a separate regression of equation~(1) with the controls of column 3 of Table~\ref{tab:main}. The PHQ-4 index is in standard deviations, so that higher values mean more symptoms. The vocabulary deficit is the 2024 TVIP score, the Spanish version of the Peabody picture vocabulary test, in standard deviations and with its sign reversed, so that higher values also mean more harm. The outcome of columns 3 and 6 is the PHQ-4 index minus the vocabulary deficit, and a coefficient different from zero in these columns means that the age profile of the earthquake differs between mental health and vocabulary. Coefficients compare each exposure-age group with the children exposed at 0--11 months, and the contrast row compares exposure at ages 3--4 with exposure at age 2. Standard errors clustered by municipality of selection appear in parentheses. The estimates use sampling weights. * p $<$ 0.1, ** p $<$ 0.05, *** p $<$ 0.01.
+\par}
+\end{minipage}
+\end{table}
+% ---- end paper/tables/t13_especificidad.tex
