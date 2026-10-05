@@ -1008,8 +1008,11 @@ def t12_heterogeneidad(d):
               ("Urban household in 2010", lambda x: x.rural10 == 0),
               ("Rural household in 2010", lambda x: x.rural10 == 1)]
     body = ["\\panel{3}{Panel A. The PHQ-4 index (z)}"]
+    sexo = {}
     for lab, sel in grupos:
-        r = fit(d, "z_phq4", 3, sample=sel)
+        r = fit(d, "z_phq4", 3, sample=sel, keep_model=True)
+        if lab in ("Girls", "Boys"):
+            sexo[lab] = (r["_w"].sum(), r["b"]["24-35m"][0], r["contr"][0])
         rows = coef2(lab, [r["b"]["24-35m"]])
         rows[0] = rows[0][:-3] + f" & {r['n']:,} \\\\"
         rows[1] = rows[1][:-3] + " & \\\\"
@@ -1017,6 +1020,13 @@ def t12_heterogeneidad(d):
         log("T12A", lab,
             f"{r['b']['24-35m'][0]:+.3f}{stars(r['b']['24-35m'][2])}",
             f"contr {r['contr'][0]:+.3f}{stars(r['contr'][2])}")
+    wg = sexo["Girls"][0] / (sexo["Girls"][0] + sexo["Boys"][0])
+    pct = []
+    for k in (1, 2):
+        cg, cb = wg * sexo["Girls"][k], (1 - wg) * sexo["Boys"][k]
+        pct.append(100 * cg / (cg + cb))
+    log("T12A cuota de las chicas:", f"{pct[0]:.0f}% del coef. edad 2,",
+        f"{pct[1]:.0f}% de 3-4 frente a 2")
     body.append("\\panel{3}{Panel B. The two halves of the index, "
                 "girls versus boys}")
     for y, half in (("gad2_bin", "anxiety half (GAD-2 positive)"),
@@ -1039,7 +1049,11 @@ def t12_heterogeneidad(d):
              "of Table~\\ref{tab:main} on the subsample named in the "
              "row. Panel A uses the PHQ-4 index; Panel B splits the "
              "index into its anxiety and depression halves, expressed "
-             "as clinical screens, separately for girls and boys. The "
+             "as clinical screens, separately for girls and boys. "
+             "Weighting girls and boys by their shares of the sample, "
+             f"girls account for {pct[0]:.0f} percent of the age-two "
+             f"coefficient and for {pct[1]:.0f} percent of the gap "
+             "between exposure at ages 3--4 and at age two. The "
              "baseline level of symptoms is much higher among girls "
              "--- the index averages 4.88 points for girls and 3.76 "
              "for boys. \\clusternote{} \\starnote")
