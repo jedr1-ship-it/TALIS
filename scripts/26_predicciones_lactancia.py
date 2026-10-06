@@ -117,6 +117,13 @@ def main():
     b["ExP10"] = b.EQ * b.pecho10
     r, n, _ = reg(b, "z_phq4", ["ExP10", "pecho10"])
     log(f"- PHQ-4 con la medida de 2010: {fmt(r['ExP10'])}; N={n}")
+    # diagnóstico añadido después de ver P2: dónde se pierde el efecto
+    r, n, _ = reg(b[ok & (b.pecho10 == b.pecho)], "z_phq4", ["ExP", "pecho"])
+    log(f"- PHQ-4 solo donde coinciden 2010 y 2012: {fmt(r['ExP'])}; N={n}")
+    for z, lab in ((1.0, "afectada"), (0.0, "no afectada")):
+        s = b[ok & (b.EQ == z)]
+        log(f"  zona {lab}: 2012 sí y 2010 no {(s.pecho > s.pecho10).mean():.3f}; "
+            f"2012 no y 2010 sí {(s.pecho < s.pecho10).mean():.3f}")
 
     log("\n## P3. Mayor efecto si la madre quedó angustiada o la vivienda "
         "dañada")

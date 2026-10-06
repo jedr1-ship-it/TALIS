@@ -6,6 +6,9 @@ Referencia, PHQ-4: +0.364*** (ee 0.133, p=0.006); N=1267
 ## P2. Lactancia medida en 2010
 Coinciden 2010 y 2012 en 90% de 1264 bebés; tomaban pecho según 2010: 0.61
 - PHQ-4 con la medida de 2010: +0.177 (ee 0.110, p=0.107); N=1263
+- PHQ-4 solo donde coinciden 2010 y 2012: +0.287** (ee 0.122, p=0.018); N=1138
+  zona afectada: 2012 sí y 2010 no 0.056; 2012 no y 2010 sí 0.045
+  zona no afectada: 2012 sí y 2010 no 0.054; 2012 no y 2010 sí 0.038
 
 ## P3. Mayor efecto si la madre quedó angustiada o la vivienda dañada
 - madre con angustia tras el terremoto (h4): zona x pecho sin angustia +0.354** (ee 0.140, p=0.011); adicional con angustia +0.059 (ee 0.348, p=0.866); N=1267; con angustia 0.34
