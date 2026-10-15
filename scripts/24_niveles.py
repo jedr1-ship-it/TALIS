@@ -16,6 +16,9 @@ duradero. Este script prueba los dos diseños en niveles posibles:
      a) total, por edad al terremoto y por sexo;
      b) dosis: exposición x PGA, dentro de la comuna;
      c) 2017 frente a 2024 en los mismos niños.
+  3. Pruebas del diseño entre cohortes, en 2017: resultados que el terremoto
+     no debería mover (talla) o que nadie ha propuesto (función ejecutiva), y
+     un placebo entre dos cohortes concebidas después del terremoto.
 
 Salida: reports/niveles.md
 Uso:    python3 scripts/24_niveles.py
@@ -105,7 +108,8 @@ def base17():
     e17, _ = pyreadstat.read_dta(
         str(INT / "2017/Base Evaluaciones ELPI III.dta"),
         usecols=["folio", "edad_mesesr", "sexo", "estrato", "tvip_ps",
-                 "cbcl2_pt_inter_t", "finicio_tn"])
+                 "cbcl2_pt_inter_t", "finicio_tn", "talla_n",
+                 "hf_logro_pcf"])
     e17["folio"] = num(e17.folio).astype("int64")
     ro, _ = pyreadstat.read_sav(
         str(INT / "2017/Base Cuidador Principal ELPI III (SPSS).sav"),
@@ -168,6 +172,13 @@ def base17():
     s = num(c.cbcl)
     g = s.groupby(num(c.edad_meses) // 12)
     c["z_cbcl"] = -(s - g.transform("mean")) / g.transform("std")
+    # talla en z por edad (años) y sexo; Hearts & Flowers mixto en z por edad
+    s = num(c.talla_n).where(lambda x: x.between(60, 200))
+    g = s.groupby([num(c.edad_meses) // 12, num(c.sexo)])
+    c["z_talla"] = (s - g.transform("mean")) / g.transform("std")
+    s = num(c.hf_logro_pcf)
+    g = s.groupby(num(c.edad_meses) // 12)
+    c["z_hf"] = (s - g.transform("mean")) / g.transform("std")
     return c
 
 
@@ -245,10 +256,35 @@ def cohortes():
                 f"{fmt(*r['AffEq'])}; N={n}")
 
 
+def pruebas():
+    b17 = prepara(base17())
+    log("\n## 3. Pruebas del diseño entre cohortes (2017)")
+    log("Expuestos frente a concebidos después, zona afectada frente a no "
+        "afectada, en resultados que no son la pregunta:")
+    for y, lab in (("z_talla", "talla (z por edad y sexo)"),
+                   ("z_hf", "Hearts & Flowers, condición mixta (z, 3 años "
+                            "o más)")):
+        r, n = ajusta(b17, y, ["AffEq"])
+        log(f"- {lab}: {fmt(*r['AffEq'])}; N={n}")
+    log("Placebo: solo concebidos después; nacidos en 2011-2012 frente a "
+        "2013 o después, zona afectada frente a no afectada. Ninguno vivió "
+        "el terremoto, así que el coeficiente debería ser cero:")
+    c = b17[b17.affected == 0].copy()
+    c["Falso"] = (c.birth_ym < 2013 * 12).astype(float) * c.EQ
+    # el CBCL de 2017 (6 a 18 años) solo existe para los nacidos en
+    # 2011-2012: no hay comparación posible dentro de los no expuestos
+    for y, lab in (("z_tvip", "vocabulario, TVIP (z)"),
+                   ("z_talla", "talla (z)"),
+                   ("z_hf", "Hearts & Flowers (z)")):
+        r, n = ajusta(c, y, ["Falso"])
+        log(f"- {lab}: {fmt(*r['Falso'])}; N={n}")
+
+
 def main():
     log("# Efectos en niveles (scripts/24_niveles.py)")
     intensidad()
     cohortes()
+    pruebas()
     Path("reports/niveles.md").write_text("\n".join(OUT) + "\n",
                                           encoding="utf-8")
     log("\n-> reports/niveles.md")

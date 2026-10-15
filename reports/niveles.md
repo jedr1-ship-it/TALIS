@@ -38,3 +38,12 @@ Dentro de cada región, las comunas más sacudidas tenían madres más educadas 
   chicos: -0.143 (ee 0.112, p=0.201); N=5571
   dosis, exposición x PGA/10 dentro de la comuna: -0.010 (ee 0.026, p=0.702); N=10949
   con tendencias lineales por comuna: -0.259** (ee 0.128, p=0.043); N=10949
+
+## 3. Pruebas del diseño entre cohortes (2017)
+Expuestos frente a concebidos después, zona afectada frente a no afectada, en resultados que no son la pregunta:
+- talla (z por edad y sexo): +0.178** (ee 0.082, p=0.030); N=14868
+- Hearts & Flowers, condición mixta (z, 3 años o más): +0.186** (ee 0.088, p=0.036); N=13536
+Placebo: solo concebidos después; nacidos en 2011-2012 frente a 2013 o después, zona afectada frente a no afectada. Ninguno vivió el terremoto, así que el coeficiente debería ser cero:
+- vocabulario, TVIP (z): +0.047 (ee 0.096, p=0.626); N=3789
+- talla (z): +0.168** (ee 0.081, p=0.038); N=5072
+- Hearts & Flowers (z): +0.111 (ee 0.076, p=0.145); N=3725
