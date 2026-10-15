@@ -1,0 +1,171 @@
+% Presentación de cinco diapositivas para el advisor: la idea, la base, lo
+% que encontré y por qué lo descarté.
+% Figuras: python3 scripts/28_beamer_advisor.py
+% Compilar desde presentacion/: xelatex advisor.tex (dos veces)
+\documentclass[aspectratio=169,11pt]{beamer}
+\usepackage[spanish,es-nodecimaldot,es-noshorthands]{babel}
+\usepackage{fontspec}
+\setsansfont{IBMPlexSans}[
+  Path=../scripts/fonts/, Extension=.ttf,
+  UprightFont=*-Regular, BoldFont=*-SemiBold, ItalicFont=*-Italic]
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage{pifont}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric}
+
+\definecolor{ink}{HTML}{17212B}
+\definecolor{acc}{HTML}{2B5FA8}
+\definecolor{muted}{HTML}{55606B}
+\definecolor{naranja}{HTML}{B4561B}
+\definecolor{linea}{HTML}{C9CED3}
+
+\setbeamercolor{normal text}{fg=ink,bg=white}
+\setbeamercolor{frametitle}{fg=ink}
+\setbeamercolor{structure}{fg=acc}
+\setbeamerfont{frametitle}{size=\Large,series=\bfseries}
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{frametitle}{\vspace*{5mm}\insertframetitle\par}
+\setbeamertemplate{footline}{%
+  \hfill{\scriptsize\color{muted}\insertframenumber\,/\,\inserttotalframenumber}%
+  \hspace*{8mm}\vspace*{4mm}}
+\setbeamersize{text margin left=8mm,text margin right=8mm}
+
+\newcommand{\sub}[1]{{\leavevmode\color{muted}#1}}
+\newcommand{\nota}[1]{\vfill\noindent\parbox{0.9\textwidth}{\raggedright\scriptsize\color{muted}#1}\par\vspace*{1mm}}
+\newcommand{\falla}{{\color{naranja}\ding{55}}}
+\newcommand{\nodist}{{\color{muted}$\approx$}}
+
+\title{27-F y salud mental adolescente: balance}
+\date{Octubre de 2026}
+
+\begin{document}
+
+% ------------------------------------------------------------------ 1. Idea
+\begin{frame}
+\frametitle{¿Deja huella vivir un terremoto con 0 a 4 años?}
+\begin{columns}[c,onlytextwidth]
+\column{0.34\textwidth}
+\centering
+\includegraphics[height=0.74\textheight]{figuras/mapa.pdf}
+\column{0.62\textwidth}
+\renewcommand{\arraystretch}{1.75}
+\begin{tabular}{@{}p{24mm}>{\raggedright\arraybackslash}p{58mm}@{}}
+\sub{Shock}     & 27-F de 2010, magnitud 8,8 \\
+\sub{Expuestos} & Niños de 0 a 4 años \\
+\sub{Resultado} & Ansiedad y depresión a los 15--18 \\
+\sub{Canal}     & Estrés temprano: miedo, ingresos, vivienda, salud mental de la madre \\
+\end{tabular}
+
+\vspace{7mm}
+{\color{acc}\bfseries Dos patrones. Ninguno se sostiene como efecto duradero.}
+\end{columns}
+\end{frame}
+
+% ------------------------------------------------------------------ 2. Base
+\begin{frame}
+\frametitle{ELPI: los mismos niños de 2010 a 2024}
+\vspace{3mm}
+\centering
+\begin{tikzpicture}[x=28mm,y=1mm,
+    año/.style={font=\bfseries\small,text=acc,above=2.2mm},
+    edad/.style={font=\small,align=center,below=2.6mm,text width=27mm}]
+  \draw[linea,line width=1.1pt] (0,0) -- (4,0);
+  \node[star,star points=5,star point ratio=2.3,fill=naranja,
+        inner sep=1.5pt] at (0,0) {};
+  \foreach \x in {1,...,4} \fill[acc] (\x,0) circle (1.25mm);
+  \node[año,text=naranja] at (0,0) {27-F};
+  \node[año] at (1,0) {2010};
+  \node[año] at (2,0) {2012};
+  \node[año] at (3,0) {2017};
+  \node[año] at (4,0) {2024};
+  \node[edad] at (0,0) {Febrero de 2010\\{\scriptsize\color{muted}magnitud 8,8}};
+  \node[edad] at (1,0) {0--4 años\\{\scriptsize\color{muted}ASQ:SE, lactancia}};
+  \node[edad] at (2,0) {2--6 años\\{\scriptsize\color{muted}CBCL, daños en el hogar}};
+  \node[edad] at (3,0) {7--11 años\\{\scriptsize\color{muted}CBCL, vocabulario}};
+  \node[edad] at (4,0) {15--18 años\\{\scriptsize\color{muted}\textbf{PHQ-4}, CBCL, vocabulario}};
+\end{tikzpicture}
+
+\vspace{5mm}
+\begin{columns}[T,onlytextwidth]
+\column{0.32\textwidth}\centering
+{\fontsize{24}{26}\selectfont\color{acc}10.003}\\[1mm]
+{\small adolescentes nacidos en 2006--2009}
+\column{0.32\textwidth}\centering
+{\fontsize{24}{26}\selectfont\color{acc}77\%}\\[1mm]
+{\small en la zona afectada}
+\column{0.32\textwidth}\centering
+{\fontsize{24}{26}\selectfont\color{naranja}2024}\\[1mm]
+{\small única ola con PHQ-4, solo para esta cohorte}
+\end{columns}
+
+\nota{PHQ-4: dos preguntas de ansiedad y dos de depresión, respondidas por el
+adolescente. No hay una cohorte nacida después del terremoto con PHQ-4.}
+\end{frame}
+
+% ------------------------------------------------------------- 3. Hallazgos
+\begin{frame}
+\frametitle{Dos patrones a los 15--18 años en la zona afectada}
+\vspace{3mm}
+\centering
+\includegraphics[width=\textwidth]{figuras/hallazgos.pdf}
+
+\nota{Coeficientes en DE con intervalos al 95\%; efectos fijos de comuna y
+cohorte, controles, errores agrupados por comuna. (a) Chicas, N = 4.961;
+chicos, N = 5.035. (b) Tomaba pecho el 27-F × zona afectada, bebés de 6--11
+meses, N = 1.267; inferencia por aleatorización, p = 0,009.}
+\end{frame}
+
+% ---------------------------------------------------------------- 4. Diseño
+\begin{frame}
+\frametitle{Los diseños en niveles no pasan sus propias pruebas}
+\sub{El diseño del paper compara edades dentro de la comuna: no dice si el
+daño dura.}
+
+\vspace{2mm}
+\centering
+\includegraphics[width=\textwidth]{figuras/diseno.pdf}
+
+\nota{(a) Variables previas al terremoto, comunas más y menos sacudidas de una
+región. (b) 2017 salvo vocabulario, 2024. Placebo: nacidos en 2011--12 frente
+a 2013 o después, ninguno vivió el terremoto.}
+\end{frame}
+
+% ------------------------------------------------------------- 5. Mecanismo
+\begin{frame}
+\frametitle{La lactancia no pasa la prueba médica}
+\begin{columns}[T,onlytextwidth]
+\column{0.48\textwidth}
+\vspace{1mm}
+\includegraphics[width=\linewidth]{figuras/trayectoria.pdf}
+\column{0.49\textwidth}
+\vspace{3mm}
+{\scriptsize
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{1.35}
+\begin{tabular}{@{}l l c@{}}
+\toprule
+Predicción fijada antes & Resultado & \\
+\midrule
+Igual con lactancia de 2010 & +0,18, p = 0,11 & \falla \\
+Crece con angustia materna & +0,06, p = 0,87 & \falla \\
+Señal temprana, al año & $-$0,34, p = 0,007 & \falla \\
+Mayor en niñas & dif.\ p = 0,40 & \nodist \\
+Ansiedad más que conducta & +0,27 y +0,18 & \nodist \\
+Mayor a los 6--8 meses & dif.\ p = 0,77 & \nodist \\
+\bottomrule
+\end{tabular}
+
+\vspace{1mm}
+{\color{muted}\falla\ falla \quad \nodist\ no distingue}}
+
+\vspace{4mm}
+{\color{acc}\bfseries Sin niveles y sin mecanismo, no hay efecto duradero que defender.}
+\end{columns}
+
+\nota{Bebés de 6--11 meses el 27-F. La medicina predice más miedo y afecto
+negativo en el primer año por el cortisol de la leche: Glynn et al.\ 2007,
+Grey et al.\ 2013, Nolvi et al.\ 2018.}
+\end{frame}
+
+\end{document}

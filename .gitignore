@@ -11,3 +11,12 @@ __pycache__/
 paper/*.aux
 paper/*.log
 paper/*.out
+
+# Auxiliares de LaTeX de la presentación
+presentacion/*.aux
+presentacion/*.log
+presentacion/*.nav
+presentacion/*.out
+presentacion/*.snm
+presentacion/*.toc
+presentacion/*.vrb
