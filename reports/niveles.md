@@ -7,6 +7,10 @@ Placebos, características fijadas antes del terremoto:
 - educ_madre10: +0.459*** (ee 0.165, p=0.005)
 - edad_madre10: +0.501*** (ee 0.172, p=0.004)
 - rural10: -0.093*** (ee 0.032, p=0.003)
+Los mismos placebos en desviaciones estándar:
+- z_educ_madre10: +0.145*** (ee 0.052, p=0.005)
+- z_edad_madre10: +0.071*** (ee 0.024, p=0.004)
+- z_rural10: -0.312*** (ee 0.106, p=0.003)
 Dentro de cada región, las comunas más sacudidas tenían madres más educadas y eran más urbanas: el diseño confunde intensidad con nivel socioeconómico y no sirve para niveles.
 
 ## 2. Concebidos después como comparación: 2024 (expuestos a los 15-18 frente a concebidos después, medidos en 2017)

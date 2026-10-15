@@ -89,6 +89,11 @@ def intensidad():
                    ("educ_madre10", False), ("edad_madre10", False),
                    ("rural10", False)):
         log(f"- {y}: {fmt(*est(y, ctr))}")
+    log("Los mismos placebos en desviaciones estándar:")
+    for v in ("educ_madre10", "edad_madre10", "rural10"):
+        s = num(d[v])
+        d[f"z_{v}"] = (s - s.mean()) / s.std()
+        log(f"- z_{v}: {fmt(*est(f'z_{v}', False))}")
     log("Dentro de cada región, las comunas más sacudidas tenían madres más "
         "educadas y eran más urbanas: el diseño confunde intensidad con "
         "nivel socioeconómico y no sirve para niveles.")
