@@ -1,0 +1,18 @@
+# Números de la presentación para el advisor (scripts/27_figuras_advisor.py)
+- perfil Chicas 0-11m: +0.300 (ee 0.100, p=0.003)
+- perfil Chicas 12-23m: +0.171 (ee 0.098, p=0.080)
+- perfil Chicas 36-59m: +0.182 (ee 0.086, p=0.034)
+- perfil Chicos 0-11m: +0.016 (ee 0.098, p=0.871)
+- perfil Chicos 12-23m: +0.052 (ee 0.085, p=0.541)
+- perfil Chicos 36-59m: +0.042 (ee 0.086, p=0.626)
+-> reports/figures/advisor/perfil.png
+- edad media de los bebés en 2010: 1.0 años
+- edad media de los bebés en 2012: 3.2 años
+- edad media de los bebés en 2017: 8.8 años
+- edad media de los bebés en 2024: 15.2 años
+- trayectoria ASQ:SE a los 1.0 años: -0.339 (ee 0.126, p=0.007)
+- trayectoria CBCL a los 3.2 años: -0.068 (ee 0.135, p=0.615)
+- trayectoria CBCL a los 8.8 años: +0.051 (ee 0.121, p=0.676)
+- trayectoria CBCL a los 15.2 años: +0.238 (ee 0.107, p=0.026)
+- trayectoria PHQ-4 a los 15.2 años: +0.364 (ee 0.133, p=0.006)
+-> reports/figures/advisor/trayectoria.png
