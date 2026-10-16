@@ -27,3 +27,12 @@ Contraste con otras medidas de 2012 (todos):
 - todos, con el estrés de la madre por tramo: 6-17 +0.132** (ee 0.060, p=0.027) (11% explicado) | 36-41 +0.102 (ee 0.078, p=0.190) (8% explicado) | 42-49 +0.085 (ee 0.076, p=0.267) (-8% explicado)
 - chicas, sin el estrés de la madre: 6-17 +0.295*** (ee 0.096, p=0.002) | 36-41 +0.165* (ee 0.099, p=0.095) | 42-49 +0.224* (ee 0.115, p=0.052) | N=4423
 - chicas, con el estrés de la madre por tramo: 6-17 +0.274*** (ee 0.096, p=0.004) (7% explicado) | 36-41 +0.166 (ee 0.103, p=0.108) (-1% explicado) | 42-49 +0.226* (ee 0.116, p=0.052) (-1% explicado)
+
+## 5. La lactancia como vía
+Tomaban pecho el 27-F: 6-17 meses 0.52; 18-35 meses 0.20; 36-41 meses 0.05; 42-49 meses 0.03
+- todos: estrés de la madre sin pecho +0.002 (ee 0.034, p=0.948); con pecho +0.163*** (ee 0.057, p=0.004); diferencia +0.161** (ee 0.065, p=0.013); N=8874
+  pecho y bebé a la vez: extra por pecho +0.113* (ee 0.068, p=0.096); extra por bebé +0.109 (ee 0.073, p=0.133)
+- chicas: estrés de la madre sin pecho -0.027 (ee 0.056, p=0.627); con pecho +0.289*** (ee 0.087, p=0.001); diferencia +0.316*** (ee 0.107, p=0.003); N=4409
+  pecho y bebé a la vez: extra por pecho +0.260** (ee 0.113, p=0.021); extra por bebé +0.121 (ee 0.119, p=0.307)
+- chicos: estrés de la madre sin pecho +0.044 (ee 0.046, p=0.333); con pecho +0.049 (ee 0.091, p=0.593); diferencia +0.005 (ee 0.098, p=0.961); N=4465
+  pecho y bebé a la vez: extra por pecho -0.045 (ee 0.102, p=0.657); extra por bebé +0.125 (ee 0.096, p=0.193)

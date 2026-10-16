@@ -20,6 +20,11 @@ insomnio, estrés o angustia, llanto, miedo o pánico y recuerdos traumáticos.
      estrés de la madre (y su interacción con cada tramo), misma muestra.
   4. Otras medidas de la madre como contraste: daño de la vivienda,
      depresión diagnosticada y angustia parental (PSI) en 2012.
+  5. La lactancia como vía: con todas las edades juntas, pendiente del
+     PHQ-4 en el estrés de la madre para los hijos que tomaban pecho el
+     27-F y para los que no, con efectos fijos de tramo y de tramo x pecho;
+     después, pecho y bebé a la vez. Y qué proporción tomaba pecho en cada
+     tramo.
 
 Salida: reports/estres_madre.md y reports/estres_madre.csv
 Uso:    python3 scripts/34_estres_madre.py
@@ -80,8 +85,21 @@ def carga():
     ev = ev.drop_duplicates("folio").set_index("folio")
     s = num(ev.psi_pb_pd)
     x = x.join(((s - s.mean()) / s.std()).rename("psi_pd12"), how="outer")
+    lac, _ = pyreadstat.read_dta(
+        "data/interim/2012/Entrevistada_2012.dta", encoding="latin1",
+        usecols=["folio", "b30", "b32"])
+    lac["folio"] = num(lac.folio).astype("int64")
+    lac = lac.drop_duplicates("folio").set_index("folio")
+    b30, b32 = num(lac.b30), num(lac.b32)
+    meses = pd.Series(np.nan, index=lac.index)
+    meses[b30 == 3] = 0.0
+    meses[b30.isin([1, 2])] = b32.where(~b32.isin([88, 99]))
+    meses[b30 == 2] = 990.0
+    x = x.join(meses.rename("meses_pecho"), how="outer")
     d = d.merge(x.rename_axis("folio").reset_index(), on="folio",
                 how="left")
+    d["pecho"] = (d.meses_pecho >= d.edadq_m).astype(float).where(
+        d.meses_pecho.notna())
     d = d[d.edadq_m.between(6, 49)].copy()
     d["tramo"] = "18-35"
     for t, lo, hi in TRAMOS:
@@ -177,6 +195,50 @@ def main():
         log(f"- {g}, con el estrés de la madre por tramo: " + " | ".join(
             f"{k} {fmt(t)} ({100 * (1 - t[0] / sin[0][k][0]):.0f}% "
             f"explicado)" for k, t in con[0].items()))
+    log("\n## 5. La lactancia como vía")
+    log("Tomaban pecho el 27-F: " + "; ".join(
+        f"{t} meses {d.loc[d.tramo == t, 'pecho'].mean():.2f}"
+        for t, _, _ in TRAMOS))
+    for t, _, _ in TRAMOS:
+        filas.append({"panel": "pecho", "grupo": "todos", "tramo": t,
+                      "zona": "", "b": d.loc[d.tramo == t, "pecho"].mean(),
+                      "se": np.nan, "p": np.nan,
+                      "n": int(d.loc[d.tramo == t, "pecho"].notna().sum())})
+    for g, sx in GRUPOS:
+        x = d.dropna(subset=["z_phq4", "estres12", "pecho", "estrato", "w",
+                             "cohorte"]).copy()
+        x = x[x.w > 0]
+        if sx is not None:
+            x = x[x.mujer == sx]
+        x["est"] = x.estrato.astype(int).astype(str)
+        x["coh"] = x.cohorte.astype(int).astype(str)
+        x["e_pecho"] = x.estres12 * x.pecho
+        x["e_sin"] = x.estres12 * (1 - x.pecho)
+        x["e_bebe"] = x.estres12 * (x.tramo == "6-17")
+        fe = ["C(tramo)", "C(tramo):pecho", "pecho", "C(est)", "C(coh)"] \
+            + xt(x, p15.X_PRE) + xt(x, p15.X_POST)
+        r = smf.wls("z_phq4 ~ " + " + ".join(["e_sin", "e_pecho"] + fe),
+                    data=x, weights=x.w).fit(cov_type="cluster",
+                                             cov_kwds={"groups": x.est})
+        dif = r.t_test("e_pecho - e_sin")
+        t_dif = (float(np.ravel(dif.effect)[0]), float(np.ravel(dif.sd)[0]),
+                 float(np.ravel(dif.pvalue)[0]))
+        r2 = smf.wls("z_phq4 ~ " + " + ".join(
+            ["estres12", "e_pecho", "e_bebe"] + fe), data=x,
+            weights=x.w).fit(cov_type="cluster", cov_kwds={"groups": x.est})
+        par = {k: (float(r.params[k]), float(r.bse[k]), float(r.pvalues[k]))
+               for k in ("e_sin", "e_pecho")}
+        log(f"- {g}: estrés de la madre sin pecho {fmt(par['e_sin'])}; con "
+            f"pecho {fmt(par['e_pecho'])}; diferencia {fmt(t_dif)}; "
+            f"N={int(r.nobs)}")
+        log(f"  pecho y bebé a la vez: extra por pecho "
+            f"{fmt((r2.params['e_pecho'], r2.bse['e_pecho'], r2.pvalues['e_pecho']))}"
+            f"; extra por bebé "
+            f"{fmt((r2.params['e_bebe'], r2.bse['e_bebe'], r2.pvalues['e_bebe']))}")
+        for k, lab in (("e_sin", "sin pecho"), ("e_pecho", "con pecho")):
+            filas.append({"panel": "lactancia", "grupo": g, "tramo": lab,
+                          "zona": "", "b": par[k][0], "se": par[k][1],
+                          "p": par[k][2], "n": int(r.nobs)})
     pd.DataFrame(filas).to_csv("reports/estres_madre.csv", index=False)
     Path("reports/estres_madre.md").write_text("\n".join(OUT) + "\n",
                                                encoding="utf-8")

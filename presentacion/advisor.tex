@@ -1,6 +1,6 @@
-% Presentación para el advisor: el terremoto, lo que anticipa la teoría
-% (una U por edad al terremoto), el diseño, la salud mental, la U en los
-% datos, el estrés de la madre y el cierre.
+% Presentación para el advisor: el terremoto, las vías por las que puede
+% llegar al niño, el diseño, la salud mental, el perfil por edad, el hogar,
+% la madre y la lactancia, los chicos y lo que falta.
 % Figuras: python3 scripts/28_beamer_advisor.py
 % Compilar desde presentacion/: xelatex advisor.tex (dos veces)
 \documentclass[aspectratio=169,11pt]{beamer}
@@ -59,15 +59,32 @@
 \end{columns}
 \end{frame}
 
-% --------------------------------------------------------------- 2. Anticipo
+% ------------------------------------------------------------------ 2. Vías
 \begin{frame}
-\frametitle{Un bebé y un niño de 4 años no viven igual un terremoto}
-\centering
-\includegraphics[width=\textwidth]{figuras/anticipo.pdf}
+\frametitle{Tres vías posibles por las que el terremoto llega al niño}
+\vspace{3mm}
+\renewcommand{\arraystretch}{1.55}
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{23mm}
+                >{\raggedright\arraybackslash}p{46mm}
+                >{\raggedright\arraybackslash}p{38mm}
+                >{\raggedright\arraybackslash}p{22mm}@{}}
+ & \sub{Cómo llega} & \sub{A quién} & \sub{¿Se mide?} \\
+\canal{naranja}{El hogar}
+ & Menos ingreso, vivienda dañada, más conflicto, padres estresados
+ & A todos los hijos, de cualquier edad
+ & Sí, en 2012 y 2017 \\
+\canal{naranja}{La madre}
+ & Su estrés pasa al hijo por el contacto y la leche
+ & A quien depende físicamente de ella
+ & Sí, estrés y lactancia \\
+\canal{naranja}{El recuerdo}
+ & El niño guarda la memoria del evento
+ & A quien ya puede recordar, desde los 3 o 4 años
+ & No \\
+\end{tabular}
 
-\nota{Estrés de la madre, Gunnar y Quevedo 2007; Lupien et al.\ 2009.
-Recuerdo, Rubin 2000; Bauer 2015. Hogar, Conger y Donnellan 2007; Almond,
-Currie y Duque 2018.}
+\nota{Hogar, Conger y Donnellan 2007; Almond, Currie y Duque 2018. Madre,
+Gunnar y Quevedo 2007; Hinde et al.\ 2015. Recuerdo, Bauer 2015.}
 \end{frame}
 
 % ----------------------------------------------------------------- 3. Diseño
@@ -116,42 +133,61 @@ comunas afectadas menos no afectadas; IC al 95\%. En chicos, nada a ninguna
 edad.}
 \end{frame}
 
-% ------------------------------------------------------- 6. La madre
+% --------------------------------------------------------------- 6. Hogar
 \begin{frame}
-\frametitle{Las bebés absorben el estrés de la madre}
+\frametitle{El hogar cambió igual a toda edad y no explica la brecha}
 \centering
-\includegraphics[width=\textwidth]{figuras/estres_madre.pdf}
+\includegraphics[width=\textwidth]{figuras/canal_hogar.pdf}
 
-\nota{La madre reporta en 2012 si tuvo estrés o angustia tras el terremoto.
-Derecha, chicas, con EF y controles; IC al 95\%. Explica cerca del 10\% de
-la brecha de las bebés.}
+\nota{Índices de 2012 y 2017 que reporta la madre o el cuidador. Chicas;
+frente a 18--35 meses; IC al 95\%, a la derecha por bootstrap de comunas.}
 \end{frame}
 
-% -------------------------------------------------------------- 7. Cierre
+% ------------------------------------------------------------- 7. La madre
 \begin{frame}
-\frametitle{Lo que anticipamos es lo que vemos}
-\vspace{3mm}
-\renewcommand{\arraystretch}{1.6}
-\begin{tabular}{@{}>{\raggedright\arraybackslash}p{36mm}
-                >{\raggedright\arraybackslash}p{44mm}
-                >{\raggedright\arraybackslash}p{55mm}@{}}
-\sub{Edad al terremoto} & \sub{Anticipamos} & \sub{En los datos} \\
-\canal{naranja}{Menos de 18 meses}
- & Huella, por el estrés de la madre
- & \si\ +0,27 DE, y solo aquí pesa el estrés de la madre \\
-\canal{naranja}{18 a 41 meses}
- & Sin huella
- & \si\ Cerca de cero \\
-\canal{naranja}{42 meses o más}
- & Huella, por el recuerdo
- & \si\ +0,23 DE, sin pasar por la madre \\
-\canal{muted}{Si fuera solo el hogar}
- & Huella pareja a toda edad
- & \no\ Madres igual de estresadas a toda edad, y aun así una U \\
-\end{tabular}
+\frametitle{El estrés materno se asocia a síntomas solo con lactancia}
+\centering
+\includegraphics[width=\textwidth]{figuras/diada.pdf}
 
-\nota{Chicas; en chicos, nada a ninguna edad. Es en ellas donde aparecen la
-ansiedad y la depresión en la adolescencia; Salk, Hyde y Abramson 2017.}
+\nota{La madre reporta en 2012 si tuvo estrés o angustia tras el terremoto.
+Al centro, chicas de todas las edades, con EF y controles; IC al 95\%.}
+\end{frame}
+
+% -------------------------------------------------------------- 8. Chicos
+\begin{frame}
+\frametitle{En chicos, tampoco aparece en conducta ni en consumo}
+\centering
+\includegraphics[width=\textwidth]{figuras/chicos.pdf}
+
+\nota{Consumo de alcohol o drogas y violencia en el pololeo, tampoco. El
+cuidador no ve los síntomas de las chicas; la huella está en lo que ellas
+reportan.}
+\end{frame}
+
+% -------------------------------------------------------------- 9. Cierre
+\begin{frame}
+\frametitle{Lo que sugieren los datos y lo que queda abierto}
+\vspace{2mm}
+{\color{acc}\bfseries Sugieren}
+\begin{itemize}\setlength{\itemsep}{1mm}
+\item El efecto depende de la edad de exposición. Aparece en las expuestas
+      de bebés y desde los 42 meses
+\item El hogar que medimos cambió igual a toda edad y no explica esas
+      diferencias
+\item El estrés de la madre se asocia a síntomas solo en las hijas que
+      tomaban pecho, en línea con una vulnerabilidad neuroendocrina temprana
+\end{itemize}
+\vspace{2mm}
+{\color{naranja}\bfseries Queda abierto}
+\begin{itemize}\setlength{\itemsep}{1mm}
+\item La medida de estrés es gruesa y explica una parte pequeña de la brecha
+\item Por qué no hay efecto entre 18 y 41 meses. Las ventanas de
+      sensibilidad parecen más complejas de lo que capturan los modelos
+\item Si lo que aparece desde los 42 meses es memoria explícita, que no
+      medimos
+\end{itemize}
+
+\nota{Solo en chicas; en chicos, nada en síntomas, conducta ni consumo.}
 \end{frame}
 
 \end{document}
