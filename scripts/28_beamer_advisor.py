@@ -29,6 +29,9 @@ diapositivas, intervalos al 95% y nada más.
   ventanas.pdf     PHQ-4 de las chicas en tramos de seis meses de edad al
                    terremoto, con las dos ventanas (reports/ventanas.csv)
   hogar_2017.pdf   colegio y peleas en el hogar en 2017, a los 8-12 años
+  estres_madre.pdf estrés de la madre tras el terremoto y cuánto pesa en
+                   los síntomas de la hija según su edad
+                   (reports/estres_madre.csv)
 
 Los coeficientes se leen de los informes commiteados (reports/*.md); el
 mapa y la edad de los bebés en cada ola usan los datos.
@@ -939,6 +942,57 @@ def hogar_2017():
         guarda(f, "hogar_2017.pdf")
 
 
+def estres_madre():
+    """(a) Madres con estrés o angustia tras el terremoto, zona afectada y no
+    afectada, por edad del hijo; (b) cuánto más PHQ-4 tienen a los 15-18
+    las chicas cuya madre tuvo estrés, por edad al terremoto
+    (reports/estres_madre.csv)."""
+    c = pd.read_csv("reports/estres_madre.csv")
+    tramos = ["6-17", "18-35", "36-41", "42-49"]
+    etiquetas = ["6–17", "18–35", "36–41", "42–49"]
+    niv = c[c.panel == "nivel"].set_index(["tramo", "zona"])
+    pen = c[(c.panel == "pendiente") & (c.grupo == "chicas")].set_index(
+        "tramo")
+    with plt.rc_context(PAPER):
+        f = plt.figure(figsize=(144 * MM, 60 * MM))
+        a = f.add_axes([0.1, 0.2, 0.36, 0.6])
+        b = f.add_axes([0.62, 0.2, 0.36, 0.6])
+        for ax, quien in ((a, "del hijo"), (b, "de la hija")):
+            ejes_paper(ax)
+            ax.set_xticks(range(4))
+            ax.set_xticklabels(etiquetas, fontsize=8)
+            ax.set_xlim(-0.5, 3.5)
+            ax.set_xlabel(f"Edad {quien} al terremoto, en meses",
+                          fontsize=8)
+        hs = []
+        for zona, col, hueco, dx in (("afectada", MARRON, False, 0.12),
+                                     ("no afectada", GRISR, True, -0.12)):
+            for x, t in enumerate(tramos):
+                r = niv.loc[(t, zona)]
+                h = barra(a, x + dx, (r.b, r.se, np.nan), col, "o", hueco,
+                          escala=100.0)
+            hs.append(h)
+        a.set_ylim(-2, 25)
+        formato_eje(a, 5, 0)
+        a.set_ylabel("Madres con estrés o\nangustia tras el terremoto (%)",
+                     fontsize=8)
+        a.set_title("El terremoto estresó a las madres por igual",
+                    fontsize=9, pad=22)
+        a.legend(hs, ["Zona afectada", "No afectada"],
+                 loc="lower center", bbox_to_anchor=(0.5, 1.0), ncol=2,
+                 frameon=False, fontsize=7.5, handletextpad=0.3,
+                 columnspacing=1.2, borderaxespad=0.1)
+        for x, t in enumerate(tramos):
+            barra(b, x, tuple(pen.loc[t, ["b", "se", "p"]]), MARRON, "^")
+        b.set_ylim(-0.3, 0.5)
+        formato_eje(b, 0.1)
+        b.set_ylabel("Más síntomas a los 15–18 si\nla madre tuvo estrés (DE)",
+                     fontsize=8)
+        b.set_title("Pero solo deja huella si la hija era bebé", fontsize=9,
+                    pad=22)
+        guarda(f, "estres_madre.pdf")
+
+
 def main():
     mapa()
     hallazgos()
@@ -953,6 +1007,7 @@ def main():
     orden_temporal()
     ventanas()
     hogar_2017()
+    estres_madre()
 
 
 if __name__ == "__main__":

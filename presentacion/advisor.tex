@@ -1,6 +1,6 @@
 % Presentación para el advisor: el terremoto, la pregunta (¿importa la edad
-% a la que llega el shock?), los dos canales, la salud mental, las dos
-% ventanas de edad y el hogar antes de los síntomas.
+% a la que llega el shock?), los dos canales, la salud mental, el perfil en
+% U por edad, el estrés de la madre y el hogar antes de los síntomas.
 % Figuras: python3 scripts/28_beamer_advisor.py
 % Compilar desde presentacion/: xelatex advisor.tex (dos veces)
 \documentclass[aspectratio=169,11pt]{beamer}
@@ -80,13 +80,13 @@
  & \canal{acc}{Canal 2. El niño, directamente} \\
 \sub{Qué pasa}
  & Menos ingreso, vivienda dañada, padres con estrés. Más conflicto y menos inversión en el hijo
- & El bebé regula el estrés a través de la madre. Desde los 3 años y medio queda el recuerdo \\
+ & El bebé depende de la madre para regular el estrés. Desde los 3 años y medio queda el recuerdo \\
 \sub{A quién}
  & A todos los niños del hogar, tengan la edad que tengan
  & A los bebés y a los mayores de 3 años y medio \\
 \sub{Se vería}
- & Un efecto parejo, o que baja con la edad
- & Efecto en las dos puntas, nada en el medio \\
+ & Un efecto parejo entre edades
+ & Un perfil en U por edad \\
 \end{tabular}
 
 \vfill
@@ -137,7 +137,7 @@ comunas afectadas menos no afectadas; IC al 95\%.}
 
 % ----------------------------------------------------------- 6. Ventanas
 \begin{frame}
-\frametitle{En chicas, el efecto está en las dos puntas}
+\frametitle{En chicas, el efecto por edad tiene forma de U}
 \centering
 \includegraphics[width=\textwidth]{figuras/ventanas.pdf}
 
@@ -146,7 +146,18 @@ comunas afectadas menos no afectadas; IC al 95\%. En chicos, nada a ninguna
 edad.}
 \end{frame}
 
-% --------------------------------------------------------------- 7. Hogar
+% ------------------------------------------------------- 7. La madre
+\begin{frame}
+\frametitle{Las bebés absorben el estrés de la madre}
+\centering
+\includegraphics[width=\textwidth]{figuras/estres_madre.pdf}
+
+\nota{La madre reporta en 2012 si tuvo estrés o angustia tras el terremoto.
+Derecha, chicas, con EF y controles; IC al 95\%. Explica cerca del 10\% de
+la brecha de las bebés.}
+\end{frame}
+
+% --------------------------------------------------------------- 8. Hogar
 \begin{frame}
 \frametitle{A los 8--12 años, el hogar era igual a todas las edades}
 \centering
@@ -156,21 +167,24 @@ edad.}
 con quienes tenían 2 años, comunas afectadas menos no afectadas; IC al 95\%.}
 \end{frame}
 
-% ------------------------------------------------------------ 8. Historia
+% ------------------------------------------------------------ 9. Historia
 \begin{frame}
 \frametitle{Encaja con el canal 2}
 \vspace{6mm}
 \renewcommand{\arraystretch}{1.9}
-\begin{tabular}{@{}>{\raggedright\arraybackslash}p{40mm}
-                >{\raggedright\arraybackslash}p{42mm}
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{38mm}
+                >{\raggedright\arraybackslash}p{44mm}
                 >{\raggedright\arraybackslash}p{53mm}@{}}
  & \sub{Se vería} & \sub{En los datos} \\
 \canal{naranja}{Canal 1. El hogar}
- & Un efecto parejo, o que baja con la edad
- & \no\ Nada entre 18 y 41 meses, y el hogar igual a los 8--12 años \\
-\canal{acc}{Canal 2. El niño}
- & Efecto en las dos puntas, nada en el medio
- & \si\ +0,27 DE antes de 18 meses, 0 entre 18 y 41, +0,23 desde los 42 \\
+ & Un efecto parejo entre edades
+ & \no\ Perfil en U, con las madres igual de estresadas a toda edad \\
+\canal{acc}{Canal 2. Bebés}
+ & Pesa el estrés de la madre
+ & \si\ Solo en las bebés deja huella el estrés de la madre \\
+\canal{acc}{Canal 2. Memoria}
+ & Efecto desde los 3 años y medio
+ & \si\ +0,23 DE desde los 42 meses, sin pasar por la madre \\
 \end{tabular}
 
 \nota{Solo en chicas, que es en quienes aparecen la ansiedad y la depresión
