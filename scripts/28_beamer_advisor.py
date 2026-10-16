@@ -32,6 +32,8 @@ diapositivas, intervalos al 95% y nada más.
   estres_madre.pdf estrés de la madre tras el terremoto y cuánto pesa en
                    los síntomas de la hija según su edad
                    (reports/estres_madre.csv)
+  anticipo.pdf     esquema de lo que anticipa la teoría: una U por edad
+                   frente a un efecto parejo si fuera solo el hogar
 
 Los coeficientes se leen de los informes commiteados (reports/*.md); el
 mapa y la edad de los bebés en cada ola usan los datos.
@@ -889,7 +891,8 @@ def ventanas():
         f = plt.figure(figsize=(144 * MM, 57 * MM))
         ax = f.add_axes([0.13, 0.21, 0.84, 0.72])
         ejes_paper(ax)
-        for x0, x1, txt in ((-0.5, 1.5, "Estrés"), (4.5, 5.5, "Memoria")):
+        for x0, x1, txt in ((-0.5, 1.5, "Estrés de la madre"),
+                            (4.5, 5.5, "Recuerdo")):
             ax.axvspan(x0, x1, color="#F1F1F1", lw=0, zorder=0)
             ax.text((x0 + x1) / 2, 0.66, txt, ha="center", va="top",
                     fontsize=8.5, color="#5A5A5A")
@@ -993,6 +996,43 @@ def estres_madre():
         guarda(f, "estres_madre.pdf")
 
 
+def anticipo():
+    """Lo que anticipa la teoría: la huella del terremoto en la adolescencia
+    según la edad a la que llega. Si cuenta lo que vive el niño, una U; si
+    fuera solo el hogar, pareja entre edades. Esquema, sin datos."""
+    x = np.linspace(0, 4.2, 400)
+    u = (0.12 + 0.72 / (1 + np.exp((x - 1.5) * 7))
+         + 0.72 / (1 + np.exp(-(x - 3.6) * 7)))
+    with plt.rc_context(PAPER):
+        f = plt.figure(figsize=(144 * MM, 60 * MM))
+        ax = f.add_axes([0.06, 0.17, 0.92, 0.7])
+        for lado in ("top", "right"):
+            ax.spines[lado].set_visible(False)
+        for x0, x1 in ((0, 1.5), (3.5, 4.2)):
+            ax.axvspan(x0, x1, color="#F1F1F1", lw=0, zorder=0)
+        h1, = ax.plot(x, u, color=MARRON, lw=2.2, zorder=3)
+        h2 = ax.axhline(0.5, color=GRISR, lw=1.3, ls="--", zorder=2)
+        for xc, yc, txt in ((0.75, 1.13, "Siente el estrés\nde la madre"),
+                            (2.5, 0.33, "Ya no depende tanto de ella\n"
+                                        "y aún no recordará"),
+                            (3.85, 1.13, "Recordará\nel terremoto")):
+            ax.text(xc, yc, txt, ha="center", va="top", fontsize=8.5,
+                    color="black", linespacing=1.15, zorder=4)
+        ax.set_xlim(0, 4.2)
+        ax.set_ylim(0, 1.16)
+        ax.set_xticks([0, 1, 2, 3, 4])
+        ax.set_xticklabels(["0", "1", "2", "3", "4"], fontsize=8.5)
+        ax.set_xlabel("Edad al terremoto, en años", fontsize=8.5)
+        ax.set_yticks([])
+        ax.set_ylabel("Huella en la adolescencia", fontsize=8.5)
+        f.legend([h1, h2], ["Si cuenta lo que vive el niño",
+                            "Si fuera solo el hogar"],
+                 loc="upper center", bbox_to_anchor=(0.5, 1.0), ncol=2,
+                 frameon=False, fontsize=8, handlelength=2.2,
+                 columnspacing=1.6)
+        guarda(f, "anticipo.pdf")
+
+
 def main():
     mapa()
     hallazgos()
@@ -1008,6 +1048,7 @@ def main():
     ventanas()
     hogar_2017()
     estres_madre()
+    anticipo()
 
 
 if __name__ == "__main__":
