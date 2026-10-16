@@ -1,0 +1,325 @@
+var,dominio,lab_en,lab_es,sgn,ref,edad,b,se,p,n
+z_phq4,Mental health,PHQ-4 symptoms (z),Síntomas PHQ-4 (z),1,0-11m,12-23m,-0.044772128326189195,0.07795026637885755,0.5657188916711098,9996
+z_phq4,Mental health,PHQ-4 symptoms (z),Síntomas PHQ-4 (z),1,0-11m,24-35m,-0.1469578686018164,0.06875838683964293,0.032572926924725625,9996
+z_phq4,Mental health,PHQ-4 symptoms (z),Síntomas PHQ-4 (z),1,0-11m,36-59m,-0.044221431231297424,0.060359109345419056,0.46377870127880516,9996
+z_phq4,Mental health,PHQ-4 symptoms (z),Síntomas PHQ-4 (z),1,24-35m,0-11m,0.1469578686018164,0.06875838683964293,0.03257292692472564,9996
+z_phq4,Mental health,PHQ-4 symptoms (z),Síntomas PHQ-4 (z),1,24-35m,12-23m,0.1021857402756272,0.06975447292781783,0.1429387641659935,9996
+z_phq4,Mental health,PHQ-4 symptoms (z),Síntomas PHQ-4 (z),1,24-35m,36-59m,0.10273643737051896,0.06030893675911206,0.08847403078020777,9996
+gad2_bin,Mental health,"Positive anxiety screen, GAD-2 (0/1)","Tamizaje de ansiedad positivo, GAD-2",1,0-11m,12-23m,-0.012273478608969081,0.03257035524131552,0.7063001353364202,9996
+gad2_bin,Mental health,"Positive anxiety screen, GAD-2 (0/1)","Tamizaje de ansiedad positivo, GAD-2",1,0-11m,24-35m,-0.07343797773189813,0.032004418342126015,0.021754912305139547,9996
+gad2_bin,Mental health,"Positive anxiety screen, GAD-2 (0/1)","Tamizaje de ansiedad positivo, GAD-2",1,0-11m,36-59m,-0.015774456449896723,0.027980370826879604,0.5729115762804016,9996
+gad2_bin,Mental health,"Positive anxiety screen, GAD-2 (0/1)","Tamizaje de ansiedad positivo, GAD-2",1,24-35m,0-11m,0.07343797773189813,0.032004418342126015,0.021754912305139547,9996
+gad2_bin,Mental health,"Positive anxiety screen, GAD-2 (0/1)","Tamizaje de ansiedad positivo, GAD-2",1,24-35m,12-23m,0.061164499122929046,0.03326761973509234,0.0659799991792737,9996
+gad2_bin,Mental health,"Positive anxiety screen, GAD-2 (0/1)","Tamizaje de ansiedad positivo, GAD-2",1,24-35m,36-59m,0.057663521282001404,0.026834348385687757,0.03164472110129801,9996
+phq2_bin,Mental health,"Positive depression screen, PHQ-2 (0/1)","Tamizaje de depresión positivo, PHQ-2",1,0-11m,12-23m,-0.013957980798674198,0.037988051476974705,0.7132976878949995,9996
+phq2_bin,Mental health,"Positive depression screen, PHQ-2 (0/1)","Tamizaje de depresión positivo, PHQ-2",1,0-11m,24-35m,-0.04768747093527342,0.04119368873720035,0.24701088834150242,9996
+phq2_bin,Mental health,"Positive depression screen, PHQ-2 (0/1)","Tamizaje de depresión positivo, PHQ-2",1,0-11m,36-59m,-0.009658535667063407,0.030962242666243162,0.7550818591955137,9996
+phq2_bin,Mental health,"Positive depression screen, PHQ-2 (0/1)","Tamizaje de depresión positivo, PHQ-2",1,24-35m,0-11m,0.04768747093527342,0.04119368873720035,0.24701088834150242,9996
+phq2_bin,Mental health,"Positive depression screen, PHQ-2 (0/1)","Tamizaje de depresión positivo, PHQ-2",1,24-35m,12-23m,0.03372949013659922,0.03507370483070244,0.33621309847255754,9996
+phq2_bin,Mental health,"Positive depression screen, PHQ-2 (0/1)","Tamizaje de depresión positivo, PHQ-2",1,24-35m,36-59m,0.03802893526821001,0.03262614528965588,0.243777443698161,9996
+cbcl_int,Mental health,"Internalizing problems, CBCL (z)","Problemas internalizantes, CBCL (z)",1,0-11m,12-23m,-0.025897103821642432,0.08222761714776736,0.7528040884604964,9552
+cbcl_int,Mental health,"Internalizing problems, CBCL (z)","Problemas internalizantes, CBCL (z)",1,0-11m,24-35m,-0.07057617718438791,0.07585745620480085,0.35217493580375414,9552
+cbcl_int,Mental health,"Internalizing problems, CBCL (z)","Problemas internalizantes, CBCL (z)",1,0-11m,36-59m,-0.04413833513590739,0.07088254733954037,0.533483788458234,9552
+cbcl_int,Mental health,"Internalizing problems, CBCL (z)","Problemas internalizantes, CBCL (z)",1,24-35m,0-11m,0.07057617718438791,0.07585745620480085,0.35217493580375414,9552
+cbcl_int,Mental health,"Internalizing problems, CBCL (z)","Problemas internalizantes, CBCL (z)",1,24-35m,12-23m,0.04467907336274548,0.07489004694011234,0.5507774017993698,9552
+cbcl_int,Mental health,"Internalizing problems, CBCL (z)","Problemas internalizantes, CBCL (z)",1,24-35m,36-59m,0.02643784204848052,0.0618494540781742,0.669048147214375,9552
+cbcl_ext,Mental health,"Externalizing problems, CBCL (z)","Problemas externalizantes, CBCL (z)",1,0-11m,12-23m,-0.010145421967860533,0.07908932137775421,0.8979289546980789,9552
+cbcl_ext,Mental health,"Externalizing problems, CBCL (z)","Problemas externalizantes, CBCL (z)",1,0-11m,24-35m,-0.08713193960846809,0.0608739585930786,0.1523299354793635,9552
+cbcl_ext,Mental health,"Externalizing problems, CBCL (z)","Problemas externalizantes, CBCL (z)",1,0-11m,36-59m,-0.05550639102862623,0.061099827970036595,0.363638338306972,9552
+cbcl_ext,Mental health,"Externalizing problems, CBCL (z)","Problemas externalizantes, CBCL (z)",1,24-35m,0-11m,0.08713193960846809,0.0608739585930786,0.1523299354793635,9552
+cbcl_ext,Mental health,"Externalizing problems, CBCL (z)","Problemas externalizantes, CBCL (z)",1,24-35m,12-23m,0.07698651764060756,0.0664012438374124,0.24628755926761992,9552
+cbcl_ext,Mental health,"Externalizing problems, CBCL (z)","Problemas externalizantes, CBCL (z)",1,24-35m,36-59m,0.03162554857984186,0.05926635245917519,0.5936063645770082,9552
+cbcl_aten,Mental health,"Attention problems, CBCL (z)","Problemas de atención, CBCL (z)",1,0-11m,12-23m,-0.06750429125882923,0.08769487468072153,0.44144034637473806,9552
+cbcl_aten,Mental health,"Attention problems, CBCL (z)","Problemas de atención, CBCL (z)",1,0-11m,24-35m,-0.09802774108888185,0.07414568923167447,0.1861360870880937,9552
+cbcl_aten,Mental health,"Attention problems, CBCL (z)","Problemas de atención, CBCL (z)",1,0-11m,36-59m,-0.08159007512842707,0.061296002268691904,0.18316165616632263,9552
+cbcl_aten,Mental health,"Attention problems, CBCL (z)","Problemas de atención, CBCL (z)",1,24-35m,0-11m,0.09802774108888185,0.07414568923167447,0.1861360870880937,9552
+cbcl_aten,Mental health,"Attention problems, CBCL (z)","Problemas de atención, CBCL (z)",1,24-35m,12-23m,0.030523449830052618,0.07189570282349717,0.6711634385517928,9552
+cbcl_aten,Mental health,"Attention problems, CBCL (z)","Problemas de atención, CBCL (z)",1,24-35m,36-59m,0.016437665960454775,0.06329539760985306,0.7950970061593859,9552
+z_resil,Well-being,Resilience (z),Resiliencia (z),-1,0-11m,12-23m,0.061071119168046556,0.07658062394473297,0.42517532198662444,9996
+z_resil,Well-being,Resilience (z),Resiliencia (z),-1,0-11m,24-35m,0.14106245516498825,0.07934848143426086,0.07544349016513993,9996
+z_resil,Well-being,Resilience (z),Resiliencia (z),-1,0-11m,36-59m,0.09799314884037079,0.06801980506956051,0.14968185571935214,9996
+z_resil,Well-being,Resilience (z),Resiliencia (z),-1,24-35m,0-11m,-0.14106245516498825,0.07934848143426086,0.07544349016513993,9996
+z_resil,Well-being,Resilience (z),Resiliencia (z),-1,24-35m,12-23m,-0.07999133599694169,0.07703787070255932,0.299112799335719,9996
+z_resil,Well-being,Resilience (z),Resiliencia (z),-1,24-35m,36-59m,-0.04306930632461746,0.06833610490658688,0.5285264720327041,9996
+sat_vida,Well-being,Satisfaction with life in general (z),Satisfacción con la vida en general (z),-1,0-11m,12-23m,-0.0029507751833449253,0.06686310748114067,0.9647995128689513,9996
+sat_vida,Well-being,Satisfaction with life in general (z),Satisfacción con la vida en general (z),-1,0-11m,24-35m,0.0687360274753595,0.06734279325509919,0.30740195432613016,9996
+sat_vida,Well-being,Satisfaction with life in general (z),Satisfacción con la vida en general (z),-1,0-11m,36-59m,0.031378323839080555,0.059941592965844455,0.6006391191764102,9996
+sat_vida,Well-being,Satisfaction with life in general (z),Satisfacción con la vida en general (z),-1,24-35m,0-11m,-0.0687360274753595,0.06734279325509919,0.30740195432613016,9996
+sat_vida,Well-being,Satisfaction with life in general (z),Satisfacción con la vida en general (z),-1,24-35m,12-23m,-0.07168680265870443,0.07172596012781587,0.3175747789160901,9996
+sat_vida,Well-being,Satisfaction with life in general (z),Satisfacción con la vida en general (z),-1,24-35m,36-59m,-0.03735770363627895,0.06593136931630883,0.5709757732519835,9996
+sat_familia,Well-being,Satisfaction with family life (z),Satisfacción con la vida familiar (z),-1,0-11m,12-23m,0.08626825689349786,0.050302531165970915,0.08634735570631666,9996
+sat_familia,Well-being,Satisfaction with family life (z),Satisfacción con la vida familiar (z),-1,0-11m,24-35m,0.09789530623513672,0.05639240886539777,0.08256984091952817,9996
+sat_familia,Well-being,Satisfaction with family life (z),Satisfacción con la vida familiar (z),-1,0-11m,36-59m,0.11561258937037822,0.06165546694675532,0.06077356164420157,9996
+sat_familia,Well-being,Satisfaction with family life (z),Satisfacción con la vida familiar (z),-1,24-35m,0-11m,-0.09789530623513672,0.05639240886539777,0.08256984091952813,9996
+sat_familia,Well-being,Satisfaction with family life (z),Satisfacción con la vida familiar (z),-1,24-35m,12-23m,-0.011627049341638857,0.06367283039365403,0.8551070717457627,9996
+sat_familia,Well-being,Satisfaction with family life (z),Satisfacción con la vida familiar (z),-1,24-35m,36-59m,0.0177172831352415,0.05470538194914425,0.7460385183847598,9996
+sat_amigos,Well-being,Satisfaction with friends (z),Satisfacción con los amigos (z),-1,0-11m,12-23m,0.04837778420635057,0.06770757782779865,0.474911484330499,9996
+sat_amigos,Well-being,Satisfaction with friends (z),Satisfacción con los amigos (z),-1,0-11m,24-35m,0.033175958771351446,0.06320333377603783,0.5996468921139226,9996
+sat_amigos,Well-being,Satisfaction with friends (z),Satisfacción con los amigos (z),-1,0-11m,36-59m,0.029604929409986047,0.0668180979844488,0.657716892654783,9996
+sat_amigos,Well-being,Satisfaction with friends (z),Satisfacción con los amigos (z),-1,24-35m,0-11m,-0.033175958771351446,0.06320333377603783,0.5996468921139226,9996
+sat_amigos,Well-being,Satisfaction with friends (z),Satisfacción con los amigos (z),-1,24-35m,12-23m,0.015201825434999122,0.06877928135790017,0.8250742715919644,9996
+sat_amigos,Well-being,Satisfaction with friends (z),Satisfacción con los amigos (z),-1,24-35m,36-59m,-0.0035710293613653993,0.0741686111165875,0.9615987318380342,9996
+sat_colegio,Well-being,Satisfaction with school (z),Satisfacción con el colegio (z),-1,0-11m,12-23m,-0.013512786844753504,0.06697690747726869,0.8401098867889559,9561
+sat_colegio,Well-being,Satisfaction with school (z),Satisfacción con el colegio (z),-1,0-11m,24-35m,0.03150911441218558,0.0701846997594565,0.653470876780299,9561
+sat_colegio,Well-being,Satisfaction with school (z),Satisfacción con el colegio (z),-1,0-11m,36-59m,0.07551577881623642,0.07330451300642184,0.3029323314011495,9561
+sat_colegio,Well-being,Satisfaction with school (z),Satisfacción con el colegio (z),-1,24-35m,0-11m,-0.03150911441218558,0.0701846997594565,0.653470876780299,9561
+sat_colegio,Well-being,Satisfaction with school (z),Satisfacción con el colegio (z),-1,24-35m,12-23m,-0.045021901256939084,0.05890459042070198,0.44467712895556877,9561
+sat_colegio,Well-being,Satisfaction with school (z),Satisfacción con el colegio (z),-1,24-35m,36-59m,0.044006664404050835,0.057530807914828126,0.4443171257645361,9561
+sat_si_mismo,Well-being,Satisfaction with oneself (z),Satisfacción consigo mismo (z),-1,0-11m,12-23m,0.05517318024920154,0.06900168939047817,0.42394738005961086,9996
+sat_si_mismo,Well-being,Satisfaction with oneself (z),Satisfacción consigo mismo (z),-1,0-11m,24-35m,0.15653403169089125,0.07441613083190417,0.03542243675150914,9996
+sat_si_mismo,Well-being,Satisfaction with oneself (z),Satisfacción consigo mismo (z),-1,0-11m,36-59m,0.12289206917557705,0.0639829208542872,0.05476939552043882,9996
+sat_si_mismo,Well-being,Satisfaction with oneself (z),Satisfacción consigo mismo (z),-1,24-35m,0-11m,-0.15653403169089125,0.07441613083190417,0.03542243675150914,9996
+sat_si_mismo,Well-being,Satisfaction with oneself (z),Satisfacción consigo mismo (z),-1,24-35m,12-23m,-0.10136085144168971,0.07163106030380417,0.1570566215959586,9996
+sat_si_mismo,Well-being,Satisfaction with oneself (z),Satisfacción consigo mismo (z),-1,24-35m,36-59m,-0.033641962515314205,0.06625185154890133,0.6116013135575922,9996
+sat_barrio,Well-being,Satisfaction with the neighborhood (z),Satisfacción con el barrio (z),-1,0-11m,12-23m,0.007514317785108214,0.07694793275096203,0.9222065857885029,9996
+sat_barrio,Well-being,Satisfaction with the neighborhood (z),Satisfacción con el barrio (z),-1,0-11m,24-35m,0.03956149146089417,0.08252150091061056,0.6316481986104241,9996
+sat_barrio,Well-being,Satisfaction with the neighborhood (z),Satisfacción con el barrio (z),-1,0-11m,36-59m,-0.010817627490053966,0.0701544250014695,0.8774541196374304,9996
+sat_barrio,Well-being,Satisfaction with the neighborhood (z),Satisfacción con el barrio (z),-1,24-35m,0-11m,-0.03956149146089417,0.08252150091061056,0.6316481986104241,9996
+sat_barrio,Well-being,Satisfaction with the neighborhood (z),Satisfacción con el barrio (z),-1,24-35m,12-23m,-0.03204717367578595,0.07186158926375136,0.6556283582944098,9996
+sat_barrio,Well-being,Satisfaction with the neighborhood (z),Satisfacción con el barrio (z),-1,24-35m,36-59m,-0.05037911895094813,0.06532440194719266,0.4405798647759921,9996
+sat_cuerpo,Well-being,Satisfaction with one's body (z),Satisfacción con el propio cuerpo (z),-1,0-11m,12-23m,0.043674058648293185,0.07770779061241871,0.574096025838989,9996
+sat_cuerpo,Well-being,Satisfaction with one's body (z),Satisfacción con el propio cuerpo (z),-1,0-11m,24-35m,0.10896918746014346,0.07325631535228277,0.13688129596768306,9996
+sat_cuerpo,Well-being,Satisfaction with one's body (z),Satisfacción con el propio cuerpo (z),-1,0-11m,36-59m,0.05262079453384581,0.05562332148386306,0.34413820247866866,9996
+sat_cuerpo,Well-being,Satisfaction with one's body (z),Satisfacción con el propio cuerpo (z),-1,24-35m,0-11m,-0.10896918746014346,0.07325631535228277,0.13688129596768306,9996
+sat_cuerpo,Well-being,Satisfaction with one's body (z),Satisfacción con el propio cuerpo (z),-1,24-35m,12-23m,-0.06529512881185028,0.06430598211988556,0.3099238286731142,9996
+sat_cuerpo,Well-being,Satisfaction with one's body (z),Satisfacción con el propio cuerpo (z),-1,24-35m,36-59m,-0.05634839292629765,0.06784112693674668,0.40620335910689065,9996
+z_salud,Well-being,Poor self-rated health (z),Mala salud autopercibida (z),1,0-11m,12-23m,-0.08628371840991828,0.06639985054600799,0.19378730738145866,9996
+z_salud,Well-being,Poor self-rated health (z),Mala salud autopercibida (z),1,0-11m,24-35m,-0.07224085442443555,0.07666472794429202,0.34604119601595074,9996
+z_salud,Well-being,Poor self-rated health (z),Mala salud autopercibida (z),1,0-11m,36-59m,-0.05424189818267281,0.06959256274838013,0.43573181376227654,9996
+z_salud,Well-being,Poor self-rated health (z),Mala salud autopercibida (z),1,24-35m,0-11m,0.07224085442443555,0.07666472794429202,0.34604119601595074,9996
+z_salud,Well-being,Poor self-rated health (z),Mala salud autopercibida (z),1,24-35m,12-23m,-0.014042863985482726,0.07570022954547792,0.852831996390757,9996
+z_salud,Well-being,Poor self-rated health (z),Mala salud autopercibida (z),1,24-35m,36-59m,0.01799895624176274,0.0647897736554117,0.7811616597248138,9996
+tvip,Cognition and school,"Vocabulary, TVIP (z)","Vocabulario, TVIP (z)",-1,0-11m,12-23m,-0.08459104730219108,0.08898859966219193,0.3418161173753156,9990
+tvip,Cognition and school,"Vocabulary, TVIP (z)","Vocabulario, TVIP (z)",-1,0-11m,24-35m,-0.08554666300966264,0.07949706324029608,0.2818832486270486,9990
+tvip,Cognition and school,"Vocabulary, TVIP (z)","Vocabulario, TVIP (z)",-1,0-11m,36-59m,0.03390178237005355,0.07662957245613039,0.6581916638718341,9990
+tvip,Cognition and school,"Vocabulary, TVIP (z)","Vocabulario, TVIP (z)",-1,24-35m,0-11m,0.08554666300966264,0.07949706324029608,0.2818832486270486,9990
+tvip,Cognition and school,"Vocabulary, TVIP (z)","Vocabulario, TVIP (z)",-1,24-35m,12-23m,0.0009556157074715604,0.045802405962877345,0.9833542433154525,9990
+tvip,Cognition and school,"Vocabulary, TVIP (z)","Vocabulario, TVIP (z)",-1,24-35m,36-59m,0.11944844537971619,0.05303562262655029,0.024307711311683095,9990
+asiste,Cognition and school,Attends school (0/1),Asiste a un establecimiento,-1,0-11m,12-23m,0.009372041025024399,0.005167430917054893,0.06972775361743715,10003
+asiste,Cognition and school,Attends school (0/1),Asiste a un establecimiento,-1,0-11m,24-35m,0.005833591884954742,0.0062538929062694315,0.35092649616737803,10003
+asiste,Cognition and school,Attends school (0/1),Asiste a un establecimiento,-1,0-11m,36-59m,0.0011154993639603207,0.012702593208799576,0.9300223927136297,10003
+asiste,Cognition and school,Attends school (0/1),Asiste a un establecimiento,-1,24-35m,0-11m,-0.005833591884954742,0.0062538929062694315,0.35092649616737803,10003
+asiste,Cognition and school,Attends school (0/1),Asiste a un establecimiento,-1,24-35m,12-23m,0.0035384491400696563,0.006417597608541862,0.581382374120416,10003
+asiste,Cognition and school,Attends school (0/1),Asiste a un establecimiento,-1,24-35m,36-59m,-0.004718092520994421,0.013544603665420435,0.7275867818777635,10003
+nota,Cognition and school,Grade average last year (1--7),Promedio de notas del año pasado (1–7),-1,0-11m,12-23m,-0.030590829769176216,0.054778649002640845,0.5765409612998607,9561
+nota,Cognition and school,Grade average last year (1--7),Promedio de notas del año pasado (1–7),-1,0-11m,24-35m,-0.0021626701063567786,0.04767742418794415,0.9638199933059907,9561
+nota,Cognition and school,Grade average last year (1--7),Promedio de notas del año pasado (1–7),-1,0-11m,36-59m,0.008987941833138242,0.045767151512213576,0.8443095236592112,9561
+nota,Cognition and school,Grade average last year (1--7),Promedio de notas del año pasado (1–7),-1,24-35m,0-11m,0.0021626701063567786,0.04767742418794415,0.9638199933059907,9561
+nota,Cognition and school,Grade average last year (1--7),Promedio de notas del año pasado (1–7),-1,24-35m,12-23m,-0.028428159662819436,0.043673301167958395,0.5150931862888734,9561
+nota,Cognition and school,Grade average last year (1--7),Promedio de notas del año pasado (1–7),-1,24-35m,36-59m,0.011150611939495021,0.04137773397353699,0.7875577239896737,9561
+le_va,Cognition and school,Doing well at school (z),Le va bien en el colegio (z),-1,0-11m,12-23m,-0.03185988374009906,0.07159717436776888,0.6563284230228011,9176
+le_va,Cognition and school,Doing well at school (z),Le va bien en el colegio (z),-1,0-11m,24-35m,0.13776165502667084,0.06711084665046622,0.040097025880344514,9176
+le_va,Cognition and school,Doing well at school (z),Le va bien en el colegio (z),-1,0-11m,36-59m,0.1187779909573128,0.07033059336125262,0.09124772029857296,9176
+le_va,Cognition and school,Doing well at school (z),Le va bien en el colegio (z),-1,24-35m,0-11m,-0.13776165502667084,0.06711084665046622,0.040097025880344514,9176
+le_va,Cognition and school,Doing well at school (z),Le va bien en el colegio (z),-1,24-35m,12-23m,-0.16962153876676989,0.06063076803330799,0.005148145610246669,9176
+le_va,Cognition and school,Doing well at school (z),Le va bien en el colegio (z),-1,24-35m,36-59m,-0.018983664069358044,0.06697614127202534,0.7768401806875802,9176
+gusta,Cognition and school,Likes going to school (z),Le gusta ir al colegio (z),-1,0-11m,12-23m,-0.06774848786126761,0.07914948639295125,0.39202204720338785,9176
+gusta,Cognition and school,Likes going to school (z),Le gusta ir al colegio (z),-1,0-11m,24-35m,0.025390310192615825,0.10139382398275887,0.8022681408681456,9176
+gusta,Cognition and school,Likes going to school (z),Le gusta ir al colegio (z),-1,0-11m,36-59m,0.05558033404242269,0.10602298132556605,0.6001191903471617,9176
+gusta,Cognition and school,Likes going to school (z),Le gusta ir al colegio (z),-1,24-35m,0-11m,-0.025390310192615825,0.10139382398275887,0.8022681408681456,9176
+gusta,Cognition and school,Likes going to school (z),Le gusta ir al colegio (z),-1,24-35m,12-23m,-0.09313879805388343,0.06539438286181058,0.1543703621157675,9176
+gusta,Cognition and school,Likes going to school (z),Le gusta ir al colegio (z),-1,24-35m,36-59m,0.030190023849806867,0.08052835087377731,0.7077353460425426,9176
+profes,Cognition and school,Likes the teachers (z),Le agradan los profesores (z),-1,0-11m,12-23m,-0.0824017979490013,0.07371721899988933,0.2636484198319492,9561
+profes,Cognition and school,Likes the teachers (z),Le agradan los profesores (z),-1,0-11m,24-35m,0.020877871055323977,0.07726426784377552,0.7869957802123598,9561
+profes,Cognition and school,Likes the teachers (z),Le agradan los profesores (z),-1,0-11m,36-59m,0.036607370363923426,0.08631148759061827,0.671470339184856,9561
+profes,Cognition and school,Likes the teachers (z),Le agradan los profesores (z),-1,24-35m,0-11m,-0.020877871055323977,0.07726426784377552,0.7869957802123598,9561
+profes,Cognition and school,Likes the teachers (z),Le agradan los profesores (z),-1,24-35m,12-23m,-0.10327966900432527,0.051338068147608,0.04424565934006253,9561
+profes,Cognition and school,Likes the teachers (z),Le agradan los profesores (z),-1,24-35m,36-59m,0.01572949930859945,0.0663974305475499,0.8127349774315937,9561
+univ,Cognition and school,Expects a university degree (0/1),Espera un título universitario,-1,0-11m,12-23m,0.0019686896985371322,0.042948632794697926,0.9634391804443374,8978
+univ,Cognition and school,Expects a university degree (0/1),Espera un título universitario,-1,0-11m,24-35m,0.03859095945742238,0.03612702543093772,0.28542941980860737,8978
+univ,Cognition and school,Expects a university degree (0/1),Espera un título universitario,-1,0-11m,36-59m,0.055526628548220394,0.034149595247641676,0.10395347604123602,8978
+univ,Cognition and school,Expects a university degree (0/1),Espera un título universitario,-1,24-35m,0-11m,-0.03859095945742238,0.03612702543093772,0.28542941980860737,8978
+univ,Cognition and school,Expects a university degree (0/1),Espera un título universitario,-1,24-35m,12-23m,-0.036622269758885245,0.030586987942265505,0.23118366893911357,8978
+univ,Cognition and school,Expects a university degree (0/1),Espera un título universitario,-1,24-35m,36-59m,0.016935669090798015,0.02878282680458902,0.5562672463691323,8978
+no_sabe,Cognition and school,Does not know how far they will study (0/1),No sabe hasta dónde estudiará,1,0-11m,12-23m,0.008971653407059237,0.03064681438308586,0.7697182748551445,9996
+no_sabe,Cognition and school,Does not know how far they will study (0/1),No sabe hasta dónde estudiará,1,0-11m,24-35m,0.01443188798153642,0.02164340810379101,0.5048980196865334,9996
+no_sabe,Cognition and school,Does not know how far they will study (0/1),No sabe hasta dónde estudiará,1,0-11m,36-59m,-0.004005420744965453,0.022235607256118575,0.8570462459252666,9996
+no_sabe,Cognition and school,Does not know how far they will study (0/1),No sabe hasta dónde estudiará,1,24-35m,0-11m,-0.01443188798153642,0.02164340810379101,0.5048980196865334,9996
+no_sabe,Cognition and school,Does not know how far they will study (0/1),No sabe hasta dónde estudiará,1,24-35m,12-23m,-0.005460234574477184,0.01970469669303317,0.7817008621955216,9996
+no_sabe,Cognition and school,Does not know how far they will study (0/1),No sabe hasta dónde estudiará,1,24-35m,36-59m,-0.018437308726501872,0.0149866765541548,0.21860475310378025,9996
+z_bull,Peers and victimization,Peer victimization and class climate (z),Victimización y clima del curso (z),1,0-11m,12-23m,0.028174414695423335,0.059915234542649416,0.6381850517941521,9176
+z_bull,Peers and victimization,Peer victimization and class climate (z),Victimización y clima del curso (z),1,0-11m,24-35m,-0.04704714649811287,0.07053110544477334,0.5047458779305912,9176
+z_bull,Peers and victimization,Peer victimization and class climate (z),Victimización y clima del curso (z),1,0-11m,36-59m,0.03653094067759085,0.06329828792268379,0.5638559107831482,9176
+z_bull,Peers and victimization,Peer victimization and class climate (z),Victimización y clima del curso (z),1,24-35m,0-11m,0.04704714649811287,0.07053110544477334,0.5047458779305912,9176
+z_bull,Peers and victimization,Peer victimization and class climate (z),Victimización y clima del curso (z),1,24-35m,12-23m,0.07522156119353621,0.06508794732793007,0.24780753142679923,9176
+z_bull,Peers and victimization,Peer victimization and class climate (z),Victimización y clima del curso (z),1,24-35m,36-59m,0.08357808717570372,0.06733062710607163,0.21449176505270895,9176
+ciber_any,Peers and victimization,"Cyber-victimization, last 12 months (0/1)","Ciberacoso, últimos 12 meses",1,0-11m,12-23m,-0.015230937323637667,0.029493271578560805,0.6055605789025535,9985
+ciber_any,Peers and victimization,"Cyber-victimization, last 12 months (0/1)","Ciberacoso, últimos 12 meses",1,0-11m,24-35m,-0.007236976305495357,0.023191457104276832,0.7549998337508669,9985
+ciber_any,Peers and victimization,"Cyber-victimization, last 12 months (0/1)","Ciberacoso, últimos 12 meses",1,0-11m,36-59m,-0.00517995340065666,0.02535864222993654,0.8381442516188755,9985
+ciber_any,Peers and victimization,"Cyber-victimization, last 12 months (0/1)","Ciberacoso, últimos 12 meses",1,24-35m,0-11m,0.007236976305495357,0.023191457104276832,0.7549998337508669,9985
+ciber_any,Peers and victimization,"Cyber-victimization, last 12 months (0/1)","Ciberacoso, últimos 12 meses",1,24-35m,12-23m,-0.00799396101814231,0.02629823211739374,0.7611482148794839,9985
+ciber_any,Peers and victimization,"Cyber-victimization, last 12 months (0/1)","Ciberacoso, últimos 12 meses",1,24-35m,36-59m,0.0020570229048386974,0.02061939675698412,0.9205336372859161,9985
+viol_pareja,Peers and victimization,"Dating violence, ever dated (0/1)",Violencia en el pololeo,1,0-11m,12-23m,0.024773177515705656,0.01913349074117609,0.195404855417455,7101
+viol_pareja,Peers and victimization,"Dating violence, ever dated (0/1)",Violencia en el pololeo,1,0-11m,24-35m,0.005168493738489198,0.02028658210255961,0.7988976550743633,7101
+viol_pareja,Peers and victimization,"Dating violence, ever dated (0/1)",Violencia en el pololeo,1,0-11m,36-59m,0.027680264174431646,0.02076409567409291,0.18250454823980833,7101
+viol_pareja,Peers and victimization,"Dating violence, ever dated (0/1)",Violencia en el pololeo,1,24-35m,0-11m,-0.005168493738489198,0.02028658210255961,0.7988976550743633,7101
+viol_pareja,Peers and victimization,"Dating violence, ever dated (0/1)",Violencia en el pololeo,1,24-35m,12-23m,0.019604683777216456,0.017319365556543433,0.2576547778046192,7101
+viol_pareja,Peers and victimization,"Dating violence, ever dated (0/1)",Violencia en el pololeo,1,24-35m,36-59m,0.02251177043594245,0.014275117212628512,0.11479696623264149,7101
+fuma,Risk behaviors,"Smoked tobacco, last 12 months (0/1)","Fumó tabaco, últimos 12 meses",1,0-11m,12-23m,0.012203124178021574,0.015925259376539845,0.4435128379879183,9995
+fuma,Risk behaviors,"Smoked tobacco, last 12 months (0/1)","Fumó tabaco, últimos 12 meses",1,0-11m,24-35m,-0.0016593382775683288,0.015303148831488013,0.9136536796528614,9995
+fuma,Risk behaviors,"Smoked tobacco, last 12 months (0/1)","Fumó tabaco, últimos 12 meses",1,0-11m,36-59m,-0.022171820263893544,0.02429151962682115,0.3613797636975805,9995
+fuma,Risk behaviors,"Smoked tobacco, last 12 months (0/1)","Fumó tabaco, últimos 12 meses",1,24-35m,0-11m,0.0016593382775683288,0.015303148831488013,0.9136536796528614,9995
+fuma,Risk behaviors,"Smoked tobacco, last 12 months (0/1)","Fumó tabaco, últimos 12 meses",1,24-35m,12-23m,0.013862462455589903,0.015115742692351084,0.35909665968672566,9995
+fuma,Risk behaviors,"Smoked tobacco, last 12 months (0/1)","Fumó tabaco, últimos 12 meses",1,24-35m,36-59m,-0.020512481986325215,0.02122626110862388,0.33385765531861233,9995
+alcohol,Risk behaviors,"Drank alcohol, last 12 months (0/1)","Bebió alcohol, últimos 12 meses",1,0-11m,12-23m,-0.03790752937852024,0.03152535156574548,0.2291908191210139,9995
+alcohol,Risk behaviors,"Drank alcohol, last 12 months (0/1)","Bebió alcohol, últimos 12 meses",1,0-11m,24-35m,-0.03673190670695707,0.04005815746292234,0.35916126415898253,9995
+alcohol,Risk behaviors,"Drank alcohol, last 12 months (0/1)","Bebió alcohol, últimos 12 meses",1,0-11m,36-59m,-0.07786424160554678,0.030672742341224732,0.01113133984988446,9995
+alcohol,Risk behaviors,"Drank alcohol, last 12 months (0/1)","Bebió alcohol, últimos 12 meses",1,24-35m,0-11m,0.03673190670695707,0.04005815746292234,0.35916126415898253,9995
+alcohol,Risk behaviors,"Drank alcohol, last 12 months (0/1)","Bebió alcohol, últimos 12 meses",1,24-35m,12-23m,-0.0011756226715631674,0.033720938124598296,0.9721887572420822,9995
+alcohol,Risk behaviors,"Drank alcohol, last 12 months (0/1)","Bebió alcohol, últimos 12 meses",1,24-35m,36-59m,-0.04113233489858971,0.031710909440439305,0.1945955419016988,9995
+cannabis,Risk behaviors,"Used cannabis, last 12 months (0/1)","Consumió marihuana, últimos 12 meses",1,0-11m,12-23m,0.013015481923953687,0.014345712204139563,0.3642622798804994,9995
+cannabis,Risk behaviors,"Used cannabis, last 12 months (0/1)","Consumió marihuana, últimos 12 meses",1,0-11m,24-35m,0.01364885693592887,0.015144190908770498,0.3674499754333982,9995
+cannabis,Risk behaviors,"Used cannabis, last 12 months (0/1)","Consumió marihuana, últimos 12 meses",1,0-11m,36-59m,0.008154985394925183,0.020983352720121463,0.6975419369530234,9995
+cannabis,Risk behaviors,"Used cannabis, last 12 months (0/1)","Consumió marihuana, últimos 12 meses",1,24-35m,0-11m,-0.01364885693592887,0.015144190908770498,0.3674499754333982,9995
+cannabis,Risk behaviors,"Used cannabis, last 12 months (0/1)","Consumió marihuana, últimos 12 meses",1,24-35m,12-23m,-0.0006333750119751833,0.013503027188765247,0.9625880269012012,9995
+cannabis,Risk behaviors,"Used cannabis, last 12 months (0/1)","Consumió marihuana, últimos 12 meses",1,24-35m,36-59m,-0.005493871541003687,0.019924777640121766,0.7827549659984563,9995
+otras_drogas,Risk behaviors,"Used other drugs, last 12 months (0/1)","Consumió otras drogas, últimos 12 meses",1,0-11m,12-23m,0.01444226886541225,0.014544604292803949,0.3207274849470274,9995
+otras_drogas,Risk behaviors,"Used other drugs, last 12 months (0/1)","Consumió otras drogas, últimos 12 meses",1,0-11m,24-35m,0.007154810036942421,0.012909605309066015,0.5794257172409791,9995
+otras_drogas,Risk behaviors,"Used other drugs, last 12 months (0/1)","Consumió otras drogas, últimos 12 meses",1,0-11m,36-59m,0.011638980914857856,0.012771480233328882,0.3621236755937477,9995
+otras_drogas,Risk behaviors,"Used other drugs, last 12 months (0/1)","Consumió otras drogas, últimos 12 meses",1,24-35m,0-11m,-0.007154810036942421,0.012909605309066015,0.5794257172409791,9995
+otras_drogas,Risk behaviors,"Used other drugs, last 12 months (0/1)","Consumió otras drogas, últimos 12 meses",1,24-35m,12-23m,0.007287458828469829,0.010857937173853298,0.5021159256295571,9995
+otras_drogas,Risk behaviors,"Used other drugs, last 12 months (0/1)","Consumió otras drogas, últimos 12 meses",1,24-35m,36-59m,0.004484170877915436,0.014911909117483352,0.763635096086756,9995
+sin_anticonc,Risk behaviors,No contraception at last sex (0/1),Sin anticonceptivo en la última relación,1,0-11m,12-23m,0.004782310890267202,0.07298723137692478,0.9477579376309466,3256
+sin_anticonc,Risk behaviors,No contraception at last sex (0/1),Sin anticonceptivo en la última relación,1,0-11m,24-35m,0.014631231540387611,0.07421938182711028,0.8437219611503383,3256
+sin_anticonc,Risk behaviors,No contraception at last sex (0/1),Sin anticonceptivo en la última relación,1,0-11m,36-59m,-0.00019563654800747177,0.06775137176155226,0.997696058984428,3256
+sin_anticonc,Risk behaviors,No contraception at last sex (0/1),Sin anticonceptivo en la última relación,1,24-35m,0-11m,-0.014631231540387611,0.07421938182711028,0.8437219611503383,3256
+sin_anticonc,Risk behaviors,No contraception at last sex (0/1),Sin anticonceptivo en la última relación,1,24-35m,12-23m,-0.00984892065012041,0.03265146850320282,0.7629281068257706,3256
+sin_anticonc,Risk behaviors,No contraception at last sex (0/1),Sin anticonceptivo en la última relación,1,24-35m,36-59m,-0.014826868088395083,0.024482432230644724,0.5447720700147068,3256
+sueno,Daily life,Hours of sleep on weekdays,Horas de sueño entre semana,-1,0-11m,12-23m,0.14045354576411992,0.10433361406156452,0.1782391545179447,9295
+sueno,Daily life,Hours of sleep on weekdays,Horas de sueño entre semana,-1,0-11m,24-35m,0.010192087164474352,0.1022363251497636,0.9205892912193709,9295
+sueno,Daily life,Hours of sleep on weekdays,Horas de sueño entre semana,-1,0-11m,36-59m,-0.017315084380246985,0.11219666842647488,0.8773511425061088,9295
+sueno,Daily life,Hours of sleep on weekdays,Horas de sueño entre semana,-1,24-35m,0-11m,-0.010192087164474352,0.1022363251497636,0.9205892912193709,9295
+sueno,Daily life,Hours of sleep on weekdays,Horas de sueño entre semana,-1,24-35m,12-23m,0.13026145859964558,0.09548751054876475,0.17251320656394598,9295
+sueno,Daily life,Hours of sleep on weekdays,Horas de sueño entre semana,-1,24-35m,36-59m,-0.027507171544721334,0.0929676588165387,0.767322541380637,9295
+celular_noche,Daily life,Stays up on the phone in bed (z),Se queda con el celular en la cama (z),1,0-11m,12-23m,0.07419768209492461,0.08413658960598266,0.3778461617622456,9996
+celular_noche,Daily life,Stays up on the phone in bed (z),Se queda con el celular en la cama (z),1,0-11m,24-35m,0.10495451132136466,0.06497864873054648,0.10626406597705913,9996
+celular_noche,Daily life,Stays up on the phone in bed (z),Se queda con el celular en la cama (z),1,0-11m,36-59m,0.056821092235179727,0.07158951317362344,0.42736606888597206,9996
+celular_noche,Daily life,Stays up on the phone in bed (z),Se queda con el celular en la cama (z),1,24-35m,0-11m,-0.10495451132136466,0.06497864873054648,0.10626406597705913,9996
+celular_noche,Daily life,Stays up on the phone in bed (z),Se queda con el celular en la cama (z),1,24-35m,12-23m,-0.030756829226440047,0.0553784531373333,0.5786255831051907,9996
+celular_noche,Daily life,Stays up on the phone in bed (z),Se queda con el celular en la cama (z),1,24-35m,36-59m,-0.04813341908618493,0.048559713023982085,0.32157756003378435,9996
+redes,Daily life,Time on social media (z),Tiempo en redes sociales (z),1,0-11m,12-23m,0.09813321894692181,0.0673891115858396,0.145332440369495,9996
+redes,Daily life,Time on social media (z),Tiempo en redes sociales (z),1,0-11m,24-35m,0.13071328878925187,0.0701580445482878,0.06244451718328694,9996
+redes,Daily life,Time on social media (z),Tiempo en redes sociales (z),1,0-11m,36-59m,0.06321230872124453,0.0748943246389189,0.39865822338685386,9996
+redes,Daily life,Time on social media (z),Tiempo en redes sociales (z),1,24-35m,0-11m,-0.13071328878925187,0.0701580445482878,0.06244451718328694,9996
+redes,Daily life,Time on social media (z),Tiempo en redes sociales (z),1,24-35m,12-23m,-0.032580069842330056,0.05591866293643145,0.5601402468890748,9996
+redes,Daily life,Time on social media (z),Tiempo en redes sociales (z),1,24-35m,36-59m,-0.06750098006800734,0.0688290874213449,0.3267385966267895,9996
+deporte,Daily life,"Days of physical activity, last week","Días de actividad física, última semana",-1,0-11m,12-23m,-0.05611556547623067,0.1445287761263275,0.6978194224309094,9996
+deporte,Daily life,"Days of physical activity, last week","Días de actividad física, última semana",-1,0-11m,24-35m,-0.15838144671323232,0.14278340134484288,0.2673254932895138,9996
+deporte,Daily life,"Days of physical activity, last week","Días de actividad física, última semana",-1,0-11m,36-59m,-0.03344647399177357,0.15357475053076383,0.8275956330798586,9996
+deporte,Daily life,"Days of physical activity, last week","Días de actividad física, última semana",-1,24-35m,0-11m,0.15838144671323232,0.14278340134484288,0.2673254932895138,9996
+deporte,Daily life,"Days of physical activity, last week","Días de actividad física, última semana",-1,24-35m,12-23m,0.10226588123700164,0.12878284606169887,0.4271398249287782,9996
+deporte,Daily life,"Days of physical activity, last week","Días de actividad física, última semana",-1,24-35m,36-59m,0.12493497272145875,0.1317322767349574,0.3429255447267101,9996
+lectura,Daily life,Time reading (z),Tiempo de lectura (z),-1,0-11m,12-23m,-0.02676651491099735,0.06389403419484858,0.6752743012644751,9996
+lectura,Daily life,Time reading (z),Tiempo de lectura (z),-1,0-11m,24-35m,-0.03222848626543458,0.06595042073211627,0.6250700405282132,9996
+lectura,Daily life,Time reading (z),Tiempo de lectura (z),-1,0-11m,36-59m,-0.08971002962143947,0.07747566039318965,0.24689977746394598,9996
+lectura,Daily life,Time reading (z),Tiempo de lectura (z),-1,24-35m,0-11m,0.03222848626543458,0.06595042073211627,0.6250700405282132,9996
+lectura,Daily life,Time reading (z),Tiempo de lectura (z),-1,24-35m,12-23m,0.005461971354437229,0.043016096663552515,0.8989601398368496,9996
+lectura,Daily life,Time reading (z),Tiempo de lectura (z),-1,24-35m,36-59m,-0.05748154335600489,0.04552780685564823,0.20674770192097625,9996
+chatarra,Daily life,"Days eating junk food, last week","Días con comida chatarra, última semana",1,0-11m,12-23m,0.09010913426225849,0.09256819831590198,0.33033709642968645,9996
+chatarra,Daily life,"Days eating junk food, last week","Días con comida chatarra, última semana",1,0-11m,24-35m,-0.0005957119207890549,0.09183349696010197,0.9948242631874306,9996
+chatarra,Daily life,"Days eating junk food, last week","Días con comida chatarra, última semana",1,0-11m,36-59m,-0.03815169621985383,0.08599441492553395,0.6572933458973109,9996
+chatarra,Daily life,"Days eating junk food, last week","Días con comida chatarra, última semana",1,24-35m,0-11m,0.0005957119207890549,0.09183349696010197,0.9948242631874306,9996
+chatarra,Daily life,"Days eating junk food, last week","Días con comida chatarra, última semana",1,24-35m,12-23m,0.09070484618304754,0.07330248382473596,0.21593683340538605,9996
+chatarra,Daily life,"Days eating junk food, last week","Días con comida chatarra, última semana",1,24-35m,36-59m,-0.037555984299064774,0.06518516906748618,0.5645184725248926,9996
+fruta,Daily life,Portions of fruit per day,Porciones de fruta al día,-1,0-11m,12-23m,0.006039306202188093,0.14482989508318012,0.9667384067224855,9994
+fruta,Daily life,Portions of fruit per day,Porciones de fruta al día,-1,0-11m,24-35m,0.2546439127671067,0.1523820795026069,0.09470423467460182,9994
+fruta,Daily life,Portions of fruit per day,Porciones de fruta al día,-1,0-11m,36-59m,0.016078824830839656,0.15153086665414456,0.9154956814715446,9994
+fruta,Daily life,Portions of fruit per day,Porciones de fruta al día,-1,24-35m,0-11m,-0.2546439127671067,0.1523820795026069,0.09470423467460182,9994
+fruta,Daily life,Portions of fruit per day,Porciones de fruta al día,-1,24-35m,12-23m,-0.2486046065649186,0.10755375406433053,0.020808277786725185,9994
+fruta,Daily life,Portions of fruit per day,Porciones de fruta al día,-1,24-35m,36-59m,-0.23856508793626702,0.11652069436244036,0.04061830580676026,9994
+supervision,Family and social life,Parental knowledge of activities (z),La familia sabe lo que hace (z),-1,0-11m,12-23m,0.043061372584828415,0.06235590226852604,0.4898332133559019,9508
+supervision,Family and social life,Parental knowledge of activities (z),La familia sabe lo que hace (z),-1,0-11m,24-35m,0.06493536513368811,0.06607024823547436,0.3256945185441723,9508
+supervision,Family and social life,Parental knowledge of activities (z),La familia sabe lo que hace (z),-1,0-11m,36-59m,0.027351104724083645,0.0627081574938,0.6627170058025194,9508
+supervision,Family and social life,Parental knowledge of activities (z),La familia sabe lo que hace (z),-1,24-35m,0-11m,-0.06493536513368811,0.06607024823547436,0.3256945185441723,9508
+supervision,Family and social life,Parental knowledge of activities (z),La familia sabe lo que hace (z),-1,24-35m,12-23m,-0.021873992548859696,0.0583341564820148,0.7076772462721741,9508
+supervision,Family and social life,Parental knowledge of activities (z),La familia sabe lo que hace (z),-1,24-35m,36-59m,-0.03758426040960447,0.053675657499658684,0.4837958385447234,9508
+relacion_cuid,Family and social life,Relationship with main caregiver (z),Relación con el cuidador principal (z),-1,0-11m,12-23m,0.08139861218351475,0.07488939260072543,0.2770731488064855,9970
+relacion_cuid,Family and social life,Relationship with main caregiver (z),Relación con el cuidador principal (z),-1,0-11m,24-35m,0.12035557119310428,0.06829611423932287,0.07802522819997182,9970
+relacion_cuid,Family and social life,Relationship with main caregiver (z),Relación con el cuidador principal (z),-1,0-11m,36-59m,0.10206594028423673,0.07328572003929235,0.16370673921478518,9970
+relacion_cuid,Family and social life,Relationship with main caregiver (z),Relación con el cuidador principal (z),-1,24-35m,0-11m,-0.12035557119310428,0.06829611423932287,0.07802522819997179,9970
+relacion_cuid,Family and social life,Relationship with main caregiver (z),Relación con el cuidador principal (z),-1,24-35m,12-23m,-0.03895695900958952,0.07057761685799131,0.5809666568595493,9970
+relacion_cuid,Family and social life,Relationship with main caregiver (z),Relación con el cuidador principal (z),-1,24-35m,36-59m,-0.018289630908867552,0.07208859247788214,0.7997192423179876,9970
+confia_nadie,Family and social life,Confides in nobody (0/1),No le cuenta sus problemas a nadie,1,0-11m,12-23m,-0.001317878771683349,0.02320874794303005,0.9547174919420008,9996
+confia_nadie,Family and social life,Confides in nobody (0/1),No le cuenta sus problemas a nadie,1,0-11m,24-35m,-0.020495336478521083,0.017956039153161574,0.2536962451279853,9996
+confia_nadie,Family and social life,Confides in nobody (0/1),No le cuenta sus problemas a nadie,1,0-11m,36-59m,-0.01582705654828083,0.01921246194587176,0.41005822438638295,9996
+confia_nadie,Family and social life,Confides in nobody (0/1),No le cuenta sus problemas a nadie,1,24-35m,0-11m,0.020495336478521083,0.017956039153161574,0.2536962451279853,9996
+confia_nadie,Family and social life,Confides in nobody (0/1),No le cuenta sus problemas a nadie,1,24-35m,12-23m,0.019177457706837736,0.022405646637447218,0.39204162074154225,9996
+confia_nadie,Family and social life,Confides in nobody (0/1),No le cuenta sus problemas a nadie,1,24-35m,36-59m,0.004668279930240254,0.016871292639015323,0.7820107787857056,9996
+tiempo_familia,Family and social life,"Activities with family, last week (0--5)",Actividades con la familia (0–5),-1,0-11m,12-23m,0.13081844671147513,0.07546790308470033,0.08301898809127213,9985
+tiempo_familia,Family and social life,"Activities with family, last week (0--5)",Actividades con la familia (0–5),-1,0-11m,24-35m,0.1381995363142299,0.0851247053314322,0.1044836242412368,9985
+tiempo_familia,Family and social life,"Activities with family, last week (0--5)",Actividades con la familia (0–5),-1,0-11m,36-59m,0.1139214387242557,0.07526691458366,0.13013596378675665,9985
+tiempo_familia,Family and social life,"Activities with family, last week (0--5)",Actividades con la familia (0–5),-1,24-35m,0-11m,-0.1381995363142299,0.0851247053314322,0.1044836242412368,9985
+tiempo_familia,Family and social life,"Activities with family, last week (0--5)",Actividades con la familia (0–5),-1,24-35m,12-23m,-0.00738108960275477,0.0621942805895082,0.9055305079393349,9985
+tiempo_familia,Family and social life,"Activities with family, last week (0--5)",Actividades con la familia (0–5),-1,24-35m,36-59m,-0.024278097589974207,0.06575581938433175,0.71196676506636,9985
+participa,Family and social life,Takes part in a group or organization (0/1),Participa en algún grupo u organización,-1,0-11m,12-23m,-0.04396291346738088,0.03515732300090461,0.21113065142967258,9996
+participa,Family and social life,Takes part in a group or organization (0/1),Participa en algún grupo u organización,-1,0-11m,24-35m,-0.03630496871852723,0.0370501351239975,0.3271415947284848,9996
+participa,Family and social life,Takes part in a group or organization (0/1),Participa en algún grupo u organización,-1,0-11m,36-59m,0.013852734806592406,0.03300427795762061,0.6746860445193741,9996
+participa,Family and social life,Takes part in a group or organization (0/1),Participa en algún grupo u organización,-1,24-35m,0-11m,0.03630496871852723,0.0370501351239975,0.3271415947284848,9996
+participa,Family and social life,Takes part in a group or organization (0/1),Participa en algún grupo u organización,-1,24-35m,12-23m,-0.0076579447488536526,0.029454760972403432,0.7948714494675203,9996
+participa,Family and social life,Takes part in a group or organization (0/1),Participa en algún grupo u organización,-1,24-35m,36-59m,0.05015770352511964,0.023629609877396977,0.033782084103567665,9996
+aces,Adverse experiences reported by the caregiver,Number of adverse experiences (0--10),Número de experiencias adversas (0–10),1,0-11m,12-23m,-0.09193363185648507,0.10408070827275442,0.37707865540075325,9834
+aces,Adverse experiences reported by the caregiver,Number of adverse experiences (0--10),Número de experiencias adversas (0–10),1,0-11m,24-35m,-0.2644959940429881,0.12567016458933694,0.03531881766904807,9834
+aces,Adverse experiences reported by the caregiver,Number of adverse experiences (0--10),Número de experiencias adversas (0–10),1,0-11m,36-59m,-0.1440360294824441,0.09845389066007447,0.14347297247689741,9834
+aces,Adverse experiences reported by the caregiver,Number of adverse experiences (0--10),Número de experiencias adversas (0–10),1,24-35m,0-11m,0.2644959940429881,0.12567016458933694,0.03531881766904807,9834
+aces,Adverse experiences reported by the caregiver,Number of adverse experiences (0--10),Número de experiencias adversas (0–10),1,24-35m,12-23m,0.17256236218650306,0.10762115857906747,0.10884104795729743,9834
+aces,Adverse experiences reported by the caregiver,Number of adverse experiences (0--10),Número de experiencias adversas (0–10),1,24-35m,36-59m,0.12045996456054403,0.08907643700150897,0.1762725480828703,9834
+aces_peleas,Adverse experiences reported by the caregiver,Witnessed fights at home (0/1),Presenció peleas en el hogar,1,0-11m,12-23m,-0.06818481030343712,0.027100634216654894,0.011869997205268929,9671
+aces_peleas,Adverse experiences reported by the caregiver,Witnessed fights at home (0/1),Presenció peleas en el hogar,1,0-11m,24-35m,-0.09857668532867843,0.026552797842075444,0.00020523967657795237,9671
+aces_peleas,Adverse experiences reported by the caregiver,Witnessed fights at home (0/1),Presenció peleas en el hogar,1,0-11m,36-59m,-0.07846408388497125,0.024963722437121482,0.0016715481247185705,9671
+aces_peleas,Adverse experiences reported by the caregiver,Witnessed fights at home (0/1),Presenció peleas en el hogar,1,24-35m,0-11m,0.09857668532867843,0.026552797842075444,0.00020523967657795237,9671
+aces_peleas,Adverse experiences reported by the caregiver,Witnessed fights at home (0/1),Presenció peleas en el hogar,1,24-35m,12-23m,0.030391875025241308,0.02164497487444252,0.16028679291514403,9671
+aces_peleas,Adverse experiences reported by the caregiver,Witnessed fights at home (0/1),Presenció peleas en el hogar,1,24-35m,36-59m,0.020112601443707176,0.021648966362323278,0.35287204976547115,9671
+aces_separacion,Adverse experiences reported by the caregiver,Abrupt separation from caregiver (0/1),Separación abrupta del cuidador,1,0-11m,12-23m,-0.01895330721386227,0.03521214551418589,0.5903972140481087,9797
+aces_separacion,Adverse experiences reported by the caregiver,Abrupt separation from caregiver (0/1),Separación abrupta del cuidador,1,0-11m,24-35m,-0.05885249036314123,0.03941480375099365,0.13539609334514452,9797
+aces_separacion,Adverse experiences reported by the caregiver,Abrupt separation from caregiver (0/1),Separación abrupta del cuidador,1,0-11m,36-59m,-0.06511163813383529,0.03554897145493012,0.06701044119674596,9797
+aces_separacion,Adverse experiences reported by the caregiver,Abrupt separation from caregiver (0/1),Separación abrupta del cuidador,1,24-35m,0-11m,0.05885249036314123,0.03941480375099365,0.13539609334514452,9797
+aces_separacion,Adverse experiences reported by the caregiver,Abrupt separation from caregiver (0/1),Separación abrupta del cuidador,1,24-35m,12-23m,0.03989918314927896,0.04039397057409292,0.32327463093068765,9797
+aces_separacion,Adverse experiences reported by the caregiver,Abrupt separation from caregiver (0/1),Separación abrupta del cuidador,1,24-35m,36-59m,-0.006259147770694057,0.03244682494085918,0.8470335379785221,9797
+aces_vivienda,Adverse experiences reported by the caregiver,Housing problems (0/1),Problemas de vivienda,1,0-11m,12-23m,0.0011898729167099122,0.01822430887861614,0.9479427638696174,9885
+aces_vivienda,Adverse experiences reported by the caregiver,Housing problems (0/1),Problemas de vivienda,1,0-11m,24-35m,-0.010241041898734565,0.018707925456189215,0.5840920777971097,9885
+aces_vivienda,Adverse experiences reported by the caregiver,Housing problems (0/1),Problemas de vivienda,1,0-11m,36-59m,0.013645700313814138,0.017180058541796606,0.4270350391360367,9885
+aces_vivienda,Adverse experiences reported by the caregiver,Housing problems (0/1),Problemas de vivienda,1,24-35m,0-11m,0.010241041898734565,0.018707925456189215,0.5840920777971097,9885
+aces_vivienda,Adverse experiences reported by the caregiver,Housing problems (0/1),Problemas de vivienda,1,24-35m,12-23m,0.011430914815444478,0.01526527533317759,0.4539668352315993,9885
+aces_vivienda,Adverse experiences reported by the caregiver,Housing problems (0/1),Problemas de vivienda,1,24-35m,36-59m,0.023886742212548703,0.010911916470541924,0.02859312973927694,9885
+aces_hambre,Adverse experiences reported by the caregiver,Not enough to eat (0/1),No tuvo suficiente para comer,1,0-11m,12-23m,0.014124071297866244,0.025381786346283637,0.5778931341580923,9798
+aces_hambre,Adverse experiences reported by the caregiver,Not enough to eat (0/1),No tuvo suficiente para comer,1,0-11m,24-35m,0.00758193492983637,0.022681613976788438,0.7381707755822746,9798
+aces_hambre,Adverse experiences reported by the caregiver,Not enough to eat (0/1),No tuvo suficiente para comer,1,0-11m,36-59m,0.03037231429970334,0.02455006903102506,0.2160284306794955,9798
+aces_hambre,Adverse experiences reported by the caregiver,Not enough to eat (0/1),No tuvo suficiente para comer,1,24-35m,0-11m,-0.00758193492983637,0.022681613976788438,0.7381707755822746,9798
+aces_hambre,Adverse experiences reported by the caregiver,Not enough to eat (0/1),No tuvo suficiente para comer,1,24-35m,12-23m,0.006542136368029874,0.01991609282404097,0.7425450364401909,9798
+aces_hambre,Adverse experiences reported by the caregiver,Not enough to eat (0/1),No tuvo suficiente para comer,1,24-35m,36-59m,0.02279037936986697,0.02107018439752527,0.27941199348602885,9798
+cesd,Caregiver and household,"Caregiver depressive symptoms, CES-D (z)","Síntomas depresivos del cuidador, CES-D (z)",1,0-11m,12-23m,-0.0643301309302881,0.06947559216609311,0.35447790198856644,9978
+cesd,Caregiver and household,"Caregiver depressive symptoms, CES-D (z)","Síntomas depresivos del cuidador, CES-D (z)",1,0-11m,24-35m,-0.07053058806159333,0.05620429242354516,0.20951621707215917,9978
+cesd,Caregiver and household,"Caregiver depressive symptoms, CES-D (z)","Síntomas depresivos del cuidador, CES-D (z)",1,0-11m,36-59m,-0.020748417863836483,0.07314414857269962,0.7766672978753925,9978
+cesd,Caregiver and household,"Caregiver depressive symptoms, CES-D (z)","Síntomas depresivos del cuidador, CES-D (z)",1,24-35m,0-11m,0.07053058806159333,0.05620429242354516,0.20951621707215917,9978
+cesd,Caregiver and household,"Caregiver depressive symptoms, CES-D (z)","Síntomas depresivos del cuidador, CES-D (z)",1,24-35m,12-23m,0.006200457131305237,0.075457922372032,0.9345106899093389,9978
+cesd,Caregiver and household,"Caregiver depressive symptoms, CES-D (z)","Síntomas depresivos del cuidador, CES-D (z)",1,24-35m,36-59m,0.04978217019775685,0.06278399879738224,0.4278292425050658,9978
+psi_total,Caregiver and household,"Parenting stress, PSI total (z)","Estrés parental, PSI total (z)",1,0-11m,12-23m,-0.07158787462367437,0.07047554382238687,0.3097326297755568,9629
+psi_total,Caregiver and household,"Parenting stress, PSI total (z)","Estrés parental, PSI total (z)",1,0-11m,24-35m,0.013089484586130856,0.05746567195072553,0.8198179003459474,9629
+psi_total,Caregiver and household,"Parenting stress, PSI total (z)","Estrés parental, PSI total (z)",1,0-11m,36-59m,-0.03151924636685929,0.06878989636073159,0.6468117272281906,9629
+psi_total,Caregiver and household,"Parenting stress, PSI total (z)","Estrés parental, PSI total (z)",1,24-35m,0-11m,-0.013089484586130856,0.05746567195072553,0.8198179003459474,9629
+psi_total,Caregiver and household,"Parenting stress, PSI total (z)","Estrés parental, PSI total (z)",1,24-35m,12-23m,-0.08467735920980522,0.05740842420591742,0.14021285482043006,9629
+psi_total,Caregiver and household,"Parenting stress, PSI total (z)","Estrés parental, PSI total (z)",1,24-35m,36-59m,-0.044608730952990144,0.05611473836815856,0.4266392735561261,9629
+psi_malestar,Caregiver and household,"Parental distress, PSI (z)","Malestar parental, PSI (z)",1,0-11m,12-23m,-0.1262050467716249,0.07132961831256887,0.07684019186226716,9629
+psi_malestar,Caregiver and household,"Parental distress, PSI (z)","Malestar parental, PSI (z)",1,0-11m,24-35m,0.01401347206258688,0.054251186575812904,0.7961698305299187,9629
+psi_malestar,Caregiver and household,"Parental distress, PSI (z)","Malestar parental, PSI (z)",1,0-11m,36-59m,-0.04844960021549639,0.07192887253657607,0.5005805800409389,9629
+psi_malestar,Caregiver and household,"Parental distress, PSI (z)","Malestar parental, PSI (z)",1,24-35m,0-11m,-0.01401347206258688,0.054251186575812904,0.7961698305299187,9629
+psi_malestar,Caregiver and household,"Parental distress, PSI (z)","Malestar parental, PSI (z)",1,24-35m,12-23m,-0.14021851883421177,0.06182487819293848,0.023329507270237707,9629
+psi_malestar,Caregiver and household,"Parental distress, PSI (z)","Malestar parental, PSI (z)",1,24-35m,36-59m,-0.062463072278083266,0.06074246192593682,0.3037963547488124,9629
+psi_interaccion,Caregiver and household,"Dysfunctional interaction, PSI (z)","Interacción disfuncional, PSI (z)",1,0-11m,12-23m,-0.057978108942225375,0.0699287580818022,0.4070464028011356,9629
+psi_interaccion,Caregiver and household,"Dysfunctional interaction, PSI (z)","Interacción disfuncional, PSI (z)",1,0-11m,24-35m,0.025254927757587788,0.06589146261303398,0.7015116270782287,9629
+psi_interaccion,Caregiver and household,"Dysfunctional interaction, PSI (z)","Interacción disfuncional, PSI (z)",1,0-11m,36-59m,-0.033523408176560555,0.07237364268519358,0.6432216412759033,9629
+psi_interaccion,Caregiver and household,"Dysfunctional interaction, PSI (z)","Interacción disfuncional, PSI (z)",1,24-35m,0-11m,-0.025254927757587788,0.06589146261303398,0.7015116270782287,9629
+psi_interaccion,Caregiver and household,"Dysfunctional interaction, PSI (z)","Interacción disfuncional, PSI (z)",1,24-35m,12-23m,-0.08323303669981316,0.0544772413016743,0.12654985964135912,9629
+psi_interaccion,Caregiver and household,"Dysfunctional interaction, PSI (z)","Interacción disfuncional, PSI (z)",1,24-35m,36-59m,-0.05877833593414834,0.05122731474779974,0.2512154138926236,9629
+pscs,Caregiver and household,Parenting sense of competence (z),Competencia parental percibida (z),-1,0-11m,12-23m,-0.07407304961829579,0.07491962079923678,0.32280980868164244,9978
+pscs,Caregiver and household,Parenting sense of competence (z),Competencia parental percibida (z),-1,0-11m,24-35m,-0.10606200905006663,0.0660844081670992,0.10850534766546335,9978
+pscs,Caregiver and household,Parenting sense of competence (z),Competencia parental percibida (z),-1,0-11m,36-59m,-0.10992648743258589,0.07000304367451907,0.11634298255017114,9978
+pscs,Caregiver and household,Parenting sense of competence (z),Competencia parental percibida (z),-1,24-35m,0-11m,0.10606200905006663,0.0660844081670992,0.10850534766546342,9978
+pscs,Caregiver and household,Parenting sense of competence (z),Competencia parental percibida (z),-1,24-35m,12-23m,0.03198895943177084,0.062322580390039434,0.6077551873882562,9978
+pscs,Caregiver and household,Parenting sense of competence (z),Competencia parental percibida (z),-1,24-35m,36-59m,-0.003864478382519257,0.06337027848206613,0.9513731413777988,9978
+log_ingreso,Caregiver and household,Log household income per capita,Log del ingreso per cápita del hogar,-1,0-11m,12-23m,-0.0872967076918642,0.054391186967798426,0.10849844719163489,9967
+log_ingreso,Caregiver and household,Log household income per capita,Log del ingreso per cápita del hogar,-1,0-11m,24-35m,-0.0844274388657183,0.05383320670855429,0.11680757941391608,9967
+log_ingreso,Caregiver and household,Log household income per capita,Log del ingreso per cápita del hogar,-1,0-11m,36-59m,-0.100792397408669,0.058997598686710846,0.08755931926684925,9967
+log_ingreso,Caregiver and household,Log household income per capita,Log del ingreso per cápita del hogar,-1,24-35m,0-11m,0.0844274388657183,0.05383320670855429,0.11680757941391608,9967
+log_ingreso,Caregiver and household,Log household income per capita,Log del ingreso per cápita del hogar,-1,24-35m,12-23m,-0.00286926882614591,0.042827001936224844,0.9465843112548882,9967
+log_ingreso,Caregiver and household,Log household income per capita,Log del ingreso per cápita del hogar,-1,24-35m,36-59m,-0.016364958542950697,0.04478393059345551,0.7147976703968176,9967

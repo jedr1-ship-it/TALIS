@@ -1,5 +1,5 @@
-% Presentación de cinco diapositivas para el advisor: la idea, la base, lo
-% que encontré y por qué lo descarté.
+% Presentación de seis diapositivas para el advisor: la idea, la base, todos
+% los resultados por edad, lo que encontré y por qué lo descarté.
 % Figuras: python3 scripts/28_beamer_advisor.py
 % Compilar desde presentacion/: xelatex advisor.tex (dos veces)
 \documentclass[aspectratio=169,11pt]{beamer}
@@ -103,7 +103,17 @@
 adolescente. No hay una cohorte nacida después del terremoto con PHQ-4.}
 \end{frame}
 
-% ------------------------------------------------------------- 3. Hallazgos
+% ------------------------------------------------------------- 3. Variables
+\begin{frame}
+\frametitle{Pares y expectativas: sin diferencias por edad}
+\centering
+\includegraphics[width=\textwidth]{figuras/variables.pdf}
+
+\nota{Edad al terremoto frente a 2 años, zona afectada menos no afectada.
+15 de 162 diferencias con p < 0,05; el azar daría 8.}
+\end{frame}
+
+% ------------------------------------------------------------- 4. Hallazgos
 \begin{frame}
 \frametitle{Dos patrones a los 15--18 años en la zona afectada}
 \vspace{3mm}
@@ -116,13 +126,10 @@ chicos, N = 5.035. (b) Tomaba pecho el 27-F × zona afectada, bebés de 6--11
 meses, N = 1.267; inferencia por aleatorización, p = 0,009.}
 \end{frame}
 
-% ---------------------------------------------------------------- 4. Diseño
+% ---------------------------------------------------------------- 5. Diseño
 \begin{frame}
 \frametitle{Los diseños en niveles no pasan sus propias pruebas}
-\sub{El diseño del paper compara edades dentro de la comuna: no dice si el
-daño dura.}
-
-\vspace{2mm}
+\vspace{3mm}
 \centering
 \includegraphics[width=\textwidth]{figuras/diseno.pdf}
 
@@ -131,7 +138,7 @@ región. (b) 2017 salvo vocabulario, 2024. Placebo: nacidos en 2011--12 frente
 a 2013 o después, ninguno vivió el terremoto.}
 \end{frame}
 
-% ------------------------------------------------------------- 5. Mecanismo
+% ------------------------------------------------------------- 6. Mecanismo
 \begin{frame}
 \frametitle{La lactancia no pasa la prueba médica}
 \begin{columns}[T,onlytextwidth]

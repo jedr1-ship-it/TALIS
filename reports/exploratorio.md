@@ -56,3 +56,4 @@ Coeficientes relativos a los expuestos a 0-11 meses; spec col. 3.
 - log_ingreso      media   12.354 | Age 1 -0.087 | Age 2 -0.084 | Ages 3--4 -0.101* | N=9967
 
 Coeficientes: 162; p<0.10: 23 (esperados por azar 16); p<0.05: 9 (esperados 8); p<0.01: 2 (esperados 1.6)
+Frente a los expuestos con dos años: p<0.10: 22; p<0.05: 15; p<0.01: 2

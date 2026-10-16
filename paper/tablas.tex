@@ -348,6 +348,25 @@ probability units. \clusternote
 
 \clearpage
 \setcounter{table}{0}\renewcommand{\thetable}{E\arabic{table}}
+\setcounter{figure}{0}\renewcommand{\thefigure}{E\arabic{figure}}
+
+\begin{figure}[htbp]\centering
+  \includegraphics[width=\textwidth]{f5_exploratorio.pdf}
+  \caption{Exploratory Outcomes by Age at Exposure}
+  \label{fig:explora}
+  \begin{fignotes}[\textwidth]
+\textit{Notes:} Each cell is the $t$-statistic of a $\beta_a$ coefficient of
+equation~(1) with the controls of column~3 of Table~\ref{tab:main}, oriented
+so that positive values mean a worse outcome and truncated at $\pm 3$. The
+reference group are the children struck at 0--11 months. Stars: * $p<0.10$,
+** $p<0.05$, *** $p<0.01$. Of the 162 coefficients, 9 have $p<0.05$, against
+8 expected by chance; measured against the children struck at age two, 15 of
+the 162 differences do. Tables~\ref{tab:explora1}--\ref{tab:explora4} report
+the coefficients. The $t$-statistics use standard errors clustered by
+municipality of selection.
+  \end{fignotes}
+\end{figure}
+\FloatBarrier
 
 \input{tables/b1_explora_salud}
 \input{tables/b2_explora_escuela}

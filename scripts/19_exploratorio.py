@@ -11,9 +11,10 @@ exposición, no el nivel del efecto: un perfil plano es compatible con que
 el terremoto no afecte al resultado o con que afecte por igual a todas las
 edades.
 
-Salidas: paper/tables/b1_explora_adolescente.tex,
-         paper/tables/b2_explora_conducta.tex,
-         paper/tables/b3_explora_familia.tex,
+Salidas: paper/tables/b1_explora_salud.tex ... b4_explora_familia.tex,
+         paper/figures/f5_exploratorio.pdf (Figure E1 del paper),
+         reports/exploratorio_coefs.csv (también frente a los expuestos con
+         dos años, para la presentación),
          reports/exploratorio_mapa.png, reports/exploratorio.md
 Uso:     python3 scripts/19_exploratorio.py
 """
@@ -29,6 +30,7 @@ import pyreadstat
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt  # noqa: E402
 from matplotlib.colors import LinearSegmentedColormap  # noqa: E402
+import statsmodels.formula.api as smf  # noqa: E402
 
 warnings.simplefilter("ignore")
 HERE = Path(__file__).resolve().parent
@@ -284,14 +286,28 @@ DOM_ES = {
 }
 
 
+def frente_a_dos(r):
+    """Las mismas diferencias frente a los expuestos con dos años, a partir
+    del modelo de `fit` (referencia: 0-11 meses)."""
+    m = smf.wls(r["_f"], data=r["_d"], weights=r["_w"]).fit(
+        cov_type="cluster", cov_kwds={"groups": r["_d"].est})
+    out = {}
+    for k, c, sg in (("0-11m", "I_24", -1), ("12-23m", "I_12 - I_24", 1),
+                     ("36-59m", "I_36 - I_24", 1)):
+        t = m.t_test(c)
+        out[k] = (sg * float(np.ravel(t.effect)[0]),
+                  float(np.ravel(t.sd)[0]), float(np.ravel(t.pvalue)[0]))
+    return out
+
+
 def estima(d):
     res = {}
     for clave, (_, _, paneles) in PANELES.items():
         for _, filas in paneles:
             for v, lab, sgn in filas:
-                r = fit(d, v, 3)
-                res[v] = {"r": r, "lab": lab, "sgn": sgn,
-                          "media": d.loc[d[v].notna(), v].mean()}
+                r = fit(d, v, 3, keep_model=True)
+                res[v] = {"r": r, "r2": frente_a_dos(r), "lab": lab,
+                          "sgn": sgn, "media": d.loc[d[v].notna(), v].mean()}
                 cel = " | ".join(
                     f"{e} {r['b'][k][0]:+.3f}{stars(r['b'][k][2])}"
                     for k, e in EDADES)
@@ -415,6 +431,99 @@ def mapa(res, path):
     plt.close(fig)
 
 
+def exporta(res, path):
+    filas = []
+    for clave in PANELES:
+        for ptit, fs in PANELES[clave][2]:
+            for v, lab, sgn in fs:
+                for ref, clave_r, edades in (
+                        ("0-11m", "r", [k for k, _ in EDADES]),
+                        ("24-35m", "r2", ["0-11m", "12-23m", "36-59m"])):
+                    bb = (res[v][clave_r]["b"] if clave_r == "r"
+                          else res[v][clave_r])
+                    for k in edades:
+                        b, se, p = bb[k]
+                        filas.append({"var": v, "dominio": ptit.split(": ", 1)[1],
+                                      "lab_en": lab, "lab_es": ES[v],
+                                      "sgn": sgn, "ref": ref, "edad": k,
+                                      "b": b, "se": se, "p": p,
+                                      "n": res[v]["r"]["n"]})
+    pd.DataFrame(filas).to_csv(path, index=False)
+
+
+def figura_paper(res, path):
+    """Mapa de calor de los 54 resultados en dos columnas, para el paper:
+    estadístico t orientado (positivo = peor), referencia 0-11 meses, sin
+    título dentro de la imagen (va en el caption)."""
+    import re
+    plt.rcParams.update({"font.family": "STIXGeneral",
+                         "mathtext.fontset": "stix", "pdf.fonttype": 42})
+    cmap = LinearSegmentedColormap.from_list(
+        "dano", ["#2B5FA8", "#F2F1EE", "#B4561B"])
+
+    def corta(lab):
+        lab = re.sub(r" \((z|0/1)\)$", "", lab)
+        return lab.replace("--", "–")
+    bloques = []
+    for clave in PANELES:
+        for ptit, fs in PANELES[clave][2]:
+            bloques.append((ptit.split(": ", 1)[1], fs))
+    izq = bloques[:4]                      # salud, bienestar, colegio, pares
+    der = bloques[4:]
+    nfil = max(sum(1 + len(fs) for _, fs in lado) for lado in (izq, der))
+    alto = 0.165 * nfil + 1.0
+    fig = plt.figure(figsize=(6.5, alto))
+    xlab, celda = 2.05, 0.36               # pulgadas
+    for c, lado in enumerate((izq, der)):
+        x0 = c * 3.3
+        ax = fig.add_axes([x0 / 6.5, 0.72 / alto, 3.2 / 6.5,
+                           (alto - 1.0) / alto])
+        ax.set_xlim(0, 3.2)
+        ax.set_ylim(nfil + 0.2, -2.0)
+        ax.axis("off")
+        ax.text(xlab + celda * 1.5, -1.45, "Age at the earthquake",
+                ha="center", va="bottom", fontsize=8.5)
+        for j, e in enumerate(("1", "2", "3–4")):
+            ax.text(xlab + celda * (j + 0.5), -0.6, e, ha="center",
+                    va="bottom", fontsize=8.5)
+        y = 0
+        for dom, fs in lado:
+            ax.text(0, y, dom, ha="left", va="center", fontsize=8.5,
+                    fontweight="bold")
+            y += 1
+            for v, lab, sgn in fs:
+                ax.text(0.08, y, corta(lab), ha="left", va="center",
+                        fontsize=8)
+                for j, (k, _) in enumerate(EDADES):
+                    b, se, p = res[v]["r"]["b"][k]
+                    t = float(np.clip(sgn * b / se, -3, 3))
+                    col = cmap((t + 3) / 6)
+                    ax.add_patch(plt.Rectangle(
+                        (xlab + celda * j + 0.015, y - 0.43),
+                        celda - 0.03, 0.86, color=col, lw=0))
+                    st = stars(p)
+                    if st:
+                        lum = 0.299 * col[0] + 0.587 * col[1] + 0.114 * col[2]
+                        ax.text(xlab + celda * (j + 0.5), y + 0.05, st,
+                                ha="center", va="center", fontsize=7.5,
+                                color="white" if lum < 0.5 else "black")
+                y += 1
+    cax = fig.add_axes([0.30, 0.30 / alto, 0.40, 0.11 / alto])
+    sm = plt.cm.ScalarMappable(cmap=cmap, norm=plt.Normalize(-3, 3))
+    cb = fig.colorbar(sm, cax=cax, orientation="horizontal")
+    cb.outline.set_visible(False)
+    cb.set_ticks([-3, -2, -1, 0, 1, 2, 3])
+    cb.ax.tick_params(labelsize=7.5, length=0, pad=2)
+    cb.ax.set_xticklabels(["$-3$", "$-2$", "$-1$", "0", "1", "2", "3"])
+    fig.text(0.29, 0.355 / alto, "Better", ha="right", va="center",
+             fontsize=8)
+    fig.text(0.71, 0.355 / alto, "Worse", ha="left", va="center",
+             fontsize=8)
+    fig.savefig(path)
+    plt.close(fig)
+    plt.rcParams.update(plt.rcParamsDefault)
+
+
 def main():
     d = construye()
     log("# Análisis exploratorio, ola 2024 (scripts/19_exploratorio.py)")
@@ -428,10 +537,18 @@ def main():
         f"{0.01 * len(ps):.1f})")
     for clave in PANELES:
         tabla(clave, res)
+    ps2 = [res[v]["r2"][k][2] for v in res
+           for k in ("0-11m", "12-23m", "36-59m")]
+    log(f"Frente a los expuestos con dos años: p<0.10: "
+        f"{sum(p < .1 for p in ps2)}; p<0.05: {sum(p < .05 for p in ps2)}; "
+        f"p<0.01: {sum(p < .01 for p in ps2)}")
     mapa(res, "reports/exploratorio_mapa.png")
+    figura_paper(res, "paper/figures/f5_exploratorio.pdf")
+    exporta(res, "reports/exploratorio_coefs.csv")
     Path("reports/exploratorio.md").write_text("\n".join(OUT) + "\n",
                                                encoding="utf-8")
-    print("-> reports/exploratorio_mapa.png, reports/exploratorio.md")
+    print("-> reports/exploratorio_mapa.png, reports/exploratorio.md, "
+          "paper/figures/f5_exploratorio.pdf, reports/exploratorio_coefs.csv")
 
 
 if __name__ == "__main__":

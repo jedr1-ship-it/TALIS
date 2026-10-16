@@ -11,6 +11,8 @@ diapositivas, intervalos al 95% y nada más.
   diseno.pdf       (a) intensidad sísmica, balance en variables previas;
                    (b) diseño entre cohortes y su placebo
   trayectoria.pdf  tomaba pecho x zona afectada, de 2010 a 2024
+  variables.pdf    los 54 resultados de 2024 por edad al terremoto, frente
+                   a los expuestos con dos años (reports/exploratorio_coefs.csv)
 
 Los coeficientes se leen de los informes commiteados (reports/*.md); el
 mapa y la edad de los bebés en cada ola usan los datos.
@@ -336,11 +338,124 @@ def trayectoria():
     guarda(f, "trayectoria.pdf")
 
 
+CORTO = {
+    "z_phq4": "Síntomas PHQ-4", "gad2_bin": "Ansiedad, GAD-2",
+    "phq2_bin": "Depresión, PHQ-2", "cbcl_int": "CBCL internalizante",
+    "cbcl_ext": "CBCL externalizante", "cbcl_aten": "CBCL atención",
+    "z_resil": "Resiliencia", "sat_vida": "Satisfacción con la vida",
+    "sat_familia": "Satisf. con la familia",
+    "sat_amigos": "Satisf. con los amigos",
+    "sat_colegio": "Satisf. con el colegio",
+    "sat_si_mismo": "Satisf. consigo mismo",
+    "sat_barrio": "Satisf. con el barrio",
+    "sat_cuerpo": "Satisf. con su cuerpo",
+    "z_salud": "Mala salud percibida", "tvip": "Vocabulario, TVIP",
+    "asiste": "Asiste al colegio", "nota": "Promedio de notas",
+    "le_va": "Le va bien en el colegio", "gusta": "Le gusta ir al colegio",
+    "profes": "Le agradan los profesores", "univ": "Espera la universidad",
+    "no_sabe": "No sabe cuánto estudiará",
+    "z_bull": "Victimización en el curso", "ciber_any": "Ciberacoso",
+    "viol_pareja": "Violencia en el pololeo", "fuma": "Tabaco",
+    "alcohol": "Alcohol", "cannabis": "Marihuana",
+    "otras_drogas": "Otras drogas", "sin_anticonc": "Sin anticonceptivo",
+    "sueno": "Horas de sueño", "celular_noche": "Celular en la cama",
+    "redes": "Redes sociales", "deporte": "Actividad física",
+    "lectura": "Lectura", "chatarra": "Comida chatarra", "fruta": "Fruta",
+    "supervision": "La familia sabe qué hace",
+    "relacion_cuid": "Relación con el cuidador",
+    "confia_nadie": "No confía en nadie",
+    "tiempo_familia": "Actividades en familia",
+    "participa": "Participa en grupos", "aces": "Experiencias adversas",
+    "aces_peleas": "Peleas en el hogar",
+    "aces_separacion": "Separación del cuidador",
+    "aces_vivienda": "Problemas de vivienda", "aces_hambre": "Pasó hambre",
+    "cesd": "Depresión del cuidador", "psi_total": "Estrés parental",
+    "psi_malestar": "Malestar parental",
+    "psi_interaccion": "Interacción disfuncional",
+    "pscs": "Competencia parental", "log_ingreso": "Ingreso per cápita"}
+DOMINIO = {
+    "Mental health": "Salud mental", "Well-being": "Bienestar",
+    "Peers and victimization": "Pares",
+    "Cognition and school": "Colegio", "Risk behaviors": "Conductas de riesgo",
+    "Daily life": "Vida diaria", "Family and social life": "Familia",
+    "Adverse experiences reported by the caregiver":
+        "Adversidad, reporta el cuidador",
+    "Caregiver and household": "Cuidador y hogar"}
+
+
+def variables():
+    """Mapa de calor de los 54 resultados en tres columnas: estadístico t
+    orientado (positivo = peor) de cada edad frente a los expuestos con dos
+    años, zona afectada menos no afectada."""
+    c = pd.read_csv("reports/exploratorio_coefs.csv")
+    c = c[c.ref == "24-35m"]
+    cmap = LinearSegmentedColormap.from_list("dano",
+                                             [ACC, "#F2F1EE", NARANJA])
+    columnas = [["Mental health", "Well-being", "Peers and victimization"],
+                ["Cognition and school", "Risk behaviors", "Daily life"],
+                ["Family and social life",
+                 "Adverse experiences reported by the caregiver",
+                 "Caregiver and household"]]
+    edades = [("0-11m", "Bebés"), ("12-23m", "1 año"), ("36-59m", "3–4")]
+    nfil = max(sum(1 + c[c.dominio == dm]["var"].nunique() for dm in col)
+               for col in columnas)
+    W, H = 144 * MM, 58 * MM
+    f = plt.figure(figsize=(W, H))
+    lab_w, celda, sep = 25.5, 6.6, 2.0          # mm
+    ancho = lab_w + 3 * celda
+    for i, col in enumerate(columnas):
+        x0 = i * (ancho + sep)
+        ax = f.add_axes([x0 * MM / W, 0.12, ancho * MM / W, 0.88])
+        ax.set_xlim(0, ancho)
+        ax.set_ylim(nfil - 0.4, -1.3)
+        ax.axis("off")
+        for j, (_, e) in enumerate(edades):
+            ax.text(lab_w + celda * (j + 0.5), -0.75, e, ha="center",
+                    va="center", fontsize=6, color=MUTED)
+        y = 0
+        for dm in col:
+            ax.text(0, y, DOMINIO[dm], ha="left", va="center", fontsize=6.3,
+                    fontweight="semibold", color=INK)
+            y += 1
+            sub = c[c.dominio == dm]
+            for v in dict.fromkeys(sub["var"]):
+                ax.text(0.8, y, CORTO[v], ha="left", va="center",
+                        fontsize=5.8, color=INK)
+                for j, (k, _) in enumerate(edades):
+                    r = sub[(sub["var"] == v) & (sub.edad == k)].iloc[0]
+                    t = float(np.clip(r.sgn * r.b / r.se, -3, 3))
+                    color = cmap((t + 3) / 6)
+                    ax.add_patch(matplotlib.patches.Rectangle(
+                        (lab_w + celda * j + 0.3, y - 0.44), celda - 0.6,
+                        0.88, color=color, lw=0))
+                    st = estrellas(r.p)
+                    if st:
+                        lum = (0.299 * color[0] + 0.587 * color[1]
+                               + 0.114 * color[2])
+                        ax.text(lab_w + celda * (j + 0.5), y + 0.08, st,
+                                ha="center", va="center", fontsize=5.5,
+                                color="white" if lum < 0.5 else INK)
+                y += 1
+    cax = f.add_axes([0.38, 0.04, 0.24, 0.024])
+    sm = plt.cm.ScalarMappable(cmap=cmap, norm=plt.Normalize(-3, 3))
+    cb = f.colorbar(sm, cax=cax, orientation="horizontal")
+    cb.outline.set_visible(False)
+    cb.set_ticks([-3, 0, 3])
+    cb.ax.tick_params(labelsize=5.5, length=0, pad=1)
+    cb.ax.set_xticklabels(["−3", "0", "3"])
+    f.text(0.37, 0.052, "Mejor", ha="right", va="center", fontsize=6,
+           color=MUTED)
+    f.text(0.63, 0.052, "Peor", ha="left", va="center", fontsize=6,
+           color=MUTED)
+    guarda(f, "variables.pdf")
+
+
 def main():
     mapa()
     hallazgos()
     diseno()
     trayectoria()
+    variables()
 
 
 if __name__ == "__main__":
