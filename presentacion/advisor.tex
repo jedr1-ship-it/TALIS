@@ -1,6 +1,6 @@
 % Presentación para el advisor: el terremoto, la pregunta (¿importa la edad
-% a la que llega el shock?), la salud mental, el resto de los resultados y
-% los índices de hogar y colegio como canal.
+% a la que llega el shock?), los dos canales, la salud mental, qué acompaña
+% a la brecha y si venía de antes.
 % Figuras: python3 scripts/28_beamer_advisor.py
 % Compilar desde presentacion/: xelatex advisor.tex (dos veces)
 \documentclass[aspectratio=169,11pt]{beamer}
@@ -12,8 +12,6 @@
 \usepackage{array}
 \usepackage{booktabs}
 \usepackage{pifont}
-\usepackage{tikz}
-\usetikzlibrary{shapes.geometric}
 
 \definecolor{ink}{HTML}{17212B}
 \definecolor{acc}{HTML}{2B5FA8}
@@ -34,15 +32,17 @@
 
 \newcommand{\sub}[1]{{\leavevmode\color{muted}#1}}
 \newcommand{\nota}[1]{\vfill\noindent\parbox{0.9\textwidth}{\raggedright\scriptsize\color{muted}#1}\par\vspace*{1mm}}
-\newcommand{\falla}{{\color{naranja}\ding{55}}}
-\newcommand{\nodist}{{\color{muted}$\approx$}}
+\newcommand{\cita}[1]{{\scriptsize\color{muted}#1}}
+\newcommand{\no}{{\leavevmode\color{naranja}\ding{55}}}
+\newcommand{\si}{{\leavevmode\color{acc}\ding{51}}}
+\newcommand{\canal}[2]{{\leavevmode\bfseries\color{#1}#2}}
 
-\title{27-F y salud mental adolescente: balance}
+\title{27-F y salud mental adolescente}
 \date{Octubre de 2026}
 
 \begin{document}
 
-% ------------------------------------------------------------------ 1. Idea
+% ------------------------------------------------------------------ 1. Chile
 \begin{frame}
 \frametitle{¿Deja huella vivir un terremoto con 0 a 4 años?}
 \begin{columns}[c,onlytextwidth]
@@ -55,14 +55,54 @@
 \sub{Shock}     & 27-F de 2010, magnitud 8,8 \\
 \sub{Expuestos} & Niños de 0 a 4 años \\
 \sub{Resultado} & Ansiedad y depresión a los 15--18 \\
-\sub{Canal}     & Estrés temprano: miedo, ingresos, vivienda, salud mental de la madre \\
 \end{tabular}
 \end{columns}
 \end{frame}
 
 % -------------------------------------------------------------- 2. Pregunta
 \begin{frame}
-\frametitle{¿Importa la edad a la que llega el shock?}
+\vfill
+\begin{center}
+{\huge\bfseries ¿Importa la edad\\[2mm] a la que llega el shock?\par}
+\end{center}
+\vfill
+\end{frame}
+
+% --------------------------------------------------------------- 3. Canales
+\begin{frame}
+\frametitle{¿Por qué podría importar la edad?}
+\vspace{2mm}
+\renewcommand{\arraystretch}{1.45}
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{19mm}
+                >{\raggedright\arraybackslash}p{56mm}
+                >{\raggedright\arraybackslash}p{56mm}@{}}
+ & \canal{naranja}{Canal 1. El hogar}
+ & \canal{acc}{Canal 2. El niño, directamente} \\
+\sub{Qué pasa}
+ & Menos ingreso, vivienda dañada, padres con estrés. Más conflicto y menos inversión en el hijo
+ & La respuesta al estrés se calibra en el primer año. Desde los 3 años queda el recuerdo \\
+\sub{A quién}
+ & A todas las edades, más a los más chicos
+ & A bebés y a los de 3--4 años. No a los de 2 \\
+\sub{Se vería}
+ & El hogar empeora antes que los síntomas
+ & Sin huella en la infancia, síntomas en la adolescencia \\
+\end{tabular}
+
+\vfill
+{\scriptsize\color{muted}\renewcommand{\arraystretch}{1.2}%
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{19mm}
+                >{\raggedright\arraybackslash}p{56mm}
+                >{\raggedright\arraybackslash}p{56mm}@{}}
+ & Cunha y Heckman 2007; Conger y Donnellan 2007; Almond, Currie y Duque 2018
+ & Gunnar y Quevedo 2007; Lupien et al.\ 2009; McCrory y Viding 2015; Bauer 2015; Scheeringa y Zeanah 2008 \\
+\end{tabular}}
+\vspace*{1mm}
+\end{frame}
+
+% ----------------------------------------------------------------- 4. Diseño
+\begin{frame}
+\frametitle{Cómo lo medimos}
 \vspace{3mm}
 \begin{equation*}
 Y_{imc} = \sum_{a \neq 2} \beta_a \,(\mathrm{Edad}_{ai} \times \mathrm{Afectada}_m)
@@ -85,7 +125,7 @@ $H_0:\ \beta_a = 0$ para toda edad $a$
 \end{tabular}}
 \end{frame}
 
-% ---------------------------------------------------------- 3. Salud mental
+% ---------------------------------------------------------- 5. Salud mental
 \begin{frame}
 \frametitle{Efecto sobre la salud mental}
 \centering
@@ -95,25 +135,53 @@ $H_0:\ \beta_a = 0$ para toda edad $a$
 comunas afectadas menos no afectadas; IC al 95\%.}
 \end{frame}
 
-% ----------------------------------------------------------------- 4. Resto
+% ---------------------------------------------------------- 6. Hogar y colegio
 \begin{frame}
-\frametitle{Resto de resultados: pocas diferencias por edad}
+\frametitle{Además de la salud mental, cambian el hogar y el colegio}
 \centering
 \includegraphics[width=\textwidth]{figuras/resto.pdf}
 
-\nota{Estadístico t de cada edad frente a 2 años; estrellas al 10, 5 y 1\%.
-10 de 138 diferencias con p < 0,05; el azar daría 7.}
+\nota{Estadístico t de cada edad frente a quienes tenían 2 años; estrellas al
+10, 5 y 1\%.}
 \end{frame}
 
-% --------------------------------------------------------------- 5. Índices
+% ------------------------------------------------------ 7. Qué la acompaña
 \begin{frame}
-\frametitle{Con hogar y colegio, la brecha cae hasta un 40\%}
+\frametitle{Hogar y colegio explican parte de la brecha}
 \centering
-\includegraphics[width=\textwidth]{figuras/indices.pdf}
+\includegraphics[width=\textwidth]{figuras/descomposicion.pdf}
 
-\nota{Índices de 2024, más alto es peor. Adversidad: la reporta el cuidador.
-Familia y colegio: el adolescente. Economía: ingreso, vivienda y comida.
-Misma muestra en (b), N = 9.036.}
+\nota{Descomposición de Gelbach con hogar y colegio medidos en 2024. En
+negrita, parte explicada distinta de cero al 95\%, bootstrap por comuna.}
+\end{frame}
+
+% ------------------------------------------------------- 8. ¿Venía de antes?
+\begin{frame}
+\frametitle{Pero a los 8--12 años no había diferencias}
+\centering
+\includegraphics[width=\textwidth]{figuras/orden_temporal.pdf}
+
+\nota{Mismas preguntas a los mismos niños. Colegio, responde el niño; peleas,
+el cuidador. Controlar por las respuestas de 2017 no mueve la brecha en
+síntomas. IC al 95\%.}
+\end{frame}
+
+% ------------------------------------------------------------ 9. La historia
+\begin{frame}
+\frametitle{La brecha aparece en la adolescencia}
+\vspace{6mm}
+\renewcommand{\arraystretch}{1.9}
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{44mm}
+                >{\raggedright\arraybackslash}p{42mm}
+                >{\raggedright\arraybackslash}p{49mm}@{}}
+ & \sub{Se vería} & \sub{En los datos} \\
+\canal{naranja}{Canal 1. El hogar}
+ & El hogar empeora antes que los síntomas
+ & \no\ A los 8--12 años, hogar y colegio iguales \\
+\canal{acc}{Canal 2. El niño}
+ & Sin huella en la infancia, síntomas en la adolescencia
+ & \si\ Hogar y colegio cambian recién a los 15--18, junto con los síntomas \\
+\end{tabular}
 \end{frame}
 
 \end{document}
