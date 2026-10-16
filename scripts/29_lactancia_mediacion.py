@@ -15,6 +15,9 @@ La lactancia como canal, en dos pasos.
      la interacción zona afectada x tomaba pecho (scripts/25, base). El
      efecto indirecto por el destete es el producto de la primera etapa y de
      esa diferencia.
+  3. Lo mismo para los expuestos con un año: primera etapa para 12-18 y
+     12-23 meses, interacción zona afectada x tomaba pecho y destetados
+     frente a los que siguieron.
 
 Salida: reports/lactancia_mediacion.md
 Uso:    python3 scripts/29_lactancia_mediacion.py
@@ -114,8 +117,41 @@ def main():
     fs = fe["6-11 meses"]["post"]
     ind = fs[0] * m[0]
     se_ind = np.sqrt((fs[0] * m[1]) ** 2 + (m[0] * fs[1]) ** 2)
+    se_exacto = np.sqrt(se_ind ** 2 + (fs[1] * m[1]) ** 2)
     log(f"- efecto indirecto por el destete, 6-11 meses: {fs[0]:+.3f} x "
-        f"{m[0]:+.3f} = {ind:+.4f} DE (ee delta {se_ind:.4f})")
+        f"{m[0]:+.3f} = {ind:+.4f} DE (ee delta {se_ind:.4f}; ee exacto "
+        f"del producto {se_exacto:.4f})")
+    log("\n## 3. Los expuestos con un año (12-23 meses)")
+    for edades, lab in (((12, 18), "12-18 meses"), ((12, 23), "12-23 meses")):
+        r1 = destete(d17, edades)
+        for k, txt in (("post", "en los 3 meses tras el 27-F"),
+                       ("pre", "en los 4 meses antes, placebo")):
+            t1 = r1[k]
+            log(f"- {lab}, destete {txt}: zona afectada {fmt(t1)}; media "
+                f"{t1[3]:.3f}; N={t1[4]}")
+    for (lo, hi), lab in (((12, 23), "12-23 meses"), ((12, 18), "12-18 meses")):
+        u = d[d.edadq_m.between(lo, hi)].dropna(
+            subset=["meses_pecho", "w", "estrato", "cohorte"]).copy()
+        u = u[u.w > 0].copy()
+        u["est"] = u.estrato.astype(int).astype(str)
+        u["coh"] = u.cohorte.astype(int).astype(str)
+        u["reg"] = u.region.astype(int).astype(str)
+        u["pecho"] = (u.meses_pecho >= u.edadq_m).astype(float)
+        t1, n1 = p25.inter(u, "z_phq4")
+        log(f"- {lab}, PHQ-4, zona afectada x tomaba pecho el 27-F: "
+            f"{fmt(t1)}; N={n1}; tomaban pecho {u.pecho.mean():.2f}")
+        a1 = u[(u.pecho == 1) & (u.EQ == 1)].copy()
+        a1["destete3"] = (a1.meses_pecho <= a1.edadq_m + 3).astype(float)
+        a1 = a1.dropna(subset=["z_phq4"])
+        r = smf.wls("z_phq4 ~ destete3 + C(est) + C(coh) + "
+                    + " + ".join(xt(a1, p15.X_PRE)), data=a1,
+                    weights=a1.w).fit(cov_type="cluster",
+                                      cov_kwds={"groups": a1.est})
+        t2 = (float(r.params["destete3"]), float(r.bse["destete3"]),
+              float(r.pvalues["destete3"]))
+        log(f"- {lab}, PHQ-4, destetados en los 3 meses frente a los que "
+            f"siguieron, zona afectada: {fmt(t2)}; N={int(r.nobs)}; "
+            f"destetados {a1.destete3.mean():.2f}")
     Path("reports/lactancia_mediacion.md").write_text(
         "\n".join(OUT) + "\n", encoding="utf-8")
     print("-> reports/lactancia_mediacion.md")

@@ -627,63 +627,63 @@ def resto():
 
 def lactancia():
     """(a) ¿Hizo el terremoto dejar el pecho antes?, con la comparación de
-    los cuatro meses previos; (b) ¿están peor los que lo dejaron?
-    (reports/lactancia_mediacion.md)."""
-    import re
+    los cuatro meses previos; (b) ¿explica eso la salud mental?: brecha de
+    los que tomaban pecho y destetados frente a los que siguieron. Bebés de
+    6-11 meses y niños de 12-18 meses (reports/lactancia_mediacion.md)."""
     LM = "reports/lactancia_mediacion.md"
-    texto = Path(LM).read_text(encoding="utf-8")
-    m = re.search(r"= ([+-]\d+\.\d+) DE \(ee delta (\d+\.\d+)\)", texto)
+    grupos = [("6-11", "Bebés de\n6 a 11 meses"),
+              ("12-18", "Niños de\n12 a 18 meses")]
     with plt.rc_context(PAPER):
         f = plt.figure(figsize=(144 * MM, 60 * MM))
-        a = f.add_axes([0.125, 0.24, 0.30, 0.56])
-        b = f.add_axes([0.555, 0.24, 0.43, 0.56])
+        a = f.add_axes([0.125, 0.2, 0.33, 0.52])
+        b = f.add_axes([0.615, 0.2, 0.37, 0.52])
         for ax in (a, b):
             ejes_paper(ax)
-        # (a)
-        grupos = [("1-18", "Bebés de\n1 a 18 meses"),
-                  ("6-11", "Bebés de\n6 a 11 meses")]
-        ha = []
+        # (a) primera etapa
         for x, (g, _) in enumerate(grupos):
             h1 = barra(a, x - 0.12, lee(LM, f"{g} meses, destete en los 3"),
                        AZUL, "o", escala=100)
             h2 = barra(a, x + 0.12, lee(LM, f"{g} meses, destete en los 4"),
                        GRISR, "o", hueco=True, escala=100)
-        ha = [h1, h2]
         a.set_xticks(range(2))
         a.set_xticklabels([g[1] for g in grupos], fontsize=8)
         a.set_xlim(-0.5, 1.5)
-        a.set_ylim(-8, 16)
+        a.set_ylim(-12, 18)
         a.yaxis.set_major_locator(matplotlib.ticker.MultipleLocator(5))
         a.yaxis.set_major_formatter(matplotlib.ticker.FuncFormatter(
             lambda v, _: coma(v, 0, False) if v >= 0 else coma(v, 0)))
         a.set_ylabel("Dejaron más el pecho en la\nzona afectada (puntos) →",
                      fontsize=8)
         a.set_title("(a) ¿El terremoto hizo dejar el pecho antes?",
-                    loc="left", fontsize=8.5, pad=22)
-        a.legend(ha, ["En los 3 meses después del 27-F",
-                      "En los 4 meses antes, comparación"],
-                 loc="lower left", bbox_to_anchor=(0.0, 1.0), ncol=2,
-                 frameon=False, fontsize=7, handletextpad=0.3,
-                 columnspacing=1.0, borderaxespad=0.2)
-        # (b)
-        filas = [("Tomaban pecho\nel 27-F: más\nsíntomas",
-                  lee(LM, "PHQ-4, zona afectada x tomaba pecho")),
-                 ("Dejaron el pecho\nen 3 meses frente\na los que siguieron",
-                  lee(LM, "PHQ-4, destetados en los 3 meses")),
-                 ("Parte de la brecha\nque pasa por\ndejar el pecho",
-                  (float(m.group(1)), float(m.group(2)), 1.0))]
-        for x, (_, t) in enumerate(filas):
-            barra(b, x, t, AZUL, "s")
-        b.set_xticks(range(3))
-        b.set_xticklabels([r[0] for r in filas], fontsize=7.6)
-        b.set_xlim(-0.5, 2.5)
-        b.set_ylim(-0.3, 0.7)
+                    loc="left", fontsize=8.5, pad=30)
+        a.legend([h1, h2], ["En los 3 meses después del 27-F",
+                            "En los 4 meses antes, comparación"],
+                 loc="lower left", bbox_to_anchor=(0.0, 1.0), ncol=1,
+                 frameon=False, fontsize=6.8, handletextpad=0.3,
+                 columnspacing=0.8, borderaxespad=0.2)
+        # (b) salud mental
+        brecha = {"6-11": lee(LM, "PHQ-4, zona afectada x tomaba pecho"),
+                  "12-18": lee(LM, "12-18 meses, PHQ-4, zona afectada x")}
+        destete = {"6-11": lee(LM, "PHQ-4, destetados en los 3 meses"),
+                   "12-18": lee(LM, "12-18 meses, PHQ-4, destetados")}
+        for x, (g, _) in enumerate(grupos):
+            h3 = barra(b, x - 0.12, brecha[g], AZUL, "s")
+            h4 = barra(b, x + 0.12, destete[g], MARRON, "^")
+        b.set_xticks(range(2))
+        b.set_xticklabels([g[1] for g in grupos], fontsize=8)
+        b.set_xlim(-0.5, 1.5)
+        b.set_ylim(-0.4, 0.7)
         b.yaxis.set_major_locator(matplotlib.ticker.MultipleLocator(0.2))
         b.yaxis.set_major_formatter(matplotlib.ticker.FuncFormatter(
             lambda v, _: coma(v, 1, False) if v >= 0 else coma(v, 1)))
         b.set_ylabel("Más síntomas a los 15 (DE) →", fontsize=8)
-        b.set_title("(b) ¿Están peor los que dejaron el pecho?", loc="left",
-                    fontsize=8.5, pad=22)
+        b.set_title("(b) ¿Explica eso la salud mental?", loc="left",
+                    fontsize=8.5, pad=30)
+        b.legend([h3, h4], ["Tomaban pecho el 27-F, brecha",
+                            "Dejaron el pecho frente a siguieron"],
+                 loc="lower left", bbox_to_anchor=(0.0, 1.0), ncol=1,
+                 frameon=False, fontsize=6.8, handletextpad=0.3,
+                 columnspacing=0.8, borderaxespad=0.2)
         guarda(f, "lactancia.pdf")
 
 
