@@ -687,6 +687,78 @@ def lactancia():
         guarda(f, "lactancia.pdf")
 
 
+def indices_fig():
+    """(a) Perfil por edad de los cuatro índices frente a los expuestos con
+    dos años; (b) brecha en PHQ-4 sin y con los índices, misma muestra
+    (reports/indices_mediacion.md, todos)."""
+    import re
+    IM = Path("reports/indices_mediacion.md").read_text(encoding="utf-8")
+
+    def tramo(prefijo):
+        linea = next(l for l in IM.splitlines() if l.startswith(prefijo))
+        out = {}
+        for k, lab in (("0-11m", "bebés"), ("12-23m", "1 año"),
+                       ("36-59m", "3-4 años")):
+            m = re.search(re.escape(lab) + r" ([+-]\d+\.\d+)\**\s+\(ee "
+                          r"(\d+\.\d+), p=(\d+\.\d+)\)", linea)
+            out[k] = tuple(float(g) for g in m.groups())
+        return out
+    claves = ["0-11m", "12-23m", "36-59m"]
+    etiquetas = ["Bebés", "1 año", "3–4 años"]
+    series = [("Adversidad, cuidador", AZUL, "o", False,
+               tramo("- todos, adversidad:")),
+              ("Familia", MARRON, "^", False, tramo("- todos, familia:")),
+              ("Colegio", GRISR, "o", True, tramo("- todos, colegio:")),
+              ("Economía", AZUL, "s", True, tramo("- todos, economia:"))]
+    sin, con = tramo("- sin índices:"), tramo("- con los cuatro:")
+    with plt.rc_context(PAPER):
+        f = plt.figure(figsize=(144 * MM, 60 * MM))
+        a = f.add_axes([0.115, 0.16, 0.385, 0.5])
+        b = f.add_axes([0.62, 0.16, 0.365, 0.5])
+        for ax in (a, b):
+            ejes_paper(ax)
+        dx = [-0.24, -0.08, 0.08, 0.24]
+        hs = []
+        for (nom, col, marca, hueco, t), d_ in zip(series, dx):
+            for x, k in enumerate(claves):
+                h = barra(a, x + d_, t[k], col, marca, hueco)
+            hs.append(h)
+        a.set_xticks(range(3))
+        a.set_xticklabels(etiquetas, fontsize=8)
+        a.set_xlim(-0.5, 2.5)
+        a.set_ylim(-0.25, 0.42)
+        a.yaxis.set_major_locator(matplotlib.ticker.MultipleLocator(0.1))
+        a.yaxis.set_major_formatter(matplotlib.ticker.FuncFormatter(
+            lambda v, _: coma(v, 1, False) if v >= 0 else coma(v, 1)))
+        a.set_ylabel("Peor que quienes tenían\n2 años (DE) →", fontsize=8)
+        a.set_title("(a) ¿Qué cambia con la edad al terremoto?", loc="left",
+                    fontsize=8.5, pad=36)
+        a.legend(hs, [s_[0] for s_ in series], loc="lower left",
+                 bbox_to_anchor=(0.0, 1.0), ncol=2, frameon=False,
+                 fontsize=6.8, handletextpad=0.2, columnspacing=0.8,
+                 borderaxespad=0.2)
+        h1 = h2 = None
+        for x, k in enumerate(claves):
+            h1 = barra(b, x - 0.12, sin[k], AZUL, "o")
+            h2 = barra(b, x + 0.12, con[k], GRISR, "o", hueco=True)
+        b.set_xticks(range(3))
+        b.set_xticklabels(etiquetas, fontsize=8)
+        b.set_xlim(-0.5, 2.5)
+        b.set_ylim(-0.1, 0.32)
+        b.yaxis.set_major_locator(matplotlib.ticker.MultipleLocator(0.1))
+        b.yaxis.set_major_formatter(matplotlib.ticker.FuncFormatter(
+            lambda v, _: coma(v, 1, False) if v >= 0 else coma(v, 1)))
+        b.set_ylabel("Más síntomas que quienes\ntenían 2 años (DE) →",
+                     fontsize=8)
+        b.set_title("(b) ¿Cuánto de la brecha explican?", loc="left",
+                    fontsize=8.5, pad=36)
+        b.legend([h1, h2], ["Brecha en PHQ-4", "Controlando por los cuatro"],
+                 loc="lower left", bbox_to_anchor=(0.0, 1.0), ncol=1,
+                 frameon=False, fontsize=6.8, handletextpad=0.2,
+                 columnspacing=0.8, borderaxespad=0.2)
+        guarda(f, "indices.pdf")
+
+
 def main():
     mapa()
     hallazgos()
@@ -696,6 +768,7 @@ def main():
     salud_mental()
     resto()
     lactancia()
+    indices_fig()
 
 
 if __name__ == "__main__":
