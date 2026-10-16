@@ -13,6 +13,10 @@ diapositivas, intervalos al 95% y nada más.
   trayectoria.pdf  tomaba pecho x zona afectada, de 2010 a 2024
   variables.pdf    los 54 resultados de 2024 por edad al terremoto, frente
                    a los expuestos con dos años (reports/exploratorio_coefs.csv)
+  salud_mental.pdf (a) PHQ-4 y CBCL internalizante, todos; (b) PHQ-4 por
+                   sexo; frente a los expuestos con dos años
+  resto.pdf        los otros 48 resultados, frente a los expuestos con dos
+                   años
 
 Los coeficientes se leen de los informes commiteados (reports/*.md); el
 mapa y la edad de los bebés en cada ola usan los datos.
@@ -450,12 +454,137 @@ def variables():
     guarda(f, "variables.pdf")
 
 
+def frente_a_dos(v, k):
+    c = pd.read_csv("reports/exploratorio_coefs.csv")
+    r = c[(c.ref == "24-35m") & (c["var"] == v) & (c.edad == k)].iloc[0]
+    return (float(r.b), float(r.se), float(r.p))
+
+
+def salud_mental():
+    claves = ["0-11m", "12-23m", None, "36-59m"]
+    cats = ["6–11 meses", "1 año", "2 años", "3–4 años"]
+    f = plt.figure(figsize=(144 * MM, 57 * MM))
+    a = f.add_axes([0.075, 0.19, 0.42, 0.68])
+    b = f.add_axes([0.57, 0.19, 0.42, 0.68])
+    xs = np.arange(4)
+    paneles = (
+        (a, "(a) Todos", [
+            ("PHQ-4, el adolescente", ACC, False, -0.15, "izq",
+             [frente_a_dos("z_phq4", k) if k else None for k in claves]),
+            ("CBCL internalizante, el cuidador", NARANJA, False, 0.15, "der",
+             [frente_a_dos("cbcl_int", k) if k else None for k in claves])]),
+        (b, "(b) PHQ-4 por sexo", [
+            ("Chicas", ACC, False, -0.15, "izq",
+             [lee(PN, f"- {k}:", "## Perfil PHQ-4, Chicas") if k else None
+              for k in claves]),
+            ("Chicos", GRIS, True, 0.15, None,
+             [lee(PN, f"- {k}:", "## Perfil PHQ-4, Chicos") if k else None
+              for k in claves])]))
+    for ax, tit, series in paneles:
+        ejes(ax)
+        ax.axhline(0, color=MUTED, lw=0.7, zorder=2)
+        for nom, col, hueco, dx, lado, pts in series:
+            for x, t in zip(xs, pts):
+                if t is None:
+                    ax.plot(x + dx, 0, "o", ms=4.6, color=col, mfc="white",
+                            mew=1.1, zorder=4)
+                    continue
+                ic(ax, x + dx, t, col, hueco=hueco)
+                if lado:
+                    izq = lado == "izq"
+                    ax.text(x + dx + (-0.1 if izq else 0.1), t[0],
+                            coma(t[0]) + estrellas(t[2]),
+                            ha="right" if izq else "left", va="center",
+                            fontsize=6.8, color=col, fontweight="semibold")
+        ax.set_xticks(xs)
+        ax.set_xticklabels(cats)
+        ax.tick_params(axis="x", length=0)
+        ax.set_xlim(-0.55, 3.55)
+        ax.set_ylim(-0.3, 0.7)
+        ax.yaxis.set_major_formatter(matplotlib.ticker.FuncFormatter(
+            lambda v, _: coma(v, 1, v != 0)))
+        titulo(ax, tit)
+        h = [Line2D([], [], marker="o", ls="none", ms=4.6, color=col,
+                    mfc="white" if hueco else col, mew=1.1, label=nom)
+             for nom, col, hueco, *_ in series]
+        ax.legend(handles=h, loc="upper right", frameon=False, fontsize=7,
+                  handletextpad=0.2, borderaxespad=0.1)
+    a.set_ylabel("DE", color=MUTED, fontsize=7.2)
+    guarda(f, "salud_mental.pdf")
+
+
+def resto():
+    """Los 48 resultados fuera de la salud mental: estadístico t orientado de
+    cada edad frente a los expuestos con dos años."""
+    c = pd.read_csv("reports/exploratorio_coefs.csv")
+    c = c[c.ref == "24-35m"]
+    cmap = LinearSegmentedColormap.from_list("dano",
+                                             [ACC, "#F2F1EE", NARANJA])
+    columnas = [["Well-being", "Peers and victimization", "Risk behaviors"],
+                ["Cognition and school", "Daily life"],
+                ["Family and social life",
+                 "Adverse experiences reported by the caregiver",
+                 "Caregiver and household"]]
+    edades = [("0-11m", "Bebés"), ("12-23m", "1 año"), ("36-59m", "3–4")]
+    nfil = max(sum(1 + c[c.dominio == dm]["var"].nunique() for dm in col)
+               for col in columnas)
+    W, H = 144 * MM, 59 * MM
+    f = plt.figure(figsize=(W, H))
+    lab_w, celda, sep = 28.0, 6.1, 1.4          # mm
+    ancho = lab_w + 3 * celda
+    for i, col in enumerate(columnas):
+        x0 = i * (ancho + sep)
+        ax = f.add_axes([x0 * MM / W, 0.13, ancho * MM / W, 0.87])
+        ax.set_xlim(0, ancho)
+        ax.set_ylim(nfil - 0.4, -1.3)
+        ax.axis("off")
+        for j, (_, e) in enumerate(edades):
+            ax.text(lab_w + celda * (j + 0.5), -0.75, e, ha="center",
+                    va="center", fontsize=5.6, color=MUTED)
+        y = 0
+        for dm in col:
+            ax.text(0, y, DOMINIO[dm], ha="left", va="center", fontsize=6.6,
+                    fontweight="semibold", color=INK)
+            y += 1
+            sub = c[c.dominio == dm]
+            for v in dict.fromkeys(sub["var"]):
+                ax.text(0.8, y, CORTO[v], ha="left", va="center",
+                        fontsize=6.3, color=INK)
+                for j, (k, _) in enumerate(edades):
+                    r = sub[(sub["var"] == v) & (sub.edad == k)].iloc[0]
+                    t = float(np.clip(r.sgn * r.b / r.se, -3, 3))
+                    color = cmap((t + 3) / 6)
+                    ax.add_patch(matplotlib.patches.Rectangle(
+                        (lab_w + celda * j + 0.3, y - 0.44), celda - 0.6,
+                        0.88, color=color, lw=0))
+                    st = estrellas(r.p)
+                    if st:
+                        lum = (0.299 * color[0] + 0.587 * color[1]
+                               + 0.114 * color[2])
+                        ax.text(lab_w + celda * (j + 0.5), y + 0.08, st,
+                                ha="center", va="center", fontsize=5.8,
+                                color="white" if lum < 0.5 else INK)
+                y += 1
+    cax = f.add_axes([0.40, 0.045, 0.20, 0.024])
+    sm = plt.cm.ScalarMappable(cmap=cmap, norm=plt.Normalize(-3, 3))
+    cb = f.colorbar(sm, cax=cax, orientation="horizontal")
+    cb.outline.set_visible(False)
+    cb.set_ticks([])
+    f.text(0.39, 0.057, "Mejor que quienes tenían 2 años", ha="right",
+           va="center", fontsize=6.5, color=MUTED)
+    f.text(0.61, 0.057, "Peor que quienes tenían 2 años", ha="left",
+           va="center", fontsize=6.5, color=MUTED)
+    guarda(f, "resto.pdf")
+
+
 def main():
     mapa()
     hallazgos()
     diseno()
     trayectoria()
     variables()
+    salud_mental()
+    resto()
 
 
 if __name__ == "__main__":
