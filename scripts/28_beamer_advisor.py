@@ -1101,10 +1101,10 @@ def diada():
         "tramo")
     pec = c[c.panel == "pecho"].set_index("tramo")
     with plt.rc_context(PAPER):
-        f = plt.figure(figsize=(144 * MM, 58 * MM))
-        a = f.add_axes([0.105, 0.27, 0.23, 0.5])
-        b = f.add_axes([0.475, 0.27, 0.17, 0.5])
-        cc = f.add_axes([0.765, 0.27, 0.225, 0.5])
+        f = plt.figure(figsize=(144 * MM, 55 * MM))
+        a = f.add_axes([0.105, 0.27, 0.22, 0.5])
+        b = f.add_axes([0.455, 0.27, 0.2, 0.5])
+        cc = f.add_axes([0.775, 0.27, 0.215, 0.5])
         for ax in (a, b, cc):
             ejes_paper(ax)
         hs = []
@@ -1122,7 +1122,7 @@ def diada():
         formato_eje(a, 5, 0)
         a.set_xlabel("Edad del hijo al terremoto", fontsize=8)
         a.set_ylabel("Madres con estrés\ntras el sismo (%)", fontsize=8)
-        a.set_title("Estrés materno, igual a toda edad", fontsize=9,
+        a.set_title("Igual estrés materno a toda edad", fontsize=9,
                     pad=20)
         a.legend(hs, ["Zona afectada", "No afectada"], loc="lower center",
                  bbox_to_anchor=(0.5, 1.0), ncol=2, frameon=False,
@@ -1133,14 +1133,13 @@ def diada():
             barra(b, x, tuple(lac.loc[k, ["b", "se", "p"]]), MARRON, "^",
                   hueco)
         b.set_xticks([0, 1])
-        b.set_xticklabels(["Sin\nlactancia", "Con lactancia\nactiva"],
-                          fontsize=7.5)
+        b.set_xticklabels(["Destetada", "Amamantada"], fontsize=7)
         b.set_xlim(-0.6, 1.6)
         b.set_ylim(-0.3, 0.6)
         formato_eje(b, 0.2)
         b.set_ylabel("Más síntomas si la\nmadre tuvo estrés (DE)",
                      fontsize=8)
-        b.set_title("Concentrado en lactancia activa", fontsize=9,
+        b.set_title("Predice síntomas en amamantadas", fontsize=9,
                     pad=20)
         cc.bar(range(4), [100 * pec.loc[t, "b"] for t in tramos], 0.55,
                color=MARRON, lw=0, zorder=2)
@@ -1154,9 +1153,8 @@ def diada():
         cc.set_ylim(0, 65)
         formato_eje(cc, 20, 0)
         cc.set_xlabel("Edad al terremoto", fontsize=8)
-        cc.set_ylabel("Con lactancia materna\nactiva el 27-F (%)",
-                      fontsize=8)
-        cc.set_title("Lactancia activa por edad", fontsize=9, pad=20)
+        cc.set_ylabel("Amamantados el 27-F (%)", fontsize=8)
+        cc.set_title("Aún amamantados", fontsize=9, pad=20)
         guarda(f, "diada.pdf")
 
 
