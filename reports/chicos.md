@@ -12,3 +12,8 @@ Zona afectada menos no afectada, frente a 18-35 meses; columna 3 de la Table 3.
 - Victimización en el colegio, chicos: 6-17 +0.032 (ee 0.092, p=0.731) | 36-41 +0.061 (ee 0.087, p=0.487) | 42-49 -0.001 (ee 0.135, p=0.993) | N=4637
 - Violencia en el pololeo, chicas: 6-17 -0.004 (ee 0.030, p=0.886) | 36-41 -0.001 (ee 0.028, p=0.977) | 42-49 +0.039 (ee 0.031, p=0.202) | N=3589
 - Violencia en el pololeo, chicos: 6-17 +0.023 (ee 0.022, p=0.299) | 36-41 +0.029 (ee 0.020, p=0.162) | 42-49 +0.006 (ee 0.027, p=0.830) | N=3512
+
+Concordancia entre informantes: correlación del PHQ-4 (adolescente) con el CBCL internalizante (cuidador)
+- todos: r = 0.30; N=9552
+- chicas: r = 0.32; N=4748
+- chicos: r = 0.25; N=4804

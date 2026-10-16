@@ -23,8 +23,9 @@ insomnio, estrés o angustia, llanto, miedo o pánico y recuerdos traumáticos.
   5. La lactancia como vía: con todas las edades juntas, pendiente del
      PHQ-4 en el estrés de la madre para los hijos que tomaban pecho el
      27-F y para los que no, con efectos fijos de tramo y de tramo x pecho;
-     después, pecho y bebé a la vez. Y qué proporción tomaba pecho en cada
-     tramo.
+     después, pecho y bebé a la vez, y dejando variar el efecto del estrés
+     con la educación y el empleo de la madre en 2010 (la lactancia no es
+     aleatoria). Y qué proporción tomaba pecho en cada tramo.
 
 Salida: reports/estres_madre.md y reports/estres_madre.csv
 Uso:    python3 scripts/34_estres_madre.py
@@ -100,6 +101,13 @@ def carga():
                 how="left")
     d["pecho"] = (d.meses_pecho >= d.edadq_m).astype(float).where(
         d.meses_pecho.notna())
+    h, _ = pyreadstat.read_dta("data/interim/2010/Hogar_2010.dta",
+                               encoding="latin1",
+                               usecols=["folio", "a16", "c1"])
+    h["folio"] = num(h.folio).astype("int64")
+    h = h[num(h.a16).isin([1, 3])].drop_duplicates("folio")
+    h["trabaja10"] = si(h.c1)
+    d = d.merge(h[["folio", "trabaja10"]], on="folio", how="left")
     d = d[d.edadq_m.between(6, 49)].copy()
     d["tramo"] = "18-35"
     for t, lo, hi in TRAMOS:
@@ -235,6 +243,23 @@ def main():
             f"{fmt((r2.params['e_pecho'], r2.bse['e_pecho'], r2.pvalues['e_pecho']))}"
             f"; extra por bebé "
             f"{fmt((r2.params['e_bebe'], r2.bse['e_bebe'], r2.pvalues['e_bebe']))}")
+        y = x.dropna(subset=["educ_madre10", "trabaja10"]).copy()
+        y["e_educ"] = y.estres12 * (y.educ_madre10 - y.educ_madre10.mean())
+        y["e_trab"] = y.estres12 * y.trabaja10
+        y["p_educ"] = y.pecho * (y.educ_madre10 - y.educ_madre10.mean())
+        y["p_trab"] = y.pecho * y.trabaja10
+        for extra, lab in ((["e_educ", "e_trab", "p_educ", "p_trab"],
+                            "con estrés x educación y empleo de la madre"),
+                           (["e_educ", "e_trab", "e_bebe", "p_educ",
+                             "p_trab"], "además estrés x bebé")):
+            r3 = smf.wls("z_phq4 ~ " + " + ".join(["e_sin", "e_pecho"]
+                                                  + extra + fe),
+                         data=y, weights=y.w).fit(
+                cov_type="cluster", cov_kwds={"groups": y.est})
+            t3 = r3.t_test("e_pecho - e_sin")
+            log(f"  {lab}: diferencia con y sin pecho "
+                f"{fmt((float(np.ravel(t3.effect)[0]), float(np.ravel(t3.sd)[0]), float(np.ravel(t3.pvalue)[0])))}"
+                f"; N={int(r3.nobs)}")
         for k, lab in (("e_sin", "sin pecho"), ("e_pecho", "con pecho")):
             filas.append({"panel": "lactancia", "grupo": g, "tramo": lab,
                           "zona": "", "b": par[k][0], "se": par[k][1],

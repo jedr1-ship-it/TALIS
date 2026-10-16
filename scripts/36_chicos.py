@@ -68,6 +68,12 @@ def main():
                 filas.append({"resultado": y, "etiqueta": lab, "grupo": g,
                               "tramo": t, "b": v[0], "se": v[1], "p": v[2],
                               "n": n})
+    log("\nConcordancia entre informantes: correlación del PHQ-4 "
+        "(adolescente) con el CBCL internalizante (cuidador)")
+    for g, sx in (("todos", None), ("chicas", 1), ("chicos", 0)):
+        x = d if sx is None else d[d.mujer == sx]
+        x = x[["z_phq4", "cbcl_int"]].dropna()
+        log(f"- {g}: r = {x.corr().iloc[0, 1]:.2f}; N={len(x)}")
     pd.DataFrame(filas).to_csv("reports/chicos.csv", index=False)
     Path("reports/chicos.md").write_text("\n".join(OUT) + "\n",
                                          encoding="utf-8")

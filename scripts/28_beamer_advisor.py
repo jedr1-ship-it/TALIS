@@ -519,9 +519,9 @@ def salud_mental():
     paneles = [
         (f"Todos (n = {miles(9996)})", AZUL, "o", False,
          [frente_a_dos("z_phq4", k) for k in claves]),
-        (f"Chicas (n = {miles(4961)})", MARRON, "^", False,
+        (f"Mujeres (n = {miles(4961)})", MARRON, "^", False,
          [lee(PN, f"- {k}:", "## Perfil PHQ-4, Chicas") for k in claves]),
-        (f"Chicos (n = {miles(5035)})", GRISR, "o", True,
+        (f"Varones (n = {miles(5035)})", GRISR, "o", True,
          [lee(PN, f"- {k}:", "## Perfil PHQ-4, Chicos") for k in claves])]
     with plt.rc_context(PAPER):
         f = plt.figure(figsize=(144 * MM, 58 * MM))
@@ -1122,7 +1122,8 @@ def diada():
         formato_eje(a, 5, 0)
         a.set_xlabel("Edad del hijo, meses", fontsize=8)
         a.set_ylabel("Madres con estrés\ntras el sismo (%)", fontsize=8)
-        a.set_title("Igual a toda edad", fontsize=9, pad=20)
+        a.set_title("Estrés materno, igual a toda edad", fontsize=9,
+                    pad=20)
         a.legend(hs, ["Zona afectada", "No afectada"], loc="lower center",
                  bbox_to_anchor=(0.5, 1.0), ncol=2, frameon=False,
                  fontsize=6.8, handletextpad=0.2, columnspacing=0.7,
@@ -1132,14 +1133,15 @@ def diada():
             barra(b, x, tuple(lac.loc[k, ["b", "se", "p"]]), MARRON, "^",
                   hueco)
         b.set_xticks([0, 1])
-        b.set_xticklabels(["No tomaba\npecho", "Tomaba\npecho"],
+        b.set_xticklabels(["Sin\nlactancia", "Con lactancia\nactiva"],
                           fontsize=7.5)
         b.set_xlim(-0.6, 1.6)
         b.set_ylim(-0.3, 0.6)
         formato_eje(b, 0.2)
         b.set_ylabel("Más síntomas si la\nmadre tuvo estrés (DE)",
                      fontsize=8)
-        b.set_title("Solo si tomaba pecho", fontsize=9, pad=20)
+        b.set_title("Concentrado en lactancia activa", fontsize=9,
+                    pad=20)
         cc.bar(range(4), [100 * pec.loc[t, "b"] for t in tramos], 0.55,
                color=MARRON, lw=0, zorder=2)
         for x, t in enumerate(tramos):
@@ -1152,8 +1154,9 @@ def diada():
         cc.set_ylim(0, 65)
         formato_eje(cc, 20, 0)
         cc.set_xlabel("Edad al terremoto, meses", fontsize=8)
-        cc.set_ylabel("Tomaban pecho\nel 27-F (%)", fontsize=8)
-        cc.set_title("Y tomaban pecho los bebés", fontsize=9, pad=20)
+        cc.set_ylabel("Con lactancia materna\nactiva el 27-F (%)",
+                      fontsize=8)
+        cc.set_title("Lactancia activa por edad", fontsize=9, pad=20)
         guarda(f, "diada.pdf")
 
 
@@ -1163,12 +1166,12 @@ def chicos():
     (reports/chicos.csv)."""
     c = pd.read_csv("reports/chicos.csv")
     c = c[c.tramo == "6-17"].set_index(["resultado", "grupo"])
-    filas = [("z_phq4", "Síntomas, PHQ-4\nlo reporta el adolescente"),
-             ("cbcl_int", "Internalizante, CBCL\nlo reporta el cuidador"),
-             ("cbcl_ext", "Externalizante, CBCL\nlo reporta el cuidador"),
+    filas = [("z_phq4", "Síntomas, PHQ-4\nautorreporte"),
+             ("cbcl_int", "Internalizante, CBCL\nreporte del cuidador"),
+             ("cbcl_ext", "Externalizante, CBCL\nreporte del cuidador"),
              ("z_bull", "Victimización\nen el colegio")]
     with plt.rc_context(PAPER):
-        f = plt.figure(figsize=(144 * MM, 60 * MM))
+        f = plt.figure(figsize=(144 * MM, 54 * MM))
         ax = f.add_axes([0.3, 0.16, 0.66, 0.68])
         for lado in ("top", "right"):
             ax.spines[lado].set_visible(False)
@@ -1195,7 +1198,7 @@ def chicos():
         ax.tick_params(axis="x", length=3)
         ax.set_xlabel("Expuestos con 6–17 meses frente a 18–35 meses (DE)",
                       fontsize=8)
-        ax.legend(hs, ["Chicas", "Chicos"], loc="lower center",
+        ax.legend(hs, ["Mujeres", "Varones"], loc="lower center",
                   bbox_to_anchor=(0.5, 1.0), ncol=2, frameon=False,
                   fontsize=7.5, handletextpad=0.3, columnspacing=1.2,
                   borderaxespad=0.1)
