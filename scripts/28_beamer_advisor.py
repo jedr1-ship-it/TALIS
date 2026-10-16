@@ -493,44 +493,40 @@ def frente_a_dos(v, k):
 
 
 def salud_mental():
-    """Un panel: PHQ-4 de todos, chicas y chicos, y CBCL internalizante del
-    cuidador, por edad al terremoto, frente a quienes tenían dos años."""
+    """Efecto sobre la salud mental: PHQ-4 por edad al terremoto frente a
+    quienes tenían dos años, en tres paneles: todos, chicas y chicos."""
     claves = ["0-11m", "12-23m", "36-59m"]
-    series = [
+    paneles = [
         (f"Todos (n = {miles(9996)})", AZUL, "o", False,
          [frente_a_dos("z_phq4", k) for k in claves]),
         (f"Chicas (n = {miles(4961)})", MARRON, "^", False,
          [lee(PN, f"- {k}:", "## Perfil PHQ-4, Chicas") for k in claves]),
         (f"Chicos (n = {miles(5035)})", GRISR, "o", True,
-         [lee(PN, f"- {k}:", "## Perfil PHQ-4, Chicos") for k in claves]),
-        (f"CBCL, cuidador (n = {miles(9552)})", AZUL, "s", True,
-         [frente_a_dos("cbcl_int", k) for k in claves])]
+         [lee(PN, f"- {k}:", "## Perfil PHQ-4, Chicos") for k in claves])]
     with plt.rc_context(PAPER):
-        f = plt.figure(figsize=(144 * MM, 60 * MM))
-        ax = f.add_axes([0.085, 0.16, 0.9, 0.66])
-        ejes_paper(ax)
-        dx = [-0.27, -0.09, 0.09, 0.27]
-        handles = []
-        for (nom, col, marca, hueco, pts), d in zip(series, dx):
+        f = plt.figure(figsize=(144 * MM, 58 * MM))
+        ancho, sep, x0 = 0.26, 0.04, 0.135
+        for i, (nom, col, marca, hueco, pts) in enumerate(paneles):
+            ax = f.add_axes([x0 + i * (ancho + sep), 0.24, ancho, 0.63])
+            ejes_paper(ax)
             for x, t in enumerate(pts):
-                h = barra(ax, x + d, t, col, marca, hueco)
-            handles.append(h)
-        for x in (0.5, 1.5):
-            ax.axvline(x, color="#D0D0D0", lw=0.6, zorder=0)
-        ax.set_xticks(range(3))
-        ax.set_xticklabels(["6–11 meses", "1 año", "3–4 años"], fontsize=8.5)
-        ax.set_xlim(-0.5, 2.5)
-        ax.set_ylim(-0.3, 0.62)
-        ax.yaxis.set_major_locator(matplotlib.ticker.MultipleLocator(0.2))
-        ax.yaxis.set_major_formatter(matplotlib.ticker.FuncFormatter(
-            lambda v, _: coma(v, 1, False) if v >= 0 else coma(v, 1)))
-        ax.set_ylabel("Diferencia con quienes tenían 2 años (DE)",
-                      fontsize=8.5)
-        ax.set_xlabel("Edad al terremoto", fontsize=8.5)
-        f.legend(handles, [s_[0] for s_ in series], loc="upper center",
-                 ncol=4, frameon=False, fontsize=7.6,
-                 bbox_to_anchor=(0.53, 1.0), handletextpad=0.4,
-                 columnspacing=1.3)
+                barra(ax, x, t, col, marca, hueco)
+            ax.set_xticks(range(3))
+            ax.set_xticklabels(["6–11\nmeses", "1\naño", "3–4\naños"],
+                               fontsize=8)
+            ax.set_xlim(-0.5, 2.5)
+            ax.set_ylim(-0.3, 0.62)
+            ax.yaxis.set_major_locator(matplotlib.ticker.MultipleLocator(0.2))
+            ax.yaxis.set_major_formatter(matplotlib.ticker.FuncFormatter(
+                lambda v, _: coma(v, 1, False) if v >= 0 else coma(v, 1)))
+            if i == 0:
+                ax.set_ylabel("Diferencia con quienes\ntenían 2 años (DE)",
+                              fontsize=8.5)
+            else:
+                ax.set_yticklabels([])
+            ax.set_title(nom, fontsize=9, pad=6)
+        f.text(x0 + 1.5 * ancho + sep, 0.0, "Edad al terremoto",
+               ha="center", va="bottom", fontsize=8.5)
         guarda(f, "salud_mental.pdf")
 
 
