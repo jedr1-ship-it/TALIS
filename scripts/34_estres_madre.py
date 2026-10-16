@@ -9,8 +9,8 @@ insomnio, estrés o angustia, llanto, miedo o pánico y recuerdos traumáticos.
 
   1. Cuánto la golpeó: proporción de madres con estrés o angustia y número
      de síntomas, zona afectada y no afectada, por edad del hijo al
-     terremoto (tramos de scripts/33: 6-17, 18-35, 36-41 y 42-49 meses).
-     Perfil frente a las madres de hijos de 18-35 meses.
+     terremoto (los grupos del paper: 6-11 meses, 1 año, 2 años y 3-4
+     años). Perfil frente a las madres de hijos de 2 años.
   2. En qué hijos deja huella: PHQ-4 del adolescente en 2024 según el
      estrés de la madre, con una pendiente para cada tramo de edad del hijo,
      efectos fijos de comuna y cohorte y los controles del paper. Si el
@@ -46,8 +46,9 @@ p33 = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(p33)
 p15 = p33.p15
 num, stars, xt = p15.num, p15.stars, p15.xt
-TRAMOS = [("6-17", 6, 17), ("18-35", 18, 35), ("36-41", 36, 41),
-          ("42-49", 42, 49)]
+TRAMOS = [("6-11", 6, 11), ("12-23", 12, 23), ("24-35", 24, 35),
+          ("36-49", 36, 49)]
+REF = "24-35"
 GRUPOS = (("todos", None), ("chicas", 1), ("chicos", 0))
 OUT = []
 
@@ -109,7 +110,7 @@ def carga():
     h["trabaja10"] = si(h.c1)
     d = d.merge(h[["folio", "trabaja10"]], on="folio", how="left")
     d = d[d.edadq_m.between(6, 49)].copy()
-    d["tramo"] = "18-35"
+    d["tramo"] = REF
     for t, lo, hi in TRAMOS:
         d.loc[d.edadq_m.between(lo, hi), "tramo"] = t
     return d
@@ -133,10 +134,10 @@ def pendientes(d, y, dosis, sx=None):
         + xt(x, p15.X_POST)
     r = smf.wls(f"{y} ~ {' + '.join(rhs)}", data=x, weights=x.w).fit(
         cov_type="cluster", cov_kwds={"groups": x.est})
-    dif = r.t_test(f"D6_17 - D18_35")
+    dif = r.t_test("D6_11 - D24_35")
     out = {t: (float(r.params[i]), float(r.bse[i]), float(r.pvalues[i]))
            for (t, _, _), i in zip(TRAMOS, ii)}
-    out["bebés menos 18-35"] = (float(np.ravel(dif.effect)[0]),
+    out["bebés menos 2 años"] = (float(np.ravel(dif.effect)[0]),
                                 float(np.ravel(dif.sd)[0]),
                                 float(np.ravel(dif.pvalue)[0]))
     return out, int(r.nobs)
@@ -163,10 +164,10 @@ def main():
                           "zona": zona, "b": z.estres12.mean(),
                           "se": z.estres12.std() / np.sqrt(len(z)),
                           "p": np.nan, "n": len(z)})
-    log("Perfil frente a las madres de hijos de 18-35 meses, zona afectada "
+    log("Perfil frente a las madres de hijos de 2 años, zona afectada "
         "menos no afectada (EF de comuna y cohorte, sin controles):")
     for v in ("estres12", "n_sint12", "dano12"):
-        b, n = p33.perfil(d, v, None, "ventanas", controles=False)
+        b, n = p33.perfil(d, v, None, "paper", controles=False)
         log(f"- {v}: " + " | ".join(f"{k} {fmt(t)}" for k, t in b.items())
             + f" | N={n}")
 
@@ -191,13 +192,13 @@ def main():
     base = d[d.estres12.notna()].copy()
     extra = ["estres12"]
     for t, lo, hi in TRAMOS:
-        if t != "18-35":
+        if t != REF:
             c = "e_" + t.replace("-", "_")
             base[c] = base.estres12 * base.edadq_m.between(lo, hi)
             extra.append(c)
     for g, sx in GRUPOS[:2]:
-        sin = p33.perfil(base, "z_phq4", sx, "ventanas")
-        con = p33.perfil(base, "z_phq4", sx, "ventanas", extra=tuple(extra))
+        sin = p33.perfil(base, "z_phq4", sx, "paper")
+        con = p33.perfil(base, "z_phq4", sx, "paper", extra=tuple(extra))
         log(f"- {g}, sin el estrés de la madre: " + " | ".join(
             f"{k} {fmt(t)}" for k, t in sin[0].items()) + f" | N={sin[1]}")
         log(f"- {g}, con el estrés de la madre por tramo: " + " | ".join(
@@ -222,7 +223,7 @@ def main():
         x["coh"] = x.cohorte.astype(int).astype(str)
         x["e_pecho"] = x.estres12 * x.pecho
         x["e_sin"] = x.estres12 * (1 - x.pecho)
-        x["e_bebe"] = x.estres12 * (x.tramo == "6-17")
+        x["e_bebe"] = x.estres12 * (x.tramo == "6-11")
         fe = ["C(tramo)", "C(tramo):pecho", "pecho", "C(est)", "C(coh)"] \
             + xt(x, p15.X_PRE) + xt(x, p15.X_POST)
         r = smf.wls("z_phq4 ~ " + " + ".join(["e_sin", "e_pecho"] + fe),

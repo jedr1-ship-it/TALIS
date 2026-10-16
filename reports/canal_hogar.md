@@ -2,46 +2,46 @@
 Cobertura de los índices: estres_padres 0.95; conflicto 0.96; recursos 0.85
 
 ## 1. ¿Cambió el hogar distinto según la edad?
-Zona afectada menos no afectada, frente a 18-35 meses (DE del índice; más alto = peor).
-- chicas, estres_padres: 6-17 -0.011 (ee 0.081, p=0.888) | 36-41 +0.062 (ee 0.086, p=0.470) | 42-49 +0.020 (ee 0.083, p=0.808) | N=4722
-- chicas, estres_padres, sin controles: 6-17 +0.014 (ee 0.080, p=0.864) | 36-41 +0.064 (ee 0.086, p=0.460) | 42-49 +0.016 (ee 0.083, p=0.849) | N=4722
-- chicas, conflicto: 6-17 -0.101 (ee 0.078, p=0.196) | 36-41 -0.109 (ee 0.106, p=0.305) | 42-49 +0.027 (ee 0.074, p=0.714) | N=4753
-- chicas, conflicto, sin controles: 6-17 -0.106 (ee 0.079, p=0.176) | 36-41 -0.128 (ee 0.105, p=0.223) | 42-49 +0.025 (ee 0.076, p=0.744) | N=4753
-- chicas, recursos: 6-17 -0.036 (ee 0.066, p=0.586) | 36-41 -0.034 (ee 0.078, p=0.661) | 42-49 +0.070 (ee 0.072, p=0.329) | N=4234
-- chicas, recursos, sin controles: 6-17 -0.012 (ee 0.071, p=0.867) | 36-41 -0.004 (ee 0.089, p=0.960) | 42-49 +0.103 (ee 0.080, p=0.201) | N=4234
-- todos, estres_padres: 6-17 +0.029 (ee 0.046, p=0.529) | 36-41 +0.095* (ee 0.056, p=0.094) | 42-49 +0.047 (ee 0.057, p=0.409) | N=9513
-- todos, estres_padres, sin controles: 6-17 +0.053 (ee 0.048, p=0.269) | 36-41 +0.084 (ee 0.061, p=0.168) | 42-49 +0.052 (ee 0.054, p=0.328) | N=9513
-- todos, conflicto: 6-17 -0.041 (ee 0.044, p=0.361) | 36-41 -0.093 (ee 0.057, p=0.104) | 42-49 -0.014 (ee 0.059, p=0.816) | N=9564
-- todos, conflicto, sin controles: 6-17 -0.035 (ee 0.043, p=0.421) | 36-41 -0.098* (ee 0.057, p=0.088) | 42-49 -0.018 (ee 0.060, p=0.761) | N=9564
-- todos, recursos: 6-17 -0.024 (ee 0.042, p=0.567) | 36-41 +0.023 (ee 0.056, p=0.683) | 42-49 +0.013 (ee 0.048, p=0.792) | N=8514
-- todos, recursos, sin controles: 6-17 -0.021 (ee 0.047, p=0.655) | 36-41 +0.037 (ee 0.065, p=0.570) | 42-49 +0.024 (ee 0.054, p=0.653) | N=8514
+Zona afectada menos no afectada, frente a 2 años (DE del índice; más alto = peor).
+- chicas, estres_padres: 6-11 -0.052 (ee 0.101, p=0.606) | 12-23 +0.031 (ee 0.079, p=0.695) | 36-49 +0.050 (ee 0.069, p=0.467) | N=4722
+- chicas, estres_padres, sin controles: 6-11 -0.005 (ee 0.094, p=0.959) | 12-23 +0.090 (ee 0.084, p=0.280) | 36-49 +0.073 (ee 0.071, p=0.297) | N=4722
+- chicas, conflicto: 6-11 -0.188* (ee 0.107, p=0.080) | 12-23 -0.100 (ee 0.074, p=0.175) | 36-49 -0.075 (ee 0.073, p=0.305) | N=4753
+- chicas, conflicto, sin controles: 6-11 -0.181* (ee 0.108, p=0.092) | 12-23 -0.085 (ee 0.073, p=0.246) | 36-49 -0.076 (ee 0.074, p=0.305) | N=4753
+- chicas, recursos: 6-11 +0.035 (ee 0.089, p=0.695) | 12-23 -0.022 (ee 0.070, p=0.752) | 36-49 +0.041 (ee 0.064, p=0.525) | N=4234
+- chicas, recursos, sin controles: 6-11 +0.087 (ee 0.094, p=0.351) | 12-23 +0.055 (ee 0.069, p=0.423) | 36-49 +0.104 (ee 0.072, p=0.149) | N=4234
+- todos, estres_padres: 6-11 -0.002 (ee 0.064, p=0.981) | 12-23 +0.050 (ee 0.051, p=0.329) | 36-49 +0.077 (ee 0.048, p=0.107) | N=9513
+- todos, estres_padres, sin controles: 6-11 +0.042 (ee 0.064, p=0.506) | 12-23 +0.094* (ee 0.053, p=0.078) | 36-49 +0.093** (ee 0.047, p=0.047) | N=9513
+- todos, conflicto: 6-11 -0.102 (ee 0.067, p=0.126) | 12-23 -0.017 (ee 0.065, p=0.791) | 36-49 -0.063 (ee 0.058, p=0.275) | N=9564
+- todos, conflicto, sin controles: 6-11 -0.091 (ee 0.066, p=0.165) | 12-23 -0.001 (ee 0.063, p=0.992) | 36-49 -0.061 (ee 0.058, p=0.292) | N=9564
+- todos, recursos: 6-11 +0.009 (ee 0.061, p=0.878) | 12-23 +0.019 (ee 0.047, p=0.694) | 36-49 +0.037 (ee 0.049, p=0.446) | N=8514
+- todos, recursos, sin controles: 6-11 +0.018 (ee 0.076, p=0.816) | 12-23 +0.022 (ee 0.053, p=0.685) | 36-49 +0.052 (ee 0.057, p=0.359) | N=8514
 
 ## 2. Qué parte de la brecha explica el hogar (Gelbach, bootstrap de comunas, 300 réplicas)
 
 chicas (N=4230)
-- 6-17: brecha +0.328 [+0.158, +0.525]; con el hogar +0.340; explicado -0.012 [-0.029, +0.005], -4%
-    estres_padres: -0.005 [-0.017, +0.010]
-    conflicto: -0.008 [-0.018, -0.001]
-    recursos: +0.001 [-0.003, +0.005]
-- 36-41: brecha +0.172 [-0.025, +0.364]; con el hogar +0.172; explicado +0.000 [-0.020, +0.022], 0%
-    estres_padres: +0.004 [-0.009, +0.020]
-    conflicto: -0.005 [-0.018, +0.006]
-    recursos: +0.001 [-0.003, +0.006]
-- 42-49: brecha +0.212 [-0.021, +0.454]; con el hogar +0.212; explicado +0.001 [-0.022, +0.021], 0%
-    estres_padres: +0.002 [-0.015, +0.019]
-    conflicto: -0.001 [-0.009, +0.007]
-    recursos: -0.001 [-0.007, +0.002]
+- 6-11: brecha +0.370 [+0.134, +0.600]; con el hogar +0.389; explicado -0.019 [-0.044, +0.003], -5%
+    estres_padres: -0.007 [-0.024, +0.013]
+    conflicto: -0.011 [-0.027, -0.001]
+    recursos: -0.001 [-0.007, +0.003]
+- 12-23: brecha +0.141 [-0.109, +0.383]; con el hogar +0.148; explicado -0.007 [-0.025, +0.012], -5%
+    estres_padres: +0.002 [-0.012, +0.016]
+    conflicto: -0.009 [-0.020, -0.001]
+    recursos: +0.000 [-0.003, +0.005]
+- 36-49: brecha +0.190 [-0.033, +0.380]; con el hogar +0.191; explicado -0.001 [-0.019, +0.017], -1%
+    estres_padres: +0.005 [-0.007, +0.018]
+    conflicto: -0.005 [-0.017, +0.002]
+    recursos: -0.001 [-0.005, +0.002]
 
 todos (N=8504)
-- 6-17: brecha +0.150 [+0.028, +0.256]; con el hogar +0.152; explicado -0.001 [-0.009, +0.006], -1%
-    estres_padres: +0.000 [-0.007, +0.006]
-    conflicto: -0.002 [-0.006, +0.001]
-    recursos: +0.000 [-0.001, +0.002]
-- 36-41: brecha +0.093 [-0.056, +0.214]; con el hogar +0.092; explicado +0.001 [-0.012, +0.012], 2%
-    estres_padres: +0.005 [-0.004, +0.014]
-    conflicto: -0.003 [-0.009, +0.000]
-    recursos: -0.000 [-0.003, +0.002]
-- 42-49: brecha +0.075 [-0.088, +0.224]; con el hogar +0.070; explicado +0.006 [-0.005, +0.015], 7%
-    estres_padres: +0.006 [-0.004, +0.016]
-    conflicto: -0.000 [-0.004, +0.003]
+- 6-11: brecha +0.175 [+0.048, +0.294]; con el hogar +0.180; explicado -0.005 [-0.015, +0.005], -3%
+    estres_padres: -0.001 [-0.011, +0.007]
+    conflicto: -0.003 [-0.010, +0.000]
     recursos: -0.000 [-0.002, +0.002]
+- 12-23: brecha +0.072 [-0.100, +0.210]; con el hogar +0.066; explicado +0.006 [-0.003, +0.015], 8%
+    estres_padres: +0.006 [-0.002, +0.014]
+    conflicto: -0.000 [-0.005, +0.004]
+    recursos: -0.000 [-0.002, +0.002]
+- 36-49: brecha +0.087 [-0.066, +0.194]; con el hogar +0.081; explicado +0.005 [-0.006, +0.014], 6%
+    estres_padres: +0.008 [-0.000, +0.016]
+    conflicto: -0.002 [-0.007, +0.002]
+    recursos: -0.001 [-0.003, +0.001]

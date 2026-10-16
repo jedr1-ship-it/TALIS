@@ -1041,8 +1041,8 @@ def canal_hogar():
     c = c[c.grupo == "chicas"]
     per = c[c.tipo == "perfil"].set_index(["componente", "tramo"])
     des = c[c.tipo == "descomp"].set_index(["componente", "tramo"])
-    tramos = ["6-17", "36-41", "42-49"]
-    etiquetas = ["6–17", "36–41", "42–49"]
+    tramos = ["6-11", "12-23", "36-49"]
+    etiquetas = ["6–11 meses", "1 año", "3–4 años"]
     series = [("estres_padres", "Estrés de los padres", MARRON, "^", False),
               ("conflicto", "Conflicto en casa", AZUL, "o", False),
               ("recursos", "Falta de recursos", GRISR, "o", True)]
@@ -1058,15 +1058,15 @@ def canal_hogar():
             ax.set_xticks(range(3))
             ax.set_xticklabels(etiquetas, fontsize=8)
             ax.set_xlim(-0.5, 2.5)
-            ax.set_xlabel("Edad al terremoto, en meses", fontsize=8)
+            ax.set_xlabel("Edad al terremoto", fontsize=8)
         hs = []
         for (k, lab, col, marca, hueco), dx in zip(series, (-0.2, 0, 0.2)):
             for x, t in enumerate(tramos):
                 h = barra(a, x + dx, ic(per.loc[(k, t)]), col, marca, hueco)
             hs.append(h)
-        a.set_ylim(-0.4, 0.4)
+        a.set_ylim(-0.5, 0.4)
         formato_eje(a, 0.2)
-        a.set_ylabel("Peor que con\n18–35 meses (DE)", fontsize=8)
+        a.set_ylabel("Peor que con\n2 años (DE)", fontsize=8)
         a.set_title("El hogar cambió igual a toda edad", fontsize=9, pad=24)
         a.legend(hs, [s_[1] for s_ in series], loc="lower center",
                  bbox_to_anchor=(0.5, 1.0), ncol=3, frameon=False,
@@ -1077,9 +1077,9 @@ def canal_hogar():
             h1 = barra(b, x - 0.12, ic(des.loc[("brecha", t)]), MARRON, "^")
             h2 = barra(b, x + 0.12, ic(des.loc[("sin explicar", t)]),
                        MARRON, "^", hueco=True)
-        b.set_ylim(-0.15, 0.6)
+        b.set_ylim(-0.15, 0.7)
         formato_eje(b, 0.2)
-        b.set_ylabel("Más síntomas que con\n18–35 meses (DE)", fontsize=8)
+        b.set_ylabel("Más síntomas que con\n2 años (DE)", fontsize=8)
         b.set_title("Y no explica la brecha", fontsize=9, pad=24)
         b.legend([h1, h2], ["Brecha", "Controlando por el hogar"],
                  loc="lower center", bbox_to_anchor=(0.5, 1.0), ncol=2,
@@ -1094,17 +1094,17 @@ def diada():
     o no el 27-F, todas las edades juntas; (c) quiénes tomaban pecho
     (reports/estres_madre.csv)."""
     c = pd.read_csv("reports/estres_madre.csv")
-    tramos = ["6-17", "18-35", "36-41", "42-49"]
-    etiquetas = ["6–17", "18–35", "36–41", "42–49"]
+    tramos = ["6-11", "12-23", "24-35", "36-49"]
+    etiquetas = ["6–11\nmeses", "1\naño", "2\naños", "3–4\naños"]
     niv = c[c.panel == "nivel"].set_index(["tramo", "zona"])
     lac = c[(c.panel == "lactancia") & (c.grupo == "chicas")].set_index(
         "tramo")
     pec = c[c.panel == "pecho"].set_index("tramo")
     with plt.rc_context(PAPER):
         f = plt.figure(figsize=(144 * MM, 58 * MM))
-        a = f.add_axes([0.105, 0.22, 0.23, 0.56])
-        b = f.add_axes([0.475, 0.22, 0.17, 0.56])
-        cc = f.add_axes([0.765, 0.22, 0.225, 0.56])
+        a = f.add_axes([0.105, 0.27, 0.23, 0.5])
+        b = f.add_axes([0.475, 0.27, 0.17, 0.5])
+        cc = f.add_axes([0.765, 0.27, 0.225, 0.5])
         for ax in (a, b, cc):
             ejes_paper(ax)
         hs = []
@@ -1120,7 +1120,7 @@ def diada():
         a.set_xlim(-0.5, 3.5)
         a.set_ylim(-2, 25)
         formato_eje(a, 5, 0)
-        a.set_xlabel("Edad del hijo, meses", fontsize=8)
+        a.set_xlabel("Edad del hijo al terremoto", fontsize=8)
         a.set_ylabel("Madres con estrés\ntras el sismo (%)", fontsize=8)
         a.set_title("Estrés materno, igual a toda edad", fontsize=9,
                     pad=20)
@@ -1153,7 +1153,7 @@ def diada():
         cc.set_xlim(-0.5, 3.5)
         cc.set_ylim(0, 65)
         formato_eje(cc, 20, 0)
-        cc.set_xlabel("Edad al terremoto, meses", fontsize=8)
+        cc.set_xlabel("Edad al terremoto", fontsize=8)
         cc.set_ylabel("Con lactancia materna\nactiva el 27-F (%)",
                       fontsize=8)
         cc.set_title("Lactancia activa por edad", fontsize=9, pad=20)
@@ -1165,14 +1165,15 @@ def chicos():
     que reporta el adolescente, lo que ve el cuidador y la victimización
     (reports/chicos.csv)."""
     c = pd.read_csv("reports/chicos.csv")
-    c = c[c.tramo == "6-17"].set_index(["resultado", "grupo"])
-    filas = [("z_phq4", "Síntomas, PHQ-4\nautorreporte"),
-             ("cbcl_int", "Internalizante, CBCL\nreporte del cuidador"),
-             ("cbcl_ext", "Externalizante, CBCL\nreporte del cuidador"),
-             ("z_bull", "Victimización\nen el colegio")]
+    c = c[c.tramo == "6-11"].set_index(["resultado", "grupo"])
+    filas = [("z_phq4", "Síntomas PHQ-4, autorreporte"),
+             ("cbcl_int", "CBCL internalizante, cuidador"),
+             ("cbcl_ext", "CBCL externalizante, cuidador"),
+             ("z_consumo", "Consumo de alcohol o drogas"),
+             ("z_bull", "Victimización en el colegio")]
     with plt.rc_context(PAPER):
         f = plt.figure(figsize=(144 * MM, 54 * MM))
-        ax = f.add_axes([0.3, 0.16, 0.66, 0.68])
+        ax = f.add_axes([0.33, 0.17, 0.63, 0.68])
         for lado in ("top", "right"):
             ax.spines[lado].set_visible(False)
         ax.axvline(0, color="#9A9A9A", lw=0.7, ls="--", zorder=1)
@@ -1196,7 +1197,7 @@ def chicos():
         ax.xaxis.set_major_formatter(matplotlib.ticker.FuncFormatter(
             lambda v, _: coma(v, 1, False) if v >= 0 else coma(v, 1)))
         ax.tick_params(axis="x", length=3)
-        ax.set_xlabel("Expuestos con 6–17 meses frente a 18–35 meses (DE)",
+        ax.set_xlabel("Expuestos con 6–11 meses frente a 2 años (DE)",
                       fontsize=8)
         ax.legend(hs, ["Mujeres", "Varones"], loc="lower center",
                   bbox_to_anchor=(0.5, 1.0), ncol=2, frameon=False,

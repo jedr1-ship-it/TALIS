@@ -38,7 +38,10 @@ stars, xt = p15.stars, p15.xt
 CORTES = {"seis meses": ([6, 12, 18, 24, 36, 42, 50],
                          ["6-11", "12-17", "18-23", "ref", "36-41", "42-49"]),
           "ventanas": ([6, 18, 36, 42, 50],
-                       ["6-17", "ref", "36-41", "42-49"])}
+                       ["6-17", "ref", "36-41", "42-49"]),
+          # los grupos del paper, frente a 2 años; los usan scripts/34-36
+          "paper": ([6, 12, 24, 36, 50],
+                    ["6-11", "12-23", "ref", "36-49"])}
 NACER = ["z_peso", "z_talla", "z_gest"]
 GRUPOS = (("todos", None), ("chicas", 1), ("chicos", 0))
 OUT = []

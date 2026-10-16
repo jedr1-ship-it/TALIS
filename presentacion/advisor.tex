@@ -1,6 +1,7 @@
-% Presentación para el advisor: el terremoto, las vías por las que puede
-% llegar al niño, el diseño, la salud mental, el perfil por edad, el hogar,
-% la madre y la lactancia, los chicos y lo que falta.
+% Presentación para el advisor: el terremoto, los mecanismos posibles, el
+% diseño, la salud mental, el hogar, el estrés de la madre y la lactancia,
+% los varones y lo que queda abierto. Los mismos grupos de edad en todo:
+% 6-11 meses, 1 año, 2 años (referencia) y 3-4 años.
 % Figuras: python3 scripts/28_beamer_advisor.py
 % Compilar desde presentacion/: xelatex advisor.tex (dos veces)
 \documentclass[aspectratio=169,11pt]{beamer}
@@ -62,32 +63,28 @@
 % ------------------------------------------------------------------ 2. Vías
 \begin{frame}
 \frametitle{Mecanismos de transmisión y ventanas de sensibilidad}
-\vspace{2mm}
+\vspace{3mm}
 {\small
-\renewcommand{\arraystretch}{1.5}
-\begin{tabular}{@{}>{\raggedright\arraybackslash}p{33mm}
-                >{\raggedright\arraybackslash}p{47mm}
-                >{\raggedright\arraybackslash}p{33mm}
-                >{\raggedright\arraybackslash}p{17mm}@{}}
- & \sub{Cómo opera} & \sub{Grupo vulnerable} & \sub{En ELPI} \\
-\canal{naranja}{Entorno socioeconómico y familiar}
- & Deterioro patrimonial, caída de ingresos y conflicto parental
- & Transversal a todas las edades
- & Sí, 2012 y 2017 \\
-\canal{naranja}{Regulación diádica y programación lactacional}
- & Alteración del cuidado sensible y transferencia de glucocorticoides vía
-   lactancia materna
- & Lactantes en dependencia regulatoria
- & Sí, estrés y lactancia \\
-\canal{naranja}{Procesamiento cognitivo directo}
- & Codificación de memoria episódica del trauma tras la amnesia infantil
- & Primera infancia tardía
- & No \\
+\renewcommand{\arraystretch}{1.6}
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{24mm}
+                >{\raggedright\arraybackslash}p{50mm}
+                >{\raggedright\arraybackslash}p{30mm}
+                >{\raggedright\arraybackslash}p{26mm}@{}}
+ & \sub{Cómo opera} & \sub{Quién está expuesto} & \sub{Medida en ELPI} \\
+\canal{naranja}{El hogar}
+ & Caída de ingresos, daño a la vivienda y conflicto entre los padres
+ & Todos los hijos, sea cual sea su edad
+ & Índices de 2012 y 2017 \\
+\canal{naranja}{El estrés de la madre}
+ & El bebé reproduce la activación fisiológica de la madre y pierde el
+   amortiguamiento que ella da a su respuesta al estrés
+ & Bebés, cuya respuesta al estrés aún depende de la madre
+ & Estrés tras el terremoto y lactancia, como medida de cercanía \\
 \end{tabular}}
 
-\nota{Entorno, Conger y Donnellan 2007; Almond, Currie y Duque 2018.
-Regulación diádica, Gunnar y Quevedo 2007; Hinde et al.\ 2015. Memoria
-episódica, Bauer 2015.}
+\nota{Hogar, Conger y Donnellan 2007; Almond, Currie y Duque 2018. Estrés de la
+madre, Waters, West y Mendes 2014; Hostinar, Sullivan y Gunnar 2014; Essex et
+al.\ 2013.}
 \end{frame}
 
 % ----------------------------------------------------------------- 3. Diseño
@@ -125,74 +122,63 @@ $H_0:\ \beta_a = 0$ para toda edad $a$
 comunas afectadas menos no afectadas; IC al 95\%.}
 \end{frame}
 
-% ----------------------------------------------------------- 5. La U
-\begin{frame}
-\frametitle{En mujeres, el efecto por edad tiene forma de U}
-\centering
-\includegraphics[width=\textwidth]{figuras/ventanas.pdf}
-
-\nota{PHQ-4, mujeres, n = 4.961. Diferencia con quienes tenían 24--35 meses,
-comunas afectadas menos no afectadas; IC al 95\%. En varones, nada a ninguna
-edad.}
-\end{frame}
-
-% --------------------------------------------------------------- 6. Hogar
+% --------------------------------------------------------------- 5. Hogar
 \begin{frame}
 \frametitle{El hogar cambió igual a toda edad y no explica la brecha}
 \centering
 \includegraphics[width=\textwidth]{figuras/canal_hogar.pdf}
 
-\nota{Índices de 2012 y 2017 que reporta la madre o el cuidador. Mujeres; IC al
-95\%, a la derecha por bootstrap de comunas. Tramos agrupados para ganar
-potencia al cruzar con índices y submuestras.}
+\nota{Índices de 2012 y 2017 que reporta la madre o el cuidador. Mujeres,
+frente a quienes tenían 2 años; IC al 95\%, a la derecha por bootstrap de
+comunas.}
 \end{frame}
 
-% ------------------------------------------------------------- 7. La madre
+% ------------------------------------------------------------- 6. La madre
 \begin{frame}
-\frametitle{Asociación concentrada en díadas con lactancia activa}
+\frametitle{El estrés materno solo se asocia a síntomas con lactancia}
 \centering
 \includegraphics[width=\textwidth]{figuras/diada.pdf}
 
-\nota{Estrés agudo que la madre reporta en 2012. Lactancia activa como proxy
-de exposición bioquímica y de contacto diádico intensivo; no aísla el canal
-lácteo. Se mantiene al dejar variar el efecto con la educación y el empleo de
-la madre y con la edad. Al centro, mujeres, EF y controles; IC al 95\%.}
+\nota{La lactancia activa mide cercanía física y fisiológica con la madre, por
+contacto y por el cortisol de la leche; Waters, West y Mendes 2014; Nolvi et
+al.\ 2018. Al centro, mujeres de todas las edades, con EF y controles; se
+mantiene con la educación y el empleo de la madre y con la edad. IC al 95\%.}
 \end{frame}
 
-% -------------------------------------------------------------- 8. Chicos
+% ------------------------------------------------------------- 7. Varones
 \begin{frame}
-\frametitle{En varones, sin sustitución hacia conducta o consumo}
+\frametitle{En varones, solo indicios débiles en conducta y consumo}
 \centering
 \includegraphics[width=\textwidth]{figuras/chicos.pdf}
 
-\nota{Divergencia informante-paciente típica en sintomatología internalizante
-adolescente; en la muestra, r = 0,30 entre PHQ-4 y CBCL; Achenbach et al.\ 1987;
-De Los Reyes et al.\ 2015. Varones, solo un indicio externalizante, p = 0,05.}
+\nota{Divergencia informante-paciente típica en síntomas internalizantes en la
+adolescencia; en la muestra, r = 0,30 entre PHQ-4 y CBCL; Achenbach et al.\
+1987; De Los Reyes et al.\ 2015. En varones, ambos indicios con p < 0,10.}
 \end{frame}
 
-% -------------------------------------------------------------- 9. Cierre
+% -------------------------------------------------------------- 8. Cierre
 \begin{frame}
 \frametitle{Lo que sugieren los datos y lo que queda abierto}
 {\small
 {\color{acc}\bfseries Sugieren}
 \begin{itemize}\setlength{\itemsep}{0.6mm}
-\item Heterogeneidad marcada por la edad de exposición. El efecto aparece en
-      las expuestas como lactantes y desde los 42 meses
-\item El entorno familiar medido cambió igual a toda edad y no explica esas
-      diferencias
-\item El estrés materno se asocia a síntomas solo en díadas con lactancia
-      activa, en línea con una vulnerabilidad neuroendocrina temprana
+\item Frente a las expuestas con 2 años, más síntomas en las expuestas de
+      bebés, +0,30 DE, al año, +0,17, y a los 3--4 años, +0,18
+\item El hogar medido cambió igual a toda edad y no explica esas diferencias
+\item El estrés materno, igual a toda edad, solo se asocia a síntomas con
+      lactancia activa, que baja del 62\% en bebés al 4\% a los 3--4 años
 \end{itemize}
 {\color{naranja}\bfseries Queda abierto}
 \begin{itemize}\setlength{\itemsep}{0.6mm}
 \item La medida de estrés es retrospectiva y binaria, sujeta a error de
-      medición y atenuación; explica una parte pequeña de la brecha
-\item La lactancia activa no separa el cortisol lácteo del contacto diádico
-\item Por qué no hay efecto entre 18 y 41 meses, y si el efecto desde los 42
-      meses refleja codificación de memoria episódica, que no medimos
+      medición y atenuación, y la lactancia no separa contacto de leche
+\item Las expuestas a los 3--4 años: no pasa por el hogar ni por la madre, y
+      un recuerdo de esa edad rara vez llega a la adolescencia; Bauer y
+      Larkina 2014
 \end{itemize}}
 
-\nota{Solo en mujeres; en varones, nada en síntomas, conducta ni consumo.}
+\nota{En varones, sin efecto en síntomas; indicios débiles en conducta y
+consumo.}
 \end{frame}
 
 \end{document}

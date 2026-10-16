@@ -5,8 +5,8 @@
 debería verse en conducta o consumo, que el PHQ-4 no mide; si es un sesgo
 de reporte, en lo que ve el cuidador.
 
-Mismo perfil por edad al terremoto que scripts/33 (tramos agrupados:
-6-17, 36-41 y 42-49 meses frente a 18-35), por sexo, en:
+Mismo perfil por edad al terremoto, con los grupos del paper (6-11
+meses, 1 año y 3-4 años frente a 2 años), por sexo, en:
 
   síntomas      PHQ-4 (responde el adolescente)
   cuidador      CBCL internalizante y externalizante 2024
@@ -40,6 +40,7 @@ RESULTADOS = [("z_phq4", "Síntomas PHQ-4, adolescente"),
               ("cbcl_int", "Internalizante, cuidador"),
               ("cbcl_ext", "Externalizante, cuidador"),
               ("consumo", "Consumo de alcohol o drogas"),
+              ("z_consumo", "Consumo de alcohol o drogas, en DE"),
               ("z_bull", "Victimización en el colegio"),
               ("viol_pareja", "Violencia en el pololeo")]
 OUT = []
@@ -53,15 +54,16 @@ def log(*a):
 
 def main():
     log("# ¿Y los chicos? (scripts/36_chicos.py)")
-    log("Zona afectada menos no afectada, frente a 18-35 meses; columna 3 de "
+    log("Zona afectada menos no afectada, frente a 2 años; columna 3 de "
         "la Table 3.")
     d = p19.construye()
     c = d[["alcohol", "fuma", "cannabis", "otras_drogas"]]
     d["consumo"] = c.max(axis=1).where(c.notna().any(axis=1))
+    d["z_consumo"] = (d.consumo - d.consumo.mean()) / d.consumo.std()
     filas = []
     for y, lab in RESULTADOS:
         for g, sx in (("chicas", 1), ("chicos", 0)):
-            b, n = p33.perfil(d, y, sx, "ventanas")
+            b, n = p33.perfil(d, y, sx, "paper")
             p33.linea(f"{lab}, {g}", (b, n))
             OUT.append(p33.OUT.pop())
             for t, v in b.items():

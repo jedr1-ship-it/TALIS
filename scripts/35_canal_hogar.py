@@ -17,8 +17,8 @@ fijados antes de estimar y orientados de forma que más alto = peor:
   recursos              ingreso per cápita del hogar en 2012 y 2017 (signo
                         cambiado) y vivienda destruida o con daños mayores
 
-  1. Perfil de cada índice por edad al terremoto (tramos de scripts/33:
-     6-17, 36-41 y 42-49 meses frente a 18-35), zona afectada menos no
+  1. Perfil de cada índice por edad al terremoto (los grupos del paper:
+     6-11 meses, 1 año y 3-4 años frente a 2 años), zona afectada menos no
      afectada. Si es plano, el golpe al hogar fue igual para todas las
      edades.
   2. Descomposición de Gelbach (2016) de la brecha en PHQ-4 de cada tramo
@@ -46,7 +46,7 @@ spec.loader.exec_module(p34)
 p33, p15 = p34.p33, p34.p15
 num, stars, xt, si = p15.num, p15.stars, p15.xt, p34.si
 INDICES = ["estres_padres", "conflicto", "recursos"]
-TRAMOS = ["6-17", "36-41", "42-49"]
+TRAMOS = ["6-11", "12-23", "36-49"]
 GRUPOS = (("chicas", 1), ("todos", None))
 B = 300
 RNG = np.random.default_rng(27)
@@ -124,14 +124,14 @@ def carga():
 
 
 def matrices(d, sx):
-    """y, X y M de la especificación de scripts/33 (tramos agrupados,
-    frente a 18-35 meses), en la muestra con los tres índices."""
+    """y, X y M de la especificación de scripts/33 (grupos del paper,
+    frente a 2 años), en la muestra con los tres índices."""
     x = d.dropna(subset=["z_phq4", "EQ", "estrato", "w", "cohorte",
                          "edadq_m"] + INDICES).copy()
     x = x[(x.w > 0) & x.edadq_m.between(6, 49)]
     if sx is not None:
         x = x[x.mujer == sx]
-    bordes, tramos = p33.CORTES["ventanas"]
+    bordes, tramos = p33.CORTES["paper"]
     x["tramo"] = pd.cut(x.edadq_m, bordes, right=False,
                         labels=tramos).astype(str)
     x["est"] = x.estrato.astype(int).astype(str)
@@ -171,12 +171,12 @@ def main():
         f"{i} {d[i].notna().mean():.2f}" for i in INDICES))
     filas = []
     log("\n## 1. ¿Cambió el hogar distinto según la edad?")
-    log("Zona afectada menos no afectada, frente a 18-35 meses (DE del "
+    log("Zona afectada menos no afectada, frente a 2 años (DE del "
         "índice; más alto = peor).")
     for g, sx in GRUPOS:
         for i in INDICES:
             for ctr in (True, False):
-                b, n = p33.perfil(d, i, sx, "ventanas", controles=ctr)
+                b, n = p33.perfil(d, i, sx, "paper", controles=ctr)
                 log(f"- {g}, {i}{'' if ctr else ', sin controles'}: "
                     + " | ".join(f"{t} {v[0]:+.3f}{stars(v[2])} "
                                  f"(ee {v[1]:.3f}, p={v[2]:.3f})"
