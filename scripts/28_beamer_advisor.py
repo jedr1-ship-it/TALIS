@@ -457,6 +457,35 @@ def variables():
     guarda(f, "variables.pdf")
 
 
+# estilo de los gráficos de resultados: el de una figura de paper de
+# economía (serif, barras de error con remate, leyenda arriba, sin grilla)
+AZUL, MARRON, GRISR = "#3D6AA2", "#B5652E", "#7F7F7F"
+PAPER = {"font.family": "STIXGeneral", "mathtext.fontset": "stix",
+         "font.size": 8, "axes.linewidth": 0.8, "axes.edgecolor": "black",
+         "xtick.color": "black", "ytick.color": "black",
+         "xtick.labelcolor": "black", "ytick.labelcolor": "black",
+         "ytick.direction": "out", "ytick.major.size": 3,
+         "ytick.major.width": 0.8, "xtick.major.size": 0}
+
+
+def ejes_paper(ax):
+    for lado in ("top", "right"):
+        ax.spines[lado].set_visible(False)
+    ax.axhline(0, color="#9A9A9A", lw=0.7, ls="--", zorder=1)
+
+
+def barra(ax, x, t, col, marca, hueco=False, escala=1.0):
+    b, se = t[0] * escala, t[1] * escala
+    return ax.errorbar(x, b, yerr=1.96 * se, fmt=marca, color=col,
+                       mfc="white" if hueco else col, mec=col, mew=1.0,
+                       ms=5.5 if marca != "^" else 6.0, capsize=2.6,
+                       elinewidth=1.0, capthick=1.0, zorder=3)
+
+
+def miles(n):
+    return f"{n:,}".replace(",", ".")
+
+
 def frente_a_dos(v, k):
     c = pd.read_csv("reports/exploratorio_coefs.csv")
     r = c[(c.ref == "24-35m") & (c["var"] == v) & (c.edad == k)].iloc[0]
@@ -464,50 +493,45 @@ def frente_a_dos(v, k):
 
 
 def salud_mental():
-    claves = ["0-11m", "12-23m", None, "36-59m"]
-    cats = ["6–11 meses", "1 año", "2 años", "3–4 años"]
-    f = plt.figure(figsize=(144 * MM, 57 * MM))
-    a = f.add_axes([0.075, 0.19, 0.42, 0.68])
-    b = f.add_axes([0.57, 0.19, 0.42, 0.68])
-    xs = np.arange(4)
-    paneles = (
-        (a, "(a) Todos", [
-            ("PHQ-4, el adolescente", ACC, False, -0.15, "izq",
-             [frente_a_dos("z_phq4", k) if k else None for k in claves]),
-            ("CBCL internalizante, el cuidador", NARANJA, False, 0.15, "der",
-             [frente_a_dos("cbcl_int", k) if k else None for k in claves])]),
-        (b, "(b) PHQ-4 por sexo", [
-            ("Chicas", ACC, False, -0.15, "izq",
-             [lee(PN, f"- {k}:", "## Perfil PHQ-4, Chicas") if k else None
-              for k in claves]),
-            ("Chicos", GRIS, True, 0.15, None,
-             [lee(PN, f"- {k}:", "## Perfil PHQ-4, Chicos") if k else None
-              for k in claves])]))
-    for ax, tit, series in paneles:
-        ejes(ax)
-        ax.axhline(0, color=MUTED, lw=0.7, zorder=2)
-        for nom, col, hueco, dx, lado, pts in series:
-            for x, t in zip(xs, pts):
-                if t is None:
-                    ax.plot(x + dx, 0, "o", ms=4.6, color=col, mfc="white",
-                            mew=1.1, zorder=4)
-                    continue
-                ic(ax, x + dx, t, col, hueco=hueco)
-        ax.set_xticks(xs)
-        ax.set_xticklabels(cats)
-        ax.tick_params(axis="x", length=0)
-        ax.set_xlim(-0.55, 3.55)
-        ax.set_ylim(-0.3, 0.7)
+    """Un panel: PHQ-4 de todos, chicas y chicos, y CBCL internalizante del
+    cuidador, por edad al terremoto, frente a quienes tenían dos años."""
+    claves = ["0-11m", "12-23m", "36-59m"]
+    series = [
+        (f"Todos (n = {miles(9996)})", AZUL, "o", False,
+         [frente_a_dos("z_phq4", k) for k in claves]),
+        (f"Chicas (n = {miles(4961)})", MARRON, "^", False,
+         [lee(PN, f"- {k}:", "## Perfil PHQ-4, Chicas") for k in claves]),
+        (f"Chicos (n = {miles(5035)})", GRISR, "o", True,
+         [lee(PN, f"- {k}:", "## Perfil PHQ-4, Chicos") for k in claves]),
+        (f"CBCL, cuidador (n = {miles(9552)})", AZUL, "s", True,
+         [frente_a_dos("cbcl_int", k) for k in claves])]
+    with plt.rc_context(PAPER):
+        f = plt.figure(figsize=(144 * MM, 60 * MM))
+        ax = f.add_axes([0.085, 0.16, 0.9, 0.66])
+        ejes_paper(ax)
+        dx = [-0.27, -0.09, 0.09, 0.27]
+        handles = []
+        for (nom, col, marca, hueco, pts), d in zip(series, dx):
+            for x, t in enumerate(pts):
+                h = barra(ax, x + d, t, col, marca, hueco)
+            handles.append(h)
+        for x in (0.5, 1.5):
+            ax.axvline(x, color="#D0D0D0", lw=0.6, zorder=0)
+        ax.set_xticks(range(3))
+        ax.set_xticklabels(["6–11 meses", "1 año", "3–4 años"], fontsize=8.5)
+        ax.set_xlim(-0.5, 2.5)
+        ax.set_ylim(-0.3, 0.62)
+        ax.yaxis.set_major_locator(matplotlib.ticker.MultipleLocator(0.2))
         ax.yaxis.set_major_formatter(matplotlib.ticker.FuncFormatter(
-            lambda v, _: coma(v, 1, v != 0)))
-        titulo(ax, tit)
-        h = [Line2D([], [], marker="o", ls="none", ms=4.6, color=col,
-                    mfc="white" if hueco else col, mew=1.1, label=nom)
-             for nom, col, hueco, *_ in series]
-        ax.legend(handles=h, loc="upper right", frameon=False, fontsize=7,
-                  handletextpad=0.2, borderaxespad=0.1)
-    a.set_ylabel("DE", color=MUTED, fontsize=7.2)
-    guarda(f, "salud_mental.pdf")
+            lambda v, _: coma(v, 1, False) if v >= 0 else coma(v, 1)))
+        ax.set_ylabel("Diferencia con quienes tenían 2 años (DE)",
+                      fontsize=8.5)
+        ax.set_xlabel("Edad al terremoto", fontsize=8.5)
+        f.legend(handles, [s_[0] for s_ in series], loc="upper center",
+                 ncol=4, frameon=False, fontsize=7.6,
+                 bbox_to_anchor=(0.53, 1.0), handletextpad=0.4,
+                 columnspacing=1.3)
+        guarda(f, "salud_mental.pdf")
 
 
 FUERA = {"chatarra", "fruta"}
@@ -534,6 +558,8 @@ def resto():
     nfil = max(sum(1 + c[c.dominio == dm]["var"].nunique() for dm in col)
                for col in columnas)
     W, H = 144 * MM, 59 * MM
+    ctx = plt.rc_context(PAPER)
+    ctx.__enter__()
     f = plt.figure(figsize=(W, H))
     lab_w, celda, sep = 28.0, 6.1, 1.4          # mm
     ancho = lab_w + 3 * celda
@@ -548,10 +574,16 @@ def resto():
                     va="center", fontsize=5.6, color=MUTED)
         y = 0
         for dm in col:
+            y0 = y
             ax.text(0, y, DOMINIO[dm], ha="left", va="center", fontsize=6.6,
                     fontweight="semibold", color=INK)
             y += 1
             sub = c[c.dominio == dm]
+            if dm == "Well-being":
+                filas_dm = sub["var"].nunique()
+                ax.add_patch(matplotlib.patches.Rectangle(
+                    (0.05, y0 - 0.5), ancho - 0.05, filas_dm + 1.0,
+                    fill=False, ec=AZUL, lw=0.8, ls="--", zorder=6))
             for v in dict.fromkeys(sub["var"]):
                 if v in RECUADRO:
                     ax.add_patch(matplotlib.patches.Rectangle(
@@ -584,70 +616,79 @@ def resto():
     f.text(0.218, 0.057, "Peor que quienes tenían 2 años", ha="left",
            va="center", fontsize=6.5, color=MUTED)
     f.patches.append(matplotlib.patches.Rectangle(
-        (0.56, 0.044), 0.018, 0.026, fill=False, ec=INK, lw=0.8,
+        (0.47, 0.044), 0.018, 0.026, fill=False, ec=INK, lw=0.8,
         transform=f.transFigure, figure=f))
-    f.text(0.585, 0.057, "Diferencia que podría explicar la salud mental",
+    f.text(0.494, 0.057, "Podría explicar la salud mental",
            ha="left", va="center", fontsize=6.5, color=MUTED)
+    f.patches.append(matplotlib.patches.Rectangle(
+        (0.745, 0.044), 0.018, 0.026, fill=False, ec=AZUL, lw=0.8, ls="--",
+        transform=f.transFigure, figure=f))
+    f.text(0.769, 0.057, "Salud mental y bienestar", ha="left",
+           va="center", fontsize=6.5, color=MUTED)
     guarda(f, "resto.pdf")
+    ctx.__exit__(None, None, None)
 
 
 def lactancia():
-    """(a) Primera etapa: destete tras el 27-F y placebo; (b) mediación en
-    PHQ-4 (reports/lactancia_mediacion.md)."""
+    """(a) ¿Hizo el terremoto dejar el pecho antes?, con la comparación de
+    los cuatro meses previos; (b) ¿están peor los que lo dejaron?
+    (reports/lactancia_mediacion.md)."""
     import re
     LM = "reports/lactancia_mediacion.md"
-    f = plt.figure(figsize=(144 * MM, 54 * MM))
-    a = f.add_axes([0.215, 0.22, 0.26, 0.64])
-    b = f.add_axes([0.715, 0.22, 0.27, 0.64])
-    for ax in (a, b):
-        ejes(ax, eje="x")
-        ax.axvline(0, color=MUTED, lw=0.7, zorder=2)
-        ax.tick_params(axis="y", length=0)
-    filas = [("Después", lee(LM, "1-18 meses, destete en los 3"), ACC,
-              False),
-             ("Antes, placebo", lee(LM, "1-18 meses, destete en los 4"),
-              GRIS, True),
-             ("Después", lee(LM, "6-11 meses, destete en los 3"), ACC,
-              False),
-             ("Antes, placebo", lee(LM, "6-11 meses, destete en los 4"),
-              GRIS, True)]
-    ys = [3.2, 2.5, 1.0, 0.3]
-    for y, (lab, t, col, hueco) in zip(ys, filas):
-        ic(a, y, (t[0] * 100, t[1] * 100, t[2]), col, hueco=hueco,
-           vertical=False)
-    a.set_yticks(ys + [3.9, 1.7])
-    a.set_yticklabels([r[0] for r in filas] + ["1–18 meses",
-                                               "6–11 meses"])
-    for tl in a.get_yticklabels()[-2:]:
-        tl.set_fontweight("semibold")
-    a.set_ylim(-0.3, 4.3)
-    a.set_xlim(-6, 16)
-    a.xaxis.set_major_formatter(matplotlib.ticker.FuncFormatter(
-        lambda v, _: coma(v, 0, v != 0)))
-    a.set_xlabel("Puntos porcentuales de destete", color=MUTED, fontsize=7.2)
-    f.text(0.005, 0.955, "(a) ¿Adelantó el terremoto el destete?",
-           fontsize=8.5, fontweight="semibold", color=INK, va="top")
     texto = Path(LM).read_text(encoding="utf-8")
     m = re.search(r"= ([+-]\d+\.\d+) DE \(ee delta (\d+\.\d+)\)", texto)
-    ind = (float(m.group(1)), float(m.group(2)), 1.0)
-    filas = [("Tomaba pecho × zona afectada",
-              lee(LM, "PHQ-4, zona afectada x tomaba pecho")),
-             ("Destete en 3 meses frente a seguir",
-              lee(LM, "PHQ-4, destetados en los 3 meses")),
-             ("Efecto indirecto por el destete", ind)]
-    ys = [2, 1, 0]
-    for y, (lab, t) in zip(ys, filas):
-        ic(b, y, t, ACC, vertical=False)
-    b.set_yticks(ys)
-    b.set_yticklabels([r[0] for r in filas])
-    b.set_ylim(-0.6, 2.6)
-    b.set_xlim(-0.4, 0.8)
-    b.xaxis.set_major_formatter(matplotlib.ticker.FuncFormatter(
-        lambda v, _: coma(v, 1, v != 0)))
-    b.set_xlabel("PHQ-4 a los 15, DE", color=MUTED, fontsize=7.2)
-    f.text(0.505, 0.955, "(b) ¿Explica el destete la salud mental?",
-           fontsize=8.5, fontweight="semibold", color=INK, va="top")
-    guarda(f, "lactancia.pdf")
+    with plt.rc_context(PAPER):
+        f = plt.figure(figsize=(144 * MM, 60 * MM))
+        a = f.add_axes([0.10, 0.24, 0.32, 0.56])
+        b = f.add_axes([0.555, 0.24, 0.43, 0.56])
+        for ax in (a, b):
+            ejes_paper(ax)
+        # (a)
+        grupos = [("1-18", "Bebés de\n1 a 18 meses"),
+                  ("6-11", "Bebés de\n6 a 11 meses")]
+        ha = []
+        for x, (g, _) in enumerate(grupos):
+            h1 = barra(a, x - 0.12, lee(LM, f"{g} meses, destete en los 3"),
+                       AZUL, "o", escala=100)
+            h2 = barra(a, x + 0.12, lee(LM, f"{g} meses, destete en los 4"),
+                       GRISR, "o", hueco=True, escala=100)
+        ha = [h1, h2]
+        a.set_xticks(range(2))
+        a.set_xticklabels([g[1] for g in grupos], fontsize=8)
+        a.set_xlim(-0.5, 1.5)
+        a.set_ylim(-8, 16)
+        a.yaxis.set_major_locator(matplotlib.ticker.MultipleLocator(5))
+        a.yaxis.set_major_formatter(matplotlib.ticker.FuncFormatter(
+            lambda v, _: coma(v, 0, False) if v >= 0 else coma(v, 0)))
+        a.set_ylabel("Diferencia en dejar el pecho\n(puntos porcentuales)",
+                     fontsize=8)
+        a.set_title("(a) ¿El terremoto hizo dejar el pecho antes?",
+                    loc="left", fontsize=8.5, pad=22)
+        a.legend(ha, ["En los 3 meses después del 27-F",
+                      "En los 4 meses antes, comparación"],
+                 loc="lower left", bbox_to_anchor=(0.0, 1.0), ncol=2,
+                 frameon=False, fontsize=7, handletextpad=0.3,
+                 columnspacing=1.0, borderaxespad=0.2)
+        # (b)
+        filas = [("Tomaban pecho\nel 27-F:\nla brecha",
+                  lee(LM, "PHQ-4, zona afectada x tomaba pecho")),
+                 ("Dejaron el pecho\nen 3 meses frente\na los que siguieron",
+                  lee(LM, "PHQ-4, destetados en los 3 meses")),
+                 ("Parte de la brecha\nque pasa por\ndejar el pecho",
+                  (float(m.group(1)), float(m.group(2)), 1.0))]
+        for x, (_, t) in enumerate(filas):
+            barra(b, x, t, AZUL, "s")
+        b.set_xticks(range(3))
+        b.set_xticklabels([r[0] for r in filas], fontsize=7.6)
+        b.set_xlim(-0.5, 2.5)
+        b.set_ylim(-0.3, 0.7)
+        b.yaxis.set_major_locator(matplotlib.ticker.MultipleLocator(0.2))
+        b.yaxis.set_major_formatter(matplotlib.ticker.FuncFormatter(
+            lambda v, _: coma(v, 1, False) if v >= 0 else coma(v, 1)))
+        b.set_ylabel("Síntomas a los 15 (DE)", fontsize=8)
+        b.set_title("(b) ¿Están peor los que dejaron el pecho?", loc="left",
+                    fontsize=8.5, pad=22)
+        guarda(f, "lactancia.pdf")
 
 
 def main():

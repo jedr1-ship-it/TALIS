@@ -63,51 +63,31 @@
 % -------------------------------------------------------------- 2. Pregunta
 \begin{frame}
 \frametitle{¿Importa la edad a la que llega el shock?}
-\begin{columns}[T,onlytextwidth]
-\column{0.52\textwidth}
 \vspace{3mm}
-\begin{tikzpicture}[x=15mm,y=9mm,font=\scriptsize]
-  \draw[muted,line width=0.5pt] (0,0) -- (4.3,0);
-  \draw[muted,line width=0.5pt] (0,0) -- (0,4.2);
-  \node[rotate=90,anchor=south,text=muted] at (-0.08,2.1)
-    {$\tau(a)$: huella a los 15--18 años};
-  \foreach \x/\l in {0.6/0,1.6/1,2.6/2,3.6/{3--4}}
-    {\draw[muted] (\x,0) -- (\x,-0.07);
-     \node[below,text=ink] at (\x,-0.07) {\l};}
-  \node[text=muted] at (2.1,-0.72) {Edad al terremoto, $a$, en años};
-  \draw[linea,line width=1.3pt,dash pattern=on 3pt off 2pt]
-    (0.6,2.4) -- (3.6,2.4);
-  \node[anchor=south east,text=muted] at (3.6,2.45) {sin periodos sensibles};
-  \draw[acc,line width=1.5pt,domain=0.6:3.6,smooth,variable=\x,samples=40]
-    plot (\x,{1.2+2.5*exp(-1.1*(\x-0.6))});
-  \node[anchor=north east,text=acc] at (3.6,1.22) {periodo sensible temprano};
-  \draw[naranja,densely dotted,line width=0.7pt] (2.6,1.477) -- (0.75,1.477);
-  \draw[naranja,<->,line width=0.8pt] (0.75,1.5) -- (0.75,3.6);
-  \node[anchor=east,text=naranja] at (0.72,1.95) {$\beta_0$};
-\end{tikzpicture}
-\column{0.44\textwidth}
-\vspace{2mm}
-{\small\color{muted}Teoría}\par\vspace{1mm}
-$\theta_{t+1} = f_t(\theta_t,\, I_t,\, s_t)$\par\vspace{1mm}
-{\small Si $\partial f_t/\partial s_t$ cambia con $t$, el mismo shock deja una
-huella distinta según la edad.}\par
-\vspace{3mm}
-{\small\color{muted}Estimación}\par\vspace{1mm}
-$\beta_a = \tau(a) - \tau(2)$\par\vspace{1mm}
-{\small Edad $a$ frente a 2 años, comunas afectadas frente a no afectadas,
-con efectos fijos de comuna y de cohorte.}\par
-\vspace{3mm}
-{\color{acc}\bfseries Identifica la forma de $\tau$, no su nivel.}
-\end{columns}
-
-\nota{$\theta$: capital humano; $I$: inversión; $s$: shock. Cunha y Heckman
-2007; Knudsen 2004; Lupien et al.\ 2009.}
+\begin{equation*}
+Y_{imc} = \sum_{a \neq 2} \beta_a \,(\mathrm{Edad}_{ai} \times \mathrm{Afectada}_m)
+ + \sum_{a \neq 2} \gamma_a\, \mathrm{Edad}_{ai} + \psi_m + \theta_c + X_i'\delta + \varepsilon_{imc}
+\end{equation*}
+\vspace{1mm}
+\begin{center}
+$H_0:\ \beta_a = 0$ para toda edad $a$
+\end{center}
+\vspace{1mm}
+{\small
+\renewcommand{\arraystretch}{1.35}
+\begin{tabular}{@{}l l@{}}
+{\color{muted}$Y_{imc}$} & Salud mental a los 15--18 años, PHQ-4 \\
+{\color{muted}$\mathrm{Edad}_{ai}$} & Edad al terremoto: 6--11 meses, 1 año o 3--4 años; referencia, 2 años \\
+{\color{muted}$\mathrm{Afectada}_m$} & Comuna en la zona de daño destructivo \\
+{\color{muted}$\beta_a$} & Diferencia con quienes tenían 2 años, comunas afectadas menos no afectadas \\
+{\color{muted}$\psi_m$, $\theta_c$} & Efectos fijos de comuna y de cohorte de nacimiento \\
+{\color{muted}$X_i$} & Controles del niño y del hogar \\
+\end{tabular}}
 \end{frame}
 
 % ---------------------------------------------------------- 3. Salud mental
 \begin{frame}
 \frametitle{Salud mental: mejor si lo vivieron con 2 años}
-\vspace{2mm}
 \centering
 \includegraphics[width=\textwidth]{figuras/salud_mental.pdf}
 
@@ -127,14 +107,12 @@ IC al 95\%. PHQ-4: lo responde el adolescente. CBCL: lo llena el cuidador, de 6 
 
 % ------------------------------------------------------------- 5. Lactancia
 \begin{frame}
-\frametitle{Lactancia: el destete no explica la brecha}
-\vspace{3mm}
+\frametitle{Lactancia: dejar el pecho no explica la brecha}
 \centering
 \includegraphics[width=\textwidth]{figuras/lactancia.pdf}
 
-\nota{Niños que mamaban el 27-F; zona afectada frente a no afectada, IC al
-95\%. Placebo: destete en los 4 meses anteriores. Efecto indirecto: primera
-etapa por efecto del destete, bebés de 6--11 meses.}
+\nota{Bebés que tomaban pecho el 27-F. La comparación mide lo mismo antes del
+terremoto: si ya había diferencia, no la causó el terremoto.}
 \end{frame}
 
 \end{document}
