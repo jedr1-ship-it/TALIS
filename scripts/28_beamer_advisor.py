@@ -15,8 +15,11 @@ diapositivas, intervalos al 95% y nada más.
                    a los expuestos con dos años (reports/exploratorio_coefs.csv)
   salud_mental.pdf (a) PHQ-4 y CBCL internalizante, todos; (b) PHQ-4 por
                    sexo; frente a los expuestos con dos años
-  resto.pdf        los otros 48 resultados, frente a los expuestos con dos
-                   años
+  resto.pdf        los otros resultados (sin comida chatarra ni fruta), frente
+                   a los expuestos con dos años, con recuadro en los que
+                   podrían explicar la salud mental
+  lactancia.pdf    primera etapa del destete y mediación en PHQ-4
+                   (reports/lactancia_mediacion.md)
 
 Los coeficientes se leen de los informes commiteados (reports/*.md); el
 mapa y la edad de los bebés en cada ola usan los datos.
@@ -490,12 +493,6 @@ def salud_mental():
                             mew=1.1, zorder=4)
                     continue
                 ic(ax, x + dx, t, col, hueco=hueco)
-                if lado:
-                    izq = lado == "izq"
-                    ax.text(x + dx + (-0.1 if izq else 0.1), t[0],
-                            coma(t[0]) + estrellas(t[2]),
-                            ha="right" if izq else "left", va="center",
-                            fontsize=6.8, color=col, fontweight="semibold")
         ax.set_xticks(xs)
         ax.set_xticklabels(cats)
         ax.tick_params(axis="x", length=0)
@@ -513,11 +510,19 @@ def salud_mental():
     guarda(f, "salud_mental.pdf")
 
 
+FUERA = {"chatarra", "fruta"}
+# diferencias con p < 0,10 que podrían explicar la salud mental: el hogar y
+# el colegio (las de bienestar son otra cara del mismo resultado, y las que
+# favorecen a los otros grupos no la explican)
+RECUADRO = {"le_va", "profes", "relacion_cuid", "aces", "aces_peleas",
+            "aces_vivienda"}
+
+
 def resto():
     """Los 48 resultados fuera de la salud mental: estadístico t orientado de
     cada edad frente a los expuestos con dos años."""
     c = pd.read_csv("reports/exploratorio_coefs.csv")
-    c = c[c.ref == "24-35m"]
+    c = c[(c.ref == "24-35m") & ~c["var"].isin(FUERA)]
     cmap = LinearSegmentedColormap.from_list("dano",
                                              [ACC, "#F2F1EE", NARANJA])
     columnas = [["Well-being", "Peers and victimization", "Risk behaviors"],
@@ -548,6 +553,10 @@ def resto():
             y += 1
             sub = c[c.dominio == dm]
             for v in dict.fromkeys(sub["var"]):
+                if v in RECUADRO:
+                    ax.add_patch(matplotlib.patches.Rectangle(
+                        (0.15, y - 0.5), ancho - 0.15, 1.0, fill=False,
+                        ec=INK, lw=0.8, zorder=6))
                 ax.text(0.8, y, CORTO[v], ha="left", va="center",
                         fontsize=6.3, color=INK)
                 for j, (k, _) in enumerate(edades):
@@ -565,16 +574,80 @@ def resto():
                                 ha="center", va="center", fontsize=5.8,
                                 color="white" if lum < 0.5 else INK)
                 y += 1
-    cax = f.add_axes([0.40, 0.045, 0.20, 0.024])
+    f.text(0.005, 0.057, "Mejor", ha="left", va="center", fontsize=6.5,
+           color=MUTED)
+    cax = f.add_axes([0.05, 0.045, 0.16, 0.024])
     sm = plt.cm.ScalarMappable(cmap=cmap, norm=plt.Normalize(-3, 3))
     cb = f.colorbar(sm, cax=cax, orientation="horizontal")
     cb.outline.set_visible(False)
     cb.set_ticks([])
-    f.text(0.39, 0.057, "Mejor que quienes tenían 2 años", ha="right",
+    f.text(0.218, 0.057, "Peor que quienes tenían 2 años", ha="left",
            va="center", fontsize=6.5, color=MUTED)
-    f.text(0.61, 0.057, "Peor que quienes tenían 2 años", ha="left",
-           va="center", fontsize=6.5, color=MUTED)
+    f.patches.append(matplotlib.patches.Rectangle(
+        (0.56, 0.044), 0.018, 0.026, fill=False, ec=INK, lw=0.8,
+        transform=f.transFigure, figure=f))
+    f.text(0.585, 0.057, "Diferencia que podría explicar la salud mental",
+           ha="left", va="center", fontsize=6.5, color=MUTED)
     guarda(f, "resto.pdf")
+
+
+def lactancia():
+    """(a) Primera etapa: destete tras el 27-F y placebo; (b) mediación en
+    PHQ-4 (reports/lactancia_mediacion.md)."""
+    import re
+    LM = "reports/lactancia_mediacion.md"
+    f = plt.figure(figsize=(144 * MM, 54 * MM))
+    a = f.add_axes([0.215, 0.22, 0.26, 0.64])
+    b = f.add_axes([0.715, 0.22, 0.27, 0.64])
+    for ax in (a, b):
+        ejes(ax, eje="x")
+        ax.axvline(0, color=MUTED, lw=0.7, zorder=2)
+        ax.tick_params(axis="y", length=0)
+    filas = [("Después", lee(LM, "1-18 meses, destete en los 3"), ACC,
+              False),
+             ("Antes, placebo", lee(LM, "1-18 meses, destete en los 4"),
+              GRIS, True),
+             ("Después", lee(LM, "6-11 meses, destete en los 3"), ACC,
+              False),
+             ("Antes, placebo", lee(LM, "6-11 meses, destete en los 4"),
+              GRIS, True)]
+    ys = [3.2, 2.5, 1.0, 0.3]
+    for y, (lab, t, col, hueco) in zip(ys, filas):
+        ic(a, y, (t[0] * 100, t[1] * 100, t[2]), col, hueco=hueco,
+           vertical=False)
+    a.set_yticks(ys + [3.9, 1.7])
+    a.set_yticklabels([r[0] for r in filas] + ["1–18 meses",
+                                               "6–11 meses"])
+    for tl in a.get_yticklabels()[-2:]:
+        tl.set_fontweight("semibold")
+    a.set_ylim(-0.3, 4.3)
+    a.set_xlim(-6, 16)
+    a.xaxis.set_major_formatter(matplotlib.ticker.FuncFormatter(
+        lambda v, _: coma(v, 0, v != 0)))
+    a.set_xlabel("Puntos porcentuales de destete", color=MUTED, fontsize=7.2)
+    f.text(0.005, 0.955, "(a) ¿Adelantó el terremoto el destete?",
+           fontsize=8.5, fontweight="semibold", color=INK, va="top")
+    texto = Path(LM).read_text(encoding="utf-8")
+    m = re.search(r"= ([+-]\d+\.\d+) DE \(ee delta (\d+\.\d+)\)", texto)
+    ind = (float(m.group(1)), float(m.group(2)), 1.0)
+    filas = [("Tomaba pecho × zona afectada",
+              lee(LM, "PHQ-4, zona afectada x tomaba pecho")),
+             ("Destete en 3 meses frente a seguir",
+              lee(LM, "PHQ-4, destetados en los 3 meses")),
+             ("Efecto indirecto por el destete", ind)]
+    ys = [2, 1, 0]
+    for y, (lab, t) in zip(ys, filas):
+        ic(b, y, t, ACC, vertical=False)
+    b.set_yticks(ys)
+    b.set_yticklabels([r[0] for r in filas])
+    b.set_ylim(-0.6, 2.6)
+    b.set_xlim(-0.4, 0.8)
+    b.xaxis.set_major_formatter(matplotlib.ticker.FuncFormatter(
+        lambda v, _: coma(v, 1, v != 0)))
+    b.set_xlabel("PHQ-4 a los 15, DE", color=MUTED, fontsize=7.2)
+    f.text(0.505, 0.955, "(b) ¿Explica el destete la salud mental?",
+           fontsize=8.5, fontweight="semibold", color=INK, va="top")
+    guarda(f, "lactancia.pdf")
 
 
 def main():
@@ -585,6 +658,7 @@ def main():
     variables()
     salud_mental()
     resto()
+    lactancia()
 
 
 if __name__ == "__main__":

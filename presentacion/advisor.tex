@@ -1,5 +1,6 @@
 % Presentación para el advisor: el terremoto, la pregunta (¿importa la edad
-% a la que llega el shock?), la salud mental y el resto de los resultados.
+% a la que llega el shock?), la salud mental, el resto de los resultados y la
+% lactancia como canal.
 % Figuras: python3 scripts/28_beamer_advisor.py
 % Compilar desde presentacion/: xelatex advisor.tex (dos veces)
 \documentclass[aspectratio=169,11pt]{beamer}
@@ -121,7 +122,19 @@ IC al 95\%. PHQ-4: lo responde el adolescente. CBCL: lo llena el cuidador, de 6 
 \includegraphics[width=\textwidth]{figuras/resto.pdf}
 
 \nota{Estadístico t de cada edad frente a 2 años; estrellas al 10, 5 y 1\%.
-12 de 144 diferencias con p < 0,05; el azar daría 7.}
+10 de 138 diferencias con p < 0,05; el azar daría 7.}
+\end{frame}
+
+% ------------------------------------------------------------- 5. Lactancia
+\begin{frame}
+\frametitle{Lactancia: el destete no explica la brecha}
+\vspace{3mm}
+\centering
+\includegraphics[width=\textwidth]{figuras/lactancia.pdf}
+
+\nota{Niños que mamaban el 27-F; zona afectada frente a no afectada, IC al
+95\%. Placebo: destete en los 4 meses anteriores. Efecto indirecto: primera
+etapa por efecto del destete, bebés de 6--11 meses.}
 \end{frame}
 
 \end{document}
