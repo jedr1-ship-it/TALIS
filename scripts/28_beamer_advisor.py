@@ -26,6 +26,9 @@ diapositivas, intervalos al 95% y nada más.
                    explicar (reports/descomposicion.csv)
   orden_temporal.pdf  colegio y peleas en el hogar, mismas preguntas en 2017
                    y 2024 (reports/orden_temporal.csv)
+  ventanas.pdf     PHQ-4 de las chicas en tramos de seis meses de edad al
+                   terremoto, con las dos ventanas (reports/ventanas.csv)
+  hogar_2017.pdf   colegio y peleas en el hogar en 2017, a los 8-12 años
 
 Los coeficientes se leen de los informes commiteados (reports/*.md); el
 mapa y la edad de los bebés en cada ola usan los datos.
@@ -871,6 +874,71 @@ def orden_temporal():
         guarda(f, "orden_temporal.pdf")
 
 
+def ventanas():
+    """PHQ-4 de las chicas por edad al terremoto en tramos de seis meses,
+    frente a las expuestas con 24-35 meses, con las dos ventanas sombreadas
+    (reports/ventanas.csv)."""
+    c = pd.read_csv("reports/ventanas.csv")
+    c = c[c.grupo == "chicas"].set_index("tramo")
+    tramos = ["6-11", "12-17", "18-23", "ref", "36-41", "42-49"]
+    etiquetas = ["6–11", "12–17", "18–23", "24–35", "36–41", "42–49"]
+    with plt.rc_context(PAPER):
+        f = plt.figure(figsize=(144 * MM, 57 * MM))
+        ax = f.add_axes([0.13, 0.21, 0.84, 0.72])
+        ejes_paper(ax)
+        for x0, x1, txt in ((-0.5, 1.5, "Estrés"), (4.5, 5.5, "Memoria")):
+            ax.axvspan(x0, x1, color="#F1F1F1", lw=0, zorder=0)
+            ax.text((x0 + x1) / 2, 0.66, txt, ha="center", va="top",
+                    fontsize=8.5, color="#5A5A5A")
+        for x, t in enumerate(tramos):
+            if t == "ref":
+                ax.plot(x, 0, "^", ms=6.0, color=MARRON, mfc="white",
+                        mew=1.0, zorder=3)
+                ax.text(x, -0.07, "referencia", ha="center", va="top",
+                        fontsize=7.5, color="#5A5A5A")
+                continue
+            barra(ax, x, tuple(c.loc[t, ["b", "se", "p"]]), MARRON, "^")
+        ax.set_xticks(range(len(tramos)))
+        ax.set_xticklabels(etiquetas, fontsize=8)
+        ax.set_xlim(-0.5, len(tramos) - 0.5)
+        ax.set_ylim(-0.25, 0.7)
+        formato_eje(ax, 0.2)
+        ax.set_ylabel("Más síntomas que quienes\ntenían 2 años (DE)",
+                      fontsize=8.5)
+        ax.set_xlabel("Edad al terremoto, en meses", fontsize=8.5)
+        guarda(f, "ventanas.pdf")
+
+
+def hogar_2017():
+    """Colegio (responde el niño) y peleas en el hogar (responde el
+    cuidador) en 2017, a los 8-12 años, por edad al terremoto frente a los
+    expuestos con dos años (reports/orden_temporal.csv, todos)."""
+    c = pd.read_csv("reports/orden_temporal.csv")
+    c = c[(c.grupo == "todos") & (c.ola == 2017)].set_index(
+        ["medida", "edad"])
+    paneles = [("colegio", "Le va mal o no le gusta el colegio",
+                "Peor que quienes\ntenían 2 años (DE)", 1.0, (-0.3, 0.42),
+                0.1),
+               ("peleas", "Ha presenciado peleas en el hogar",
+                "Más que quienes\ntenían 2 años (pp)", 100.0, (-12, 17), 5)]
+    with plt.rc_context(PAPER):
+        f = plt.figure(figsize=(144 * MM, 58 * MM))
+        for i, (m, nom, ylab, esc, lim, paso) in enumerate(paneles):
+            ax = f.add_axes([0.135 + i * 0.485, 0.13, 0.35, 0.72])
+            ejes_paper(ax)
+            for x, k in enumerate(CLAVES):
+                barra(ax, x, tuple(c.loc[(m, k), ["b", "se", "p"]]), AZUL,
+                      "o", escala=esc)
+            ax.set_xticks(range(3))
+            ax.set_xticklabels(ETIQUETAS, fontsize=8)
+            ax.set_xlim(-0.5, 2.5)
+            ax.set_ylim(*lim)
+            formato_eje(ax, paso, 1 if esc == 1.0 else 0)
+            ax.set_ylabel(ylab, fontsize=8)
+            ax.set_title(nom, fontsize=9, pad=4)
+        guarda(f, "hogar_2017.pdf")
+
+
 def main():
     mapa()
     hallazgos()
@@ -883,6 +951,8 @@ def main():
     indices_fig()
     descomposicion()
     orden_temporal()
+    ventanas()
+    hogar_2017()
 
 
 if __name__ == "__main__":
