@@ -635,7 +635,7 @@ def lactancia():
     m = re.search(r"= ([+-]\d+\.\d+) DE \(ee delta (\d+\.\d+)\)", texto)
     with plt.rc_context(PAPER):
         f = plt.figure(figsize=(144 * MM, 60 * MM))
-        a = f.add_axes([0.10, 0.24, 0.32, 0.56])
+        a = f.add_axes([0.125, 0.24, 0.30, 0.56])
         b = f.add_axes([0.555, 0.24, 0.43, 0.56])
         for ax in (a, b):
             ejes_paper(ax)
@@ -656,7 +656,7 @@ def lactancia():
         a.yaxis.set_major_locator(matplotlib.ticker.MultipleLocator(5))
         a.yaxis.set_major_formatter(matplotlib.ticker.FuncFormatter(
             lambda v, _: coma(v, 0, False) if v >= 0 else coma(v, 0)))
-        a.set_ylabel("Diferencia en dejar el pecho\n(puntos porcentuales)",
+        a.set_ylabel("Dejaron más el pecho en la\nzona afectada (puntos) →",
                      fontsize=8)
         a.set_title("(a) ¿El terremoto hizo dejar el pecho antes?",
                     loc="left", fontsize=8.5, pad=22)
@@ -666,7 +666,7 @@ def lactancia():
                  frameon=False, fontsize=7, handletextpad=0.3,
                  columnspacing=1.0, borderaxespad=0.2)
         # (b)
-        filas = [("Tomaban pecho\nel 27-F:\nla brecha",
+        filas = [("Tomaban pecho\nel 27-F: más\nsíntomas",
                   lee(LM, "PHQ-4, zona afectada x tomaba pecho")),
                  ("Dejaron el pecho\nen 3 meses frente\na los que siguieron",
                   lee(LM, "PHQ-4, destetados en los 3 meses")),
@@ -681,7 +681,7 @@ def lactancia():
         b.yaxis.set_major_locator(matplotlib.ticker.MultipleLocator(0.2))
         b.yaxis.set_major_formatter(matplotlib.ticker.FuncFormatter(
             lambda v, _: coma(v, 1, False) if v >= 0 else coma(v, 1)))
-        b.set_ylabel("Síntomas a los 15 (DE)", fontsize=8)
+        b.set_ylabel("Más síntomas a los 15 (DE) →", fontsize=8)
         b.set_title("(b) ¿Están peor los que dejaron el pecho?", loc="left",
                     fontsize=8.5, pad=22)
         guarda(f, "lactancia.pdf")
