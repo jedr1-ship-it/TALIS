@@ -20,6 +20,12 @@ diapositivas, intervalos al 95% y nada más.
                    podrían explicar la salud mental
   lactancia.pdf    primera etapa del destete y mediación en PHQ-4
                    (reports/lactancia_mediacion.md)
+  indices.pdf      perfil por edad de los cuatro índices y brecha en PHQ-4
+                   sin y con ellos (reports/indices_mediacion.md)
+  descomposicion.pdf  la brecha en PHQ-4 partida en hogar, colegio y sin
+                   explicar (reports/descomposicion.csv)
+  orden_temporal.pdf  colegio y peleas en el hogar, mismas preguntas en 2017
+                   y 2024 (reports/orden_temporal.csv)
 
 Los coeficientes se leen de los informes commiteados (reports/*.md); el
 mapa y la edad de los bebés en cada ola usan los datos.
@@ -759,6 +765,112 @@ def indices_fig():
         guarda(f, "indices.pdf")
 
 
+CLAVES = ["0-11m", "12-23m", "36-59m"]
+ETIQUETAS = ["Bebés", "1 año", "3–4 años"]
+
+
+def formato_eje(ax, paso, decimales=1):
+    ax.yaxis.set_major_locator(matplotlib.ticker.MultipleLocator(paso))
+    ax.yaxis.set_major_formatter(matplotlib.ticker.FuncFormatter(
+        lambda v, _: coma(v, decimales, False) if v >= 0
+        else coma(v, decimales)))
+
+
+def descomposicion():
+    """La brecha en PHQ-4 frente a los expuestos con dos años, partida en lo
+    que acompaña al hogar, al colegio y lo que queda sin explicar
+    (reports/descomposicion.csv, Gelbach con bootstrap de comunas)."""
+    c = pd.read_csv("reports/descomposicion.csv")
+    capas = [("hogar", "Hogar: familia, adversidad y economía", MARRON),
+             ("colegio", "Colegio", AZUL),
+             ("sin explicar", "Sin explicar", "#D4D4D4")]
+    with plt.rc_context(PAPER):
+        f = plt.figure(figsize=(144 * MM, 60 * MM))
+        for i, (grupo, nom) in enumerate((("todos", "Todos"),
+                                          ("chicas", "Chicas"))):
+            g = c[c.grupo == grupo].set_index(["edad", "componente"])
+            n = 9036 if grupo == "todos" else 4467
+            ax = f.add_axes([0.115 + i * 0.45, 0.12, 0.38, 0.63])
+            for lado in ("top", "right", "bottom"):
+                ax.spines[lado].set_visible(False)
+            ax.axhline(0, color="black", lw=0.8, zorder=4)
+            hs = []
+            for x, k in enumerate(CLAVES):
+                arriba = abajo = 0.0
+                for comp, lab, col in capas:
+                    v = g.loc[(k, comp), "valor"]
+                    base = arriba if v >= 0 else abajo
+                    h = ax.bar(x, v, 0.52, bottom=base, color=col, lw=0,
+                               zorder=2, label=lab)
+                    if v >= 0:
+                        arriba += v
+                    else:
+                        abajo += v
+                    if x == 0:
+                        hs.append(h)
+                # en negrita, parte explicada distinta de cero al 95%
+                e = g.loc[(k, "explicado")]
+                sig = e.lo > 0 or e.hi < 0
+                pct = 100 * e.valor / g.loc[(k, "brecha"), "valor"]
+                ax.text(x, arriba + 0.012, f"{pct:.0f}%",
+                        ha="center", va="bottom", fontsize=8,
+                        color="black" if sig else "#8C8C8C",
+                        fontweight="bold" if sig else "normal")
+            ax.set_xticks(range(3))
+            ax.set_xticklabels(ETIQUETAS, fontsize=8)
+            ax.set_xlim(-0.55, 2.55)
+            ax.set_ylim(-0.012, 0.32)
+            formato_eje(ax, 0.1)
+            if i == 0:
+                ax.set_ylabel("Más síntomas que quienes\ntenían 2 años (DE)",
+                              fontsize=8)
+            ax.set_title(f"{nom} (n = {miles(n)})", fontsize=9, pad=4)
+        f.legend(hs, [lab for _, lab, _ in capas], loc="upper center",
+                 bbox_to_anchor=(0.5, 1.0), ncol=3, frameon=False,
+                 fontsize=7.5, handlelength=1.0, handletextpad=0.4,
+                 columnspacing=1.4)
+        guarda(f, "descomposicion.pdf")
+
+
+def orden_temporal():
+    """Las mismas preguntas a los mismos niños en 2017 y en 2024: colegio
+    (responde el niño) y peleas en el hogar (responde el cuidador), frente a
+    los expuestos con dos años (reports/orden_temporal.csv, todos)."""
+    c = pd.read_csv("reports/orden_temporal.csv")
+    c = c[c.grupo == "todos"].set_index(["medida", "ola", "edad"])
+    paneles = [("colegio", "Le va mal o no le gusta el colegio",
+                "Peor que quienes\ntenían 2 años (DE)", 1.0, (-0.3, 0.42),
+                0.1),
+               ("peleas", "Ha presenciado peleas en el hogar",
+                "Más que quienes\ntenían 2 años (pp)", 100.0,
+                (-12, 17), 5)]
+    with plt.rc_context(PAPER):
+        f = plt.figure(figsize=(144 * MM, 60 * MM))
+        for i, (m, nom, ylab, esc, lim, paso) in enumerate(paneles):
+            ax = f.add_axes([0.135 + i * 0.485, 0.12, 0.35, 0.63])
+            ejes_paper(ax)
+            for x, k in enumerate(CLAVES):
+                t17 = tuple(c.loc[(m, 2017, k), ["b", "se", "p"]])
+                t24 = tuple(c.loc[(m, 2024, k), ["b", "se", "p"]])
+                h1 = barra(ax, x - 0.13, t17, GRISR, "o", hueco=True,
+                           escala=esc)
+                h2 = barra(ax, x + 0.13, t24, AZUL, "o", escala=esc)
+            ax.set_xticks(range(3))
+            ax.set_xticklabels(ETIQUETAS, fontsize=8)
+            ax.set_xlim(-0.5, 2.5)
+            ax.set_ylim(*lim)
+            formato_eje(ax, paso, 1 if esc == 1.0 else 0)
+            ax.set_ylabel(ylab, fontsize=8)
+            ax.set_title(nom, fontsize=9, pad=4)
+            if i == 0:
+                hs = [h1, h2]
+        f.legend(hs, ["2017, a los 8–12 años", "2024, a los 15–18 años"],
+                 loc="upper center", bbox_to_anchor=(0.5, 1.0), ncol=2,
+                 frameon=False,
+                 fontsize=7.5, handletextpad=0.3, columnspacing=1.4)
+        guarda(f, "orden_temporal.pdf")
+
+
 def main():
     mapa()
     hallazgos()
@@ -769,6 +881,8 @@ def main():
     resto()
     lactancia()
     indices_fig()
+    descomposicion()
+    orden_temporal()
 
 
 if __name__ == "__main__":
