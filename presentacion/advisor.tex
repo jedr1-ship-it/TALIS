@@ -1,5 +1,6 @@
 % Presentación para el advisor: el terremoto, los mecanismos posibles, el
-% diseño, la salud mental, el hogar, el estrés de la madre y la lactancia,
+% diseño, la salud mental, el entorno socioeconómico y familiar, el estrés
+% de la madre y la lactancia,
 % los varones y lo que queda abierto. Los mismos grupos de edad en todo:
 % 6-11 meses, 1 año, 2 años (referencia) y 3-4 años.
 % Figuras: python3 scripts/28_beamer_advisor.py
@@ -60,31 +61,36 @@
 \end{columns}
 \end{frame}
 
-% ------------------------------------------------------------------ 2. Vías
+% ------------------------------------------------------------- 2. Pregunta
+\begin{frame}
+\vfill
+\begin{center}
+{\huge\bfseries ¿Importa la edad\\[2mm] a la que llega el shock?\par}
+\end{center}
+\vfill
+\end{frame}
+
+% ------------------------------------------------------------------ 3. Vías
 \begin{frame}
 \frametitle{Dos mecanismos posibles}
 \vspace{3mm}
 {\small
 \renewcommand{\arraystretch}{1.6}
-\begin{tabular}{@{}>{\raggedright\arraybackslash}p{27mm}
-                >{\raggedright\arraybackslash}p{50mm}
-                >{\raggedright\arraybackslash}p{28mm}
-                >{\raggedright\arraybackslash}p{25mm}@{}}
- & \sub{Cómo opera} & \sub{A quién afecta} & \sub{Cómo lo medimos} \\
-\canal{naranja}{El hogar}
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{30mm}
+                >{\raggedright\arraybackslash}p{62mm}
+                >{\raggedright\arraybackslash}p{40mm}@{}}
+ & \sub{Cómo opera} & \sub{A quién afecta} \\
+\canal{naranja}{Entorno socioeconómico y familiar}
  & El terremoto reduce ingresos, daña la vivienda y aumenta el conflicto
    entre los padres
- & A todos los hijos, sea cual sea su edad
- & Índices de 2012 y 2017 \\
+ & A todos los hijos, sea cual sea su edad \\
 \canal{naranja}{Transmisión del estrés de la madre}
  & El bebé regula su estrés a través de la madre. Si ella está estresada, se
    lo transmite en el contacto diario
- & A los bebés, que aún dependen fisiológicamente de la madre
- & Estrés de la madre tras el terremoto y si el bebé seguía siendo
-   amamantado \\
+ & A los bebés, que aún dependen fisiológicamente de la madre \\
 \end{tabular}}
 
-\nota{Hogar, Conger y Donnellan 2007; Almond, Currie y Duque 2018. Transmisión
+\nota{Entorno, Conger y Donnellan 2007; Almond, Currie y Duque 2018. Transmisión
 del estrés, Persson y Rossin-Slater 2018 en el embarazo; Waters, West y Mendes
 2014 y Hostinar, Sullivan y Gunnar 2014 después del parto.}
 \end{frame}
@@ -115,11 +121,7 @@ del estrés, Persson y Rossin-Slater 2018 en el embarazo; Waters, West y Mendes
 Y_{imc} = \sum_{a \neq 2} \beta_a \,(\mathrm{Edad}_{ai} \times \mathrm{Afectada}_m)
  + \sum_{a \neq 2} \gamma_a\, \mathrm{Edad}_{ai} + \psi_m + \theta_c + X_i'\delta + \varepsilon_{imc}
 \end{equation*}
-\vspace{1mm}
-\begin{center}
-$H_0:\ \beta_a = 0$ para toda edad $a$
-\end{center}
-\vspace{1mm}
+\vspace{3mm}
 {\small
 \renewcommand{\arraystretch}{1.35}
 \begin{tabular}{@{}l l@{}}
@@ -138,13 +140,15 @@ $H_0:\ \beta_a = 0$ para toda edad $a$
 \centering
 \includegraphics[width=\textwidth]{figuras/salud_mental.pdf}
 
-\nota{PHQ-4, lo responde el adolescente. Diferencia con quienes tenían 2 años,
-comunas afectadas menos no afectadas; IC al 95\%.}
+\nota{El PHQ-4 lo responde el adolescente. Son cuatro preguntas sobre las dos
+últimas semanas, sobre nervios, preocupación, pérdida de interés y decaimiento,
+que miden síntomas de ansiedad y depresión; Kroenke et al.\ 2009. Diferencia
+con quienes tenían 2 años, comunas afectadas menos no afectadas; IC al 95\%.}
 \end{frame}
 
 % --------------------------------------------------------------- 5. Hogar
 \begin{frame}
-\frametitle{El hogar cambió igual a toda edad y no explica la brecha}
+\frametitle{El entorno socioeconómico y familiar no explica la brecha}
 \centering
 \includegraphics[width=\textwidth]{figuras/canal_hogar.pdf}
 
@@ -183,7 +187,8 @@ et al.\ 1987; De Los Reyes et al.\ 2015. En varones, ambos indicios con p < 0,10
 \begin{itemize}\setlength{\itemsep}{0.6mm}
 \item Frente a las expuestas con 2 años, más síntomas en las expuestas de
       bebés, +0,30 DE, al año, +0,17, y a los 3--4 años, +0,18
-\item El hogar medido cambió igual a toda edad y no explica esas diferencias
+\item El entorno socioeconómico y familiar cambió igual a toda edad y no
+      explica esas diferencias
 \item El estrés de la madre fue igual a toda edad, pero solo predice síntomas
       en las hijas que aún eran amamantadas, el 62\% de las expuestas de bebés
       y el 4\% de las de 3--4 años
@@ -193,8 +198,8 @@ et al.\ 1987; De Los Reyes et al.\ 2015. En varones, ambos indicios con p < 0,10
 \item El estrés de la madre se mide con una pregunta de sí o no, dos años
       después
 \item Qué explica el efecto en las expuestas a los 3--4 años. No pasa por el
-      hogar ni por la madre, y un recuerdo de esa edad rara vez llega a la
-      adolescencia; Bauer y Larkina 2014
+      entorno familiar ni por la madre, y un recuerdo de esa edad rara vez llega
+      a la adolescencia; Bauer y Larkina 2014
 \end{itemize}}
 
 \nota{En varones, sin efecto en síntomas; indicios débiles en conducta y

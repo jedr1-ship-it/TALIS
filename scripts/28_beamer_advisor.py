@@ -525,10 +525,10 @@ def salud_mental():
         (f"Varones (n = {miles(5035)})", GRISR, "o", True,
          [lee(PN, f"- {k}:", "## Perfil PHQ-4, Chicos") for k in claves])]
     with plt.rc_context(PAPER):
-        f = plt.figure(figsize=(144 * MM, 58 * MM))
+        f = plt.figure(figsize=(144 * MM, 52 * MM))
         ancho, sep, x0 = 0.26, 0.04, 0.135
         for i, (nom, col, marca, hueco, pts) in enumerate(paneles):
-            ax = f.add_axes([x0 + i * (ancho + sep), 0.24, ancho, 0.63])
+            ax = f.add_axes([x0 + i * (ancho + sep), 0.26, ancho, 0.61])
             ejes_paper(ax)
             for x, t in enumerate(pts):
                 barra(ax, x, t, col, marca, hueco)
@@ -1068,7 +1068,7 @@ def canal_hogar():
         a.set_ylim(-0.5, 0.4)
         formato_eje(a, 0.2)
         a.set_ylabel("Peor que con\n2 años (DE)", fontsize=8)
-        a.set_title("El hogar cambió igual a toda edad", fontsize=9, pad=24)
+        a.set_title("Cambió igual a toda edad", fontsize=9, pad=24)
         a.legend(hs, [s_[1] for s_ in series], loc="lower center",
                  bbox_to_anchor=(0.5, 1.0), ncol=3, frameon=False,
                  fontsize=6.8, handletextpad=0.2, columnspacing=0.7,
@@ -1191,7 +1191,7 @@ def chicos():
         ax.invert_yaxis()
         ax.set_ylim(len(filas) - 0.5, -0.5)
         ax.tick_params(axis="y", length=0)
-        ax.set_xlim(-0.3, 0.6)
+        ax.set_xlim(-0.6, 1.0)
         ax.xaxis.set_major_locator(matplotlib.ticker.MultipleLocator(0.2))
         ax.xaxis.set_major_formatter(matplotlib.ticker.FuncFormatter(
             lambda v, _: coma(v, 1, False) if v >= 0 else coma(v, 1)))
