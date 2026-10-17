@@ -40,6 +40,7 @@ diapositivas, intervalos al 95% y nada más.
                    (reports/estres_madre.csv)
   chicos.pdf       expuestos de bebés: síntomas, CBCL y victimización por
                    sexo (reports/chicos.csv)
+  datos_elpi.pdf   las cuatro rondas de la ELPI, qué se mide y a qué edad
 
 Los coeficientes se leen de los informes commiteados (reports/*.md); el
 mapa y la edad de los bebés en cada ola usan los datos.
@@ -1204,6 +1205,31 @@ def chicos():
         guarda(f, "chicos.pdf")
 
 
+def datos_elpi():
+    """Las cuatro rondas de la ELPI que usamos: qué se mide en cada una y
+    qué edad tenían los niños de la muestra (edad al terremoto, 6-49 meses;
+    2012, 3-6 años; 2017, 8-12; 2024, 15-18). Rondas equiespaciadas."""
+    rondas = [(2010, "27-F y línea base", "0–4 años", NARANJA),
+              (2012, "Estrés de la madre\ny lactancia", "3–6 años", ACC),
+              (2017, "Hogar y colegio", "8–12 años", ACC),
+              (2024, "Salud mental, PHQ-4", "15–18 años", ACC)]
+    f = plt.figure(figsize=(144 * MM, 36 * MM))
+    ax = f.add_axes([0.02, 0.02, 0.96, 0.96])
+    ax.axis("off")
+    ax.plot([-0.45, 3.45], [0, 0], color=EJE, lw=1.2, zorder=1,
+            solid_capstyle="butt")
+    for x, (ano, que, edad, col) in enumerate(rondas):
+        ax.plot(x, 0, "o", ms=9, color=col, zorder=3)
+        ax.text(x, 0.35, str(ano), ha="center", va="bottom", fontsize=10,
+                fontweight="semibold", color=INK)
+        ax.text(x, -0.35, que, ha="center", va="top", fontsize=8.5,
+                color=INK, linespacing=1.15)
+        ax.text(x, -1.25, edad, ha="center", va="top", fontsize=8.5,
+                color=MUTED)
+    ax.set_xlim(-0.55, 3.55)
+    ax.set_ylim(-1.75, 1.0)
+    guarda(f, "datos_elpi.pdf")
+
 def main():
     mapa()
     hallazgos()
@@ -1223,6 +1249,7 @@ def main():
     canal_hogar()
     diada()
     chicos()
+    datos_elpi()
 
 
 if __name__ == "__main__":
