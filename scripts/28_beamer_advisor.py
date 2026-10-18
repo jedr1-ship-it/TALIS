@@ -1067,8 +1067,8 @@ def canal_hogar():
             hs.append(h)
         a.set_ylim(-0.5, 0.4)
         formato_eje(a, 0.2)
-        a.set_ylabel("Peor que con\n2 años (DE)", fontsize=8)
-        a.set_title("Cambió igual a toda edad", fontsize=9, pad=24)
+        a.set_ylabel("Diferencia con quienes\ntenían 2 años (DE)", fontsize=8)
+        a.set_title("Índices del entorno", fontsize=9, pad=24)
         a.legend(hs, [s_[1] for s_ in series], loc="lower center",
                  bbox_to_anchor=(0.5, 1.0), ncol=3, frameon=False,
                  fontsize=6.8, handletextpad=0.2, columnspacing=0.7,
@@ -1080,9 +1080,9 @@ def canal_hogar():
                        MARRON, "^", hueco=True)
         b.set_ylim(-0.15, 0.7)
         formato_eje(b, 0.2)
-        b.set_ylabel("Más síntomas que con\n2 años (DE)", fontsize=8)
-        b.set_title("Y no explica la brecha", fontsize=9, pad=24)
-        b.legend([h1, h2], ["Brecha", "Controlando por el hogar"],
+        b.set_ylabel("Diferencia con quienes\ntenían 2 años (DE)", fontsize=8)
+        b.set_title("Brecha en el PHQ-4", fontsize=9, pad=24)
+        b.legend([h1, h2], ["Sin controles", "Con controles del entorno"],
                  loc="lower center", bbox_to_anchor=(0.5, 1.0), ncol=2,
                  frameon=False, fontsize=6.8, handletextpad=0.2,
                  columnspacing=0.8, borderaxespad=0.1)
@@ -1122,8 +1122,8 @@ def diada():
         a.set_ylim(-2, 25)
         formato_eje(a, 5, 0)
         a.set_xlabel("Edad del hijo al terremoto", fontsize=8)
-        a.set_ylabel("Madres con estrés\ntras el sismo (%)", fontsize=8)
-        a.set_title("Igual estrés materno a toda edad", fontsize=9,
+        a.set_ylabel("Madres con\nestrés (%)", fontsize=8)
+        a.set_title("Estrés materno tras el terremoto", fontsize=9,
                     pad=20)
         a.legend(hs, ["Zona afectada", "No afectada"], loc="lower center",
                  bbox_to_anchor=(0.5, 1.0), ncol=2, frameon=False,
@@ -1134,14 +1134,14 @@ def diada():
             barra(b, x, tuple(lac.loc[k, ["b", "se", "p"]]), MARRON, "^",
                   hueco)
         b.set_xticks([0, 1])
-        b.set_xticklabels(["Sin lactancia\nactiva", "Con lactancia\nmaterna"],
+        b.set_xticklabels(["Sin\nlactancia\nactiva", "Con\nlactancia\nmaterna"],
                           fontsize=7)
         b.set_xlim(-0.75, 1.75)
         b.set_ylim(-0.3, 0.6)
         formato_eje(b, 0.2)
-        b.set_ylabel("Más síntomas si la\nmadre tuvo estrés (DE)",
+        b.set_ylabel("Asociación con el\nestrés materno (DE)",
                      fontsize=8)
-        b.set_title("Asociación según lactancia", fontsize=9,
+        b.set_title("PHQ-4 de la hija", fontsize=9,
                     pad=20)
         cc.bar(range(4), [100 * pec.loc[t, "b"] for t in tramos], 0.55,
                color=MARRON, lw=0, zorder=2)
