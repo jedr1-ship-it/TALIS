@@ -1,15 +1,15 @@
-% Presentación para el advisor: el terremoto, los mecanismos posibles, el
-% diseño, la salud mental, el entorno socioeconómico y familiar, el estrés
-% de la madre y la lactancia,
+% Presentación para el advisor, en inglés: el terremoto, los mecanismos
+% posibles, el diseño, la salud mental, el entorno socioeconómico y familiar,
+% el estrés de la madre y la lactancia,
 % los varones y lo que queda abierto. Los mismos grupos de edad en todo:
 % 6-11 meses, 1 año, 2 años (referencia) y 3-4 años.
 % Figuras: python3 scripts/28_beamer_advisor.py
 % Compilar desde presentacion/: xelatex advisor.tex (dos veces)
 \documentclass[aspectratio=169,11pt]{beamer}
-\usepackage[english,spanish,es-nodecimaldot,es-noshorthands]{babel}
+\usepackage[english]{babel}
 \usepackage{fontspec}
 \usefonttheme{serif}
-\newfontfamily\demi{Latin Modern Roman Demi}
+\newfontfamily\demi{Latin Modern Roman Demi}[Ligatures=TeX]
 \usepackage{array}
 \usepackage{booktabs}
 \usepackage{pifont}
@@ -41,7 +41,7 @@
 \newcommand{\canal}[2]{{\leavevmode\bfseries\color{#1}#2}}
 
 \title{The Timing of Early-Life Shocks and Adolescent Mental Health}
-\date{Octubre de 2026}
+\date{October 2026}
 
 \begin{document}
 
@@ -51,38 +51,38 @@
 \begin{center}
 {\demi\LARGE The Timing of Early-Life Shocks\\[1.5mm] and Adolescent Mental Health\par}
 \vspace{10mm}
-{\small Octubre de 2026\par}
+{\small October 2026\par}
 \end{center}
 \vfill
 \end{frame}
 
 % ------------------------------------------------------------------ 1. Chile
 \begin{frame}
-\frametitle{¿Persiste el impacto de vivir un terremoto con 0 a 4 años?}
+\frametitle{Do the effects of an earthquake at ages 0--4 persist?}
 \begin{columns}[c,onlytextwidth]
 \column{0.34\textwidth}
 \centering
 \includegraphics[height=0.74\textheight]{figuras/mapa.pdf}
 \column{0.64\textwidth}
 \renewcommand{\arraystretch}{1.45}
-\begin{tabular}{@{}p{24mm}>{\raggedright\arraybackslash}p{62mm}@{}}
-\textbf{Shock}     & 27-F de 2010, magnitud 8,8 \\
-\textbf{Expuestos} & Niños de 0 a 4 años \\
+\begin{tabular}{@{}p{18mm}>{\raggedright\arraybackslash}p{70mm}@{}}
+\textbf{Shock}   & 27 February 2010 (27-F), magnitude 8.8 \\
+\textbf{Exposed} & Children aged 0--4 \\
 \end{tabular}
 
 \vspace{4mm}
-{\small\bfseries Efectos de shocks en la primera infancia\par}
+{\small\bfseries Effects of early-childhood shocks\par}
 \vspace{1.5mm}
 {\small\raggedright
-Peso al nacer \cita{(Torche, 2011)}\par\vspace{1mm}
-Desarrollo cognitivo y no cognitivo \cita{(Gillmore, 2026)}\par\vspace{1mm}
-Talla y aprendizaje \cita{(Andrabi, Daniels y Das, 2023)}\par\vspace{1mm}
-Salud mental adulta \cita{(Persson y Rossin-Slater, 2018)}\par}
+Birth weight \cita{(Torche, 2011)}\par\vspace{1mm}
+Cognitive and non-cognitive development \cita{(Gillmore, 2026)}\par\vspace{1mm}
+Height and learning \cita{(Andrabi, Daniels, and Das, 2023)}\par\vspace{1mm}
+Adult mental health \cita{(Persson and Rossin-Slater, 2018)}\par}
 
 \vspace{4mm}
-{\small\bfseries Este trabajo\par}
+{\small\bfseries This paper\par}
 \vspace{1.5mm}
-{\small Salud mental en la adolescencia, a los 14--18 años\par}
+{\small Mental health in adolescence, ages 14--18\par}
 \end{columns}
 \end{frame}
 
@@ -90,39 +90,39 @@ Salud mental adulta \cita{(Persson y Rossin-Slater, 2018)}\par}
 \begin{frame}
 \vfill
 \begin{center}
-{\huge\bfseries ¿Importa la edad\\[2mm] en la que se vive el shock?\par}
+{\huge\bfseries Does the age at which\\[2mm] the shock occurs matter?\par}
 \vspace{10mm}
-\parbox{0.74\textwidth}{\large\hyphenpenalty=10000\foreignlanguage{english}{\frenchspacing“The effects of stress on
+\parbox{0.74\textwidth}{\large\hyphenpenalty=10000{\frenchspacing“The effects of stress on
 the brain depend critically on the timing (age of onset and duration). When
 stress occurs early in life it can have profound and lasting effects on brain
 organization and function.”}
-\mbox{\small\color{azul}(Gee y Casey, 2015, p.~184)}}\par
+\mbox{\small\color{azul}(Gee and Casey, 2015, p.~184)}}\par
 \end{center}
 \vfill
 \end{frame}
 
 % ------------------------------------------------------------------ 3. Vías
 \begin{frame}
-\frametitle{Mecanismos posibles}
+\frametitle{Possible mechanisms}
 \vspace{3mm}
 {\small
 \renewcommand{\arraystretch}{1.6}
 \begin{tabular}{@{}>{\raggedright\arraybackslash}p{42mm}
                 >{\raggedright\arraybackslash}p{96mm}@{}}
- & \sub{Cómo opera} \\
-\canal{ocre}{Entorno socioeconómico y familiar}
- & El terremoto reduce ingresos, daña la vivienda y aumenta el conflicto
-   en casa \cita{(Conger y Donnellan, 2007; Almond, Currie y Duque,
+ & \sub{How it works} \\
+\canal{ocre}{Socioeconomic and family environment}
+ & The earthquake reduces income, damages housing, and increases conflict
+   at home \cita{(Conger and Donnellan, 2007; Almond, Currie, and Duque,
    2018)} \\
-\canal{ocre}{Transmisión del estrés\newline de la madre}
- & El lactante regula su estrés a través de la madre. Si ella está estresada, se
-   lo transmite en el contacto diario \cita{(Persson y Rossin-Slater, 2018)} \\
+\canal{ocre}{Transmission of\newline maternal stress}
+ & Infants regulate their stress through the mother. If she is stressed, she
+   passes it on through daily contact \cita{(Persson and Rossin-Slater, 2018)} \\
 \end{tabular}}
 \end{frame}
 
 % ----------------------------------------------------------------- 3. Datos
 \begin{frame}
-\frametitle{Qué datos utilizamos}
+\frametitle{Data}
 \vspace{3mm}
 \centering
 \includegraphics[width=\textwidth]{figuras/datos_elpi.pdf}
@@ -132,74 +132,75 @@ organization and function.”}
 \renewcommand{\arraystretch}{1.35}
 \begin{tabular}{@{}>{\raggedright\arraybackslash}p{24mm}
                 >{\raggedright\arraybackslash}p{108mm}@{}}
-\sub{Encuesta} & ELPI, Encuesta Longitudinal de Primera Infancia \\
-\sub{Muestra}  & 9.996 adolescentes nacidos en 2006--2009, 4.961 mujeres \\
-\sub{Responde} & El cuidador en todas las rondas; el propio niño en 2017 y 2024 \\
+\sub{Survey}      & ELPI, Early Childhood Longitudinal Survey, Chile \\
+\sub{Sample}      & 9,996 adolescents born in 2006--2009; 4,961 girls \\
+\sub{Respondents} & The caregiver in every round; the child in 2017 and 2024 \\
 \end{tabular}\par}
 \end{frame}
 
 % ----------------------------------------------------------------- 4. Diseño
 \begin{frame}
-\frametitle{Especificación econométrica}
+\frametitle{Econometric specification}
 \vspace{3mm}
 \begin{equation*}
-Y_{imc} = \sum_{a \neq 2} \beta_a \,(\mathrm{Edad}_{ai} \times \mathrm{Afectada}_m)
- + \sum_{a \neq 2} \gamma_a\, \mathrm{Edad}_{ai} + \psi_m + \theta_c + X_i'\delta + \varepsilon_{imc}
+Y_{imc} = \sum_{a \neq 2} \beta_a \,(\mathrm{Age}_{ai} \times \mathrm{Affected}_m)
+ + \sum_{a \neq 2} \gamma_a\, \mathrm{Age}_{ai} + \psi_m + \theta_c + X_i'\delta + \varepsilon_{imc}
 \end{equation*}
 \vspace{3mm}
 {\small
 \renewcommand{\arraystretch}{1.35}
 \begin{tabular}{@{}l l@{}}
-{\color{muted}$Y_{imc}$} & Salud mental a los 14--18 años, PHQ-4 \\
-{\color{muted}$\mathrm{Edad}_{ai}$} & Edad al terremoto: 6--11 meses, 1 año o 3--4 años; referencia, 2 años \\
-{\color{muted}$\mathrm{Afectada}_m$} & Comuna en la zona de daño destructivo \\
-{\color{muted}$\psi_m$, $\theta_c$} & Efectos fijos de comuna y de cohorte de nacimiento \\
-{\color{muted}$X_i$} & Controles del niño y del hogar \\
+{\color{muted}$Y_{imc}$} & Mental health at ages 14--18, PHQ-4 \\
+{\color{muted}$\mathrm{Age}_{ai}$} & Age at the earthquake: 6--11 months, 1 year, or 3--4 years; reference, 2 years \\
+{\color{muted}$\mathrm{Affected}_m$} & Municipality in the zone of destructive damage \\
+{\color{muted}$\psi_m$, $\theta_c$} & Municipality and birth-cohort fixed effects \\
+{\color{muted}$X_i$} & Child and household controls \\
 \end{tabular}}
 \end{frame}
 
 % ---------------------------------------------------------- 4. Salud mental
 \begin{frame}
-\frametitle{Efecto sobre la salud mental}
+\frametitle{Effect on mental health}
 \centering
 \includegraphics[width=\textwidth]{figuras/salud_mental.pdf}
 
-\nota{La salud mental se mide con el PHQ-4, consistente en cuatro preguntas que
-responde el adolescente sobre síntomas de ansiedad y depresión (nervios,
-preocupación, pérdida de interés y decaimiento); Kroenke et al.\ 2009. Cada
-punto es la diferencia entre comunas afectadas y no afectadas, con IC~al~95\%.}
+\nota{Mental health is measured with the PHQ-4, four questions answered by the
+adolescent on symptoms of anxiety and depression (nervousness, worry, loss of
+interest, and feeling down); Kroenke et al.\ 2009. Each point is the difference
+between affected and unaffected municipalities, with 95\% CI.}
 \end{frame}
 
 % --------------------------------------------------------------- 5. Hogar
 \begin{frame}
-\frametitle{El entorno socioeconómico y familiar no explica la brecha}
-{\small\raggedright El terremoto empeoró el entorno \cita{(Gillmore, 2026)}, pero
-sin diferencias por edad\par}
+\frametitle{Socioeconomic and family environment does not explain the gap}
+{\small\raggedright The earthquake worsened the environment \cita{(Gillmore, 2026)},
+but with no differences by age\par}
 \centering
 \includegraphics{figuras/canal_hogar.pdf}
 
-\notachica{Medidos en 2010, entre uno y nueve meses después del terremoto.
-En azul, los mecanismos de Gillmore (2026). Menor
-ingreso, por persona; vivienda dañada, destruida o con daños mayores; conflicto
-en casa, gritos, hostilidad o golpes de la madre durante la visita; vivienda
-hacinada, personas por dormitorio; vivienda precaria, mediagua o cedida o
-compartida. Mujeres, frente a quienes tenían 2 años; IC al 95~\%.}
+\notachica{Measured in 2010, one to nine months after the earthquake. In blue,
+the mechanisms in Gillmore (2026). Lower income, per capita; damaged housing,
+destroyed or with major damage; conflict at home, the mother shouting, being
+hostile, or hitting during the visit; overcrowded housing, persons per bedroom;
+precarious housing, an emergency shack (\emph{mediagua}) or a lent or shared
+dwelling. Girls, relative to those aged 2; 95\% CI.}
 \end{frame}
 
 % ------------------------------------------------------------- 6. La madre
 \begin{frame}
-\frametitle{Estrés materno y salud mental de las hijas según la lactancia}
+\frametitle{Maternal stress and daughters' mental health by breastfeeding}
 \centering
 \includegraphics[width=\textwidth]{figuras/diada.pdf}
 
-\nota{La lactancia materna activa el 27-F actúa como proxy de dependencia
-regulatoria y proximidad bioquímica/conductual con la madre. Mujeres, con EF y controles, también por educación
-y empleo de la madre y por edad; IC al 95\%.}
+\nota{Active breastfeeding on 27-F serves as a proxy for regulatory dependence
+and biochemical and behavioral proximity to the mother. Girls, with fixed
+effects and controls, also for the mother's education and employment and for
+age; 95\% CI.}
 \end{frame}
 
 % ------------------------------------------------------------- 7. Varones
 \begin{frame}
-\frametitle{En varones, solo indicios débiles en conducta y consumo}
+\frametitle{Among boys, only weak signs in behavior and substance use}
 \centering
 \includegraphics[width=\textwidth]{figuras/chicos.pdf}
 
@@ -207,25 +208,25 @@ y empleo de la madre y por edad; IC al 95\%.}
 
 % -------------------------------------------------------------- 8. Cierre
 \begin{frame}
-\frametitle{Lo que sugieren los datos y lo que queda abierto}
+\frametitle{What the data suggest and what remains open}
 {\small
-{\color{acc}\bfseries Lo que sugieren los datos}
+{\color{acc}\bfseries What the data suggest}
 \begin{itemize}\setlength{\itemsep}{0.8mm}
-\item Las expuestas entre los 6 y los 11 meses tienen peor salud mental que
-      las expuestas a los dos años, 0,30 DE en el PHQ-4.
-\item El entorno socioeconómico y familiar cambió de forma similar en todas
-      las edades y no explica esa diferencia.
-\item El estrés materno solo se asocia a peor salud mental en las hijas con
-      lactancia materna, el 62\% de las expuestas entre los 6 y los 11 meses.
+\item Girls exposed at 6--11 months have worse mental health than those
+      exposed at age 2, by 0.30 SD on the PHQ-4.
+\item The socioeconomic and family environment changed similarly at all ages
+      and does not explain this difference.
+\item Maternal stress is associated with worse mental health only among
+      daughters who were breastfed, 62\% of those exposed at 6--11 months.
 \end{itemize}
 \vspace{1mm}
-{\color{ocre}\bfseries Lo que queda abierto}
+{\color{ocre}\bfseries What remains open}
 \begin{itemize}\setlength{\itemsep}{0.8mm}
-\item ¿Qué explica el efecto a los 3--4 años, si no opera a través del entorno
-      socioeconómico y familiar ni del estrés materno?\\[1mm]
-      \textbf{Hipótesis:} a esa edad el niño ya puede recordar de forma
-      consciente lo que vive, y el recuerdo del terremoto podría afectar a su
-      salud mental.
+\item What explains the effect at ages 3--4, if it operates neither through
+      the socioeconomic and family environment nor through maternal stress?\\[1mm]
+      \textbf{Hypothesis:} at that age children can already remember
+      consciously what they experience, and the memory of the earthquake
+      could affect their mental health.
 \end{itemize}}
 \end{frame}
 

@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 """
 Figuras vectoriales de la presentación en LaTeX para el advisor
-(presentacion/advisor.tex): fondo blanco, Latin Modern como en las
-diapositivas, intervalos al 95% y nada más.
+(presentacion/advisor.tex), en inglés: fondo blanco, Latin Modern como en
+las diapositivas, intervalos al 95% y nada más.
 
   mapa.pdf         aceleración máxima del suelo por comuna, centro-sur
   hallazgos.pdf    (a) PHQ-4 por edad al terremoto, chicas y chicos;
@@ -73,7 +73,7 @@ spec = importlib.util.spec_from_file_location(
     "p27", HERE / "27_figuras_advisor.py")
 p27 = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(p27)
-lee, edades_bebes, coma = p27.lee, p27.edades_bebes, p27.coma
+lee, edades_bebes = p27.lee, p27.edades_bebes
 OUTD = Path("presentacion/figuras")
 # verde botella y ocre sobre negro y grises neutros
 INK, ACC, MUTED = "#1A1A1A", "#1B6A4E", "#5C5C5C"
@@ -100,6 +100,15 @@ PR = "reports/predicciones_lactancia.md"
 RB = "reports/lactancia_robustez.md"
 NV = "reports/niveles.md"
 PN = "reports/presentacion_numeros.md"
+
+
+def cifra(x, dec=2, signo=True):
+    """Número con punto decimal y signo menos tipográfico, porque la
+    presentación está en inglés."""
+    if round(x, dec) == 0:          # sin "−0"
+        x, signo = 0.0, False
+    s = f"{x:+.{dec}f}" if signo else f"{x:.{dec}f}"
+    return s.replace("-", "−")
 
 
 def estrellas(p):
@@ -178,7 +187,7 @@ def mapa():
     epi = (-72.898, -36.122)
     ax.plot(*epi, marker="*", ms=9, color=INK, mec="white", mew=0.5,
             zorder=5)
-    ax.annotate("Epicentro", epi, xytext=(-5, 0), textcoords="offset points",
+    ax.annotate("Epicenter", epi, xytext=(-5, 0), textcoords="offset points",
                 ha="right", va="center", fontsize=7, color=INK,
                 path_effects=halo, zorder=6)
     for cod, xy in centros.items():
@@ -190,8 +199,8 @@ def mapa():
     ax.set_ylim(-41.6, -30.4)
     ax.set_aspect(1 / np.cos(np.radians(36)))
     ax.axis("off")
-    h = [matplotlib.patches.Patch(color="#D9A936", label="Zona afectada"),
-         matplotlib.patches.Patch(color="#E6E6E6", label="No afectada")]
+    h = [matplotlib.patches.Patch(color="#D9A936", label="Affected zone"),
+         matplotlib.patches.Patch(color="#E6E6E6", label="Unaffected")]
     f.legend(handles=h, loc="lower center", ncol=2, frameon=False,
              fontsize=7, handlelength=1.0, handleheight=0.8,
              columnspacing=1.0, handletextpad=0.4, borderaxespad=0.1)
@@ -221,7 +230,7 @@ def hallazgos():
                 continue
             ic(a, x + dx, ti, col, hueco=hueco)
             if not hueco:
-                a.text(x + dx - 0.07, ti[0], coma(ti[0]) + estrellas(ti[2]),
+                a.text(x + dx - 0.07, ti[0], cifra(ti[0]) + estrellas(ti[2]),
                        ha="right", va="center", fontsize=7.5, color=col,
                        fontweight="semibold")
     a.set_xticks(xs)
@@ -230,7 +239,7 @@ def hallazgos():
     a.set_ylim(-0.3, 0.7)
     a.tick_params(axis="x", length=0)
     a.yaxis.set_major_formatter(matplotlib.ticker.FuncFormatter(
-        lambda v, _: coma(v, 1, v != 0)))
+        lambda v, _: cifra(v, 1, v != 0)))
     a.set_ylabel("PHQ-4, DE", color=MUTED, fontsize=7.5)
     titulo(a, "(a) Por edad al terremoto, frente a 2 años")
     h = [Line2D([], [], marker="o", ls="none", ms=4.6, color=ACC,
@@ -244,7 +253,7 @@ def hallazgos():
     t = [lee(PR, "Referencia, PHQ-4"), lee(RB, "CBCL 2024")]
     for x, ti in zip((0, 1), t):
         ic(b, x, ti, ACC)
-        b.text(x + 0.09, ti[0], coma(ti[0]) + estrellas(ti[2]), ha="left",
+        b.text(x + 0.09, ti[0], cifra(ti[0]) + estrellas(ti[2]), ha="left",
                va="center", fontsize=7.5, color=ACC, fontweight="semibold")
     b.set_xticks([0, 1])
     b.set_xticklabels(["PHQ-4\nadolescente", "CBCL\ncuidador"])
@@ -252,7 +261,7 @@ def hallazgos():
     b.set_ylim(-0.3, 0.7)
     b.tick_params(axis="x", length=0)
     b.yaxis.set_major_formatter(matplotlib.ticker.FuncFormatter(
-        lambda v, _: coma(v, 1, v != 0)))
+        lambda v, _: cifra(v, 1, v != 0)))
     titulo(b, "(b) Lactancia en bebés")
     guarda(f, "hallazgos.pdf")
 
@@ -272,7 +281,7 @@ def diseno():
         ic(ax, y, t, col, vertical=False)
         # la etiqueta nunca cruza la línea del cero
         x = max(t[0] + 1.96 * t[1], 0.0) + 0.03
-        ax.text(x, y, coma(t[0]) + estrellas(t[2]),
+        ax.text(x, y, cifra(t[0]) + estrellas(t[2]),
                 ha="left", va="center", fontsize=7.5, color=col,
                 fontweight="semibold")
 
@@ -291,7 +300,7 @@ def diseno():
     a.set_xlim(-0.6, 0.55)
     a.set_ylim(-0.6, len(filas) - 0.4)
     a.xaxis.set_major_formatter(matplotlib.ticker.FuncFormatter(
-        lambda v, _: coma(v, 1, v != 0)))
+        lambda v, _: cifra(v, 1, v != 0)))
     a.set_xlabel("DE por cada 10 puntos de PGA, % de g", color=MUTED,
                  fontsize=7.5)
     f.text(0.005, 0.955, "(a) Intensidad sísmica dentro de la región",
@@ -319,7 +328,7 @@ def diseno():
     b.set_xlim(-0.5, 0.78)
     b.set_ylim(0.4, 8.6)
     b.xaxis.set_major_formatter(matplotlib.ticker.FuncFormatter(
-        lambda v, _: coma(v, 1, v != 0)))
+        lambda v, _: cifra(v, 1, v != 0)))
     b.set_xlabel("DE", color=MUTED, fontsize=7.5)
     f.text(0.505, 0.955, "(b) Diseño entre cohortes", fontsize=8.5,
            fontweight="semibold", color=INK, va="top")
@@ -348,12 +357,12 @@ def trayectoria():
         izq = i >= 2
         yl = t[0] if abs(t[0]) >= 0.15 else (-0.2 if t[0] < 0 else 0.2)
         ax.text(x + (-0.07 if izq else 0.07), yl,
-                f"{coma(t[0])}{estrellas(t[2])}\n{nom}",
+                f"{cifra(t[0])}{estrellas(t[2])}\n{nom}",
                 ha="right" if izq else "left", va="center", fontsize=7,
                 color=ACC, fontweight="semibold", linespacing=1.1)
     x, t, nom = propio
     ic(ax, x, t, OCRE, marca="D", ms=4.2)
-    ax.text(x + 0.07, t[0], f"{coma(t[0])}{estrellas(t[2])}\n{nom}",
+    ax.text(x + 0.07, t[0], f"{cifra(t[0])}{estrellas(t[2])}\n{nom}",
             ha="left", va="center", fontsize=7, color=OCRE,
             fontweight="semibold", linespacing=1.1)
     olas = (2010, 2012, 2017, 2024)
@@ -365,7 +374,7 @@ def trayectoria():
     ax.set_ylim(-0.75, 0.75)
     ax.yaxis.set_major_locator(matplotlib.ticker.MultipleLocator(0.25))
     ax.yaxis.set_major_formatter(matplotlib.ticker.FuncFormatter(
-        lambda v, _: coma(v, 2, v != 0) if v else "0"))
+        lambda v, _: cifra(v, 2, v != 0) if v else "0"))
     ax.set_ylabel("DE; arriba, más problemas", color=MUTED, fontsize=7.5)
     h = [Line2D([], [], marker="o", ls="none", ms=4.6, color=ACC,
                 label="Reporta la madre o el cuidador"),
@@ -514,7 +523,7 @@ def barra(ax, x, t, col, marca, hueco=False, escala=1.0):
 
 
 def miles(n):
-    return f"{n:,}".replace(",", ".")
+    return f"{n:,}"
 
 
 def frente_a_dos(v, k):
@@ -528,11 +537,11 @@ def salud_mental():
     quienes tenían dos años, en tres paneles: todos, chicas y chicos."""
     claves = ["0-11m", "12-23m", "36-59m"]
     paneles = [
-        (f"Todos (n = {miles(9996)})", VERDE, "o", False,
+        (f"All (n = {miles(9996)})", VERDE, "o", False,
          [frente_a_dos("z_phq4", k) for k in claves]),
-        (f"Mujeres (n = {miles(4961)})", OCRE, "^", False,
+        (f"Girls (n = {miles(4961)})", OCRE, "^", False,
          [lee(PN, f"- {k}:", "## Perfil PHQ-4, Chicas") for k in claves]),
-        (f"Varones (n = {miles(5035)})", GRISR, "o", True,
+        (f"Boys (n = {miles(5035)})", GRISR, "o", True,
          [lee(PN, f"- {k}:", "## Perfil PHQ-4, Chicos") for k in claves])]
     with plt.rc_context(PAPER):
         f = plt.figure(figsize=(144 * MM, 52 * MM))
@@ -543,20 +552,20 @@ def salud_mental():
             for x, t in enumerate(pts):
                 barra(ax, x, t, col, marca, hueco)
             ax.set_xticks(range(3))
-            ax.set_xticklabels(["6–11\nmeses", "1\naño", "3–4\naños"],
+            ax.set_xticklabels(["6–11\nmonths", "1\nyear", "3–4\nyears"],
                                fontsize=8)
             ax.set_xlim(-0.5, 2.5)
             ax.set_ylim(-0.3, 0.62)
             ax.yaxis.set_major_locator(matplotlib.ticker.MultipleLocator(0.2))
             ax.yaxis.set_major_formatter(matplotlib.ticker.FuncFormatter(
-                lambda v, _: coma(v, 1, False) if v >= 0 else coma(v, 1)))
+                lambda v, _: cifra(v, 1, False) if v >= 0 else cifra(v, 1)))
             if i == 0:
-                ax.set_ylabel("Diferencia con quienes\ntenían 2 años (DE)",
+                ax.set_ylabel("Difference relative to\nthose aged 2 (SD)",
                               fontsize=8.5)
             else:
                 ax.set_yticklabels([])
             ax.set_title(nom, fontsize=9, pad=6)
-        f.text(x0 + 1.5 * ancho + sep, 0.0, "Edad al terremoto",
+        f.text(x0 + 1.5 * ancho + sep, 0.0, "Age at the earthquake",
                ha="center", va="bottom", fontsize=8.5)
         guarda(f, "salud_mental.pdf")
 
@@ -682,7 +691,7 @@ def lactancia():
         a.set_ylim(-12, 18)
         a.yaxis.set_major_locator(matplotlib.ticker.MultipleLocator(5))
         a.yaxis.set_major_formatter(matplotlib.ticker.FuncFormatter(
-            lambda v, _: coma(v, 0, False) if v >= 0 else coma(v, 0)))
+            lambda v, _: cifra(v, 0, False) if v >= 0 else cifra(v, 0)))
         a.set_ylabel("Dejaron más el pecho en la\nzona afectada (puntos) →",
                      fontsize=8)
         a.set_title("(a) ¿El terremoto hizo dejar el pecho antes?",
@@ -706,7 +715,7 @@ def lactancia():
         b.set_ylim(-0.4, 0.7)
         b.yaxis.set_major_locator(matplotlib.ticker.MultipleLocator(0.2))
         b.yaxis.set_major_formatter(matplotlib.ticker.FuncFormatter(
-            lambda v, _: coma(v, 1, False) if v >= 0 else coma(v, 1)))
+            lambda v, _: cifra(v, 1, False) if v >= 0 else cifra(v, 1)))
         b.set_ylabel("Más síntomas a los 15 (DE) →", fontsize=8)
         b.set_title("(b) ¿Explica eso la salud mental?", loc="left",
                     fontsize=8.5, pad=30)
@@ -760,7 +769,7 @@ def indices_fig():
         a.set_ylim(-0.25, 0.42)
         a.yaxis.set_major_locator(matplotlib.ticker.MultipleLocator(0.1))
         a.yaxis.set_major_formatter(matplotlib.ticker.FuncFormatter(
-            lambda v, _: coma(v, 1, False) if v >= 0 else coma(v, 1)))
+            lambda v, _: cifra(v, 1, False) if v >= 0 else cifra(v, 1)))
         a.set_ylabel("Peor que quienes tenían\n2 años (DE) →", fontsize=8)
         a.set_title("(a) ¿Qué cambia con la edad al terremoto?", loc="left",
                     fontsize=8.5, pad=36)
@@ -778,7 +787,7 @@ def indices_fig():
         b.set_ylim(-0.1, 0.32)
         b.yaxis.set_major_locator(matplotlib.ticker.MultipleLocator(0.1))
         b.yaxis.set_major_formatter(matplotlib.ticker.FuncFormatter(
-            lambda v, _: coma(v, 1, False) if v >= 0 else coma(v, 1)))
+            lambda v, _: cifra(v, 1, False) if v >= 0 else cifra(v, 1)))
         b.set_ylabel("Más síntomas que quienes\ntenían 2 años (DE) →",
                      fontsize=8)
         b.set_title("(b) ¿Cuánto de la brecha explican?", loc="left",
@@ -797,8 +806,8 @@ ETIQUETAS = ["Bebés", "1 año", "3–4 años"]
 def formato_eje(ax, paso, decimales=1):
     ax.yaxis.set_major_locator(matplotlib.ticker.MultipleLocator(paso))
     ax.yaxis.set_major_formatter(matplotlib.ticker.FuncFormatter(
-        lambda v, _: coma(v, decimales, False) if v >= 0
-        else coma(v, decimales)))
+        lambda v, _: cifra(v, decimales, False) if v >= 0
+        else cifra(v, decimales)))
 
 
 def descomposicion():
@@ -1051,15 +1060,15 @@ def canal_hogar():
     c = pd.read_csv("reports/canal_hogar.csv")
     c = c[c.grupo == "chicas"]
     per = c[c.tipo == "perfil"].set_index(["componente", "tramo"])
-    indices = [("ingreso", "Menor\ningreso\n(2010)", True),
-               ("sin_empleo", "Madre sin\nempleo\n(2010)", True),
-               ("dano", "Vivienda\ndañada\n(27-F)", True),
-               ("conflicto", "Conflicto\nen casa\n(2010)", False),
-               ("hacinamiento", "Vivienda\nhacinada\n(2010)", False),
-               ("precaria", "Vivienda\nprecaria\n(2010)", False)]
-    series = [("6-11", "6–11 meses", OCRE, "^", False, -0.22),
-              ("12-23", "1 año", VERDE, "o", False, 0.0),
-              ("36-49", "3–4 años", GRISR, "o", True, 0.22)]
+    indices = [("ingreso", "Lower\nincome\n(2010)", True),
+               ("sin_empleo", "Mother not\nemployed\n(2010)", True),
+               ("dano", "Damaged\nhousing\n(27-F)", True),
+               ("conflicto", "Conflict\nat home\n(2010)", False),
+               ("hacinamiento", "Overcrowded\nhousing\n(2010)", False),
+               ("precaria", "Precarious\nhousing\n(2010)", False)]
+    series = [("6-11", "6–11 months", OCRE, "^", False, -0.22),
+              ("12-23", "1 year", VERDE, "o", False, 0.0),
+              ("36-49", "3–4 years", GRISR, "o", True, 0.22)]
 
     def ic(r):
         return (r.valor, (r.hi - r.lo) / 3.92, np.nan)
@@ -1081,7 +1090,7 @@ def canal_hogar():
         a.tick_params(axis="x", length=0)
         a.set_ylim(-0.4, 0.4)
         formato_eje(a, 0.2)
-        a.set_ylabel("Diferencia con quienes\ntenían 2 años (DE)", fontsize=8)
+        a.set_ylabel("Difference relative to\nthose aged 2 (SD)", fontsize=8)
         a.legend(hs, [s_[1] for s_ in series], loc="lower center",
                  bbox_to_anchor=(0.5, 1.0), ncol=3, frameon=False,
                  fontsize=7, handletextpad=0.2, columnspacing=1.0,
@@ -1096,16 +1105,16 @@ def diada():
     (reports/estres_madre.csv)."""
     c = pd.read_csv("reports/estres_madre.csv")
     tramos = ["6-11", "12-23", "24-35", "36-49"]
-    etiquetas = ["6–11\nmeses", "1\naño", "2\naños", "3–4\naños"]
+    etiquetas = ["6–11\nmonths", "1\nyear", "2\nyears", "3–4\nyears"]
     niv = c[c.panel == "nivel"].set_index(["tramo", "zona"])
     lac = c[(c.panel == "lactancia") & (c.grupo == "chicas")].set_index(
         "tramo")
     pec = c[c.panel == "pecho"].set_index("tramo")
     with plt.rc_context(PAPER):
         f = plt.figure(figsize=(144 * MM, 55 * MM))
-        a = f.add_axes([0.1, 0.27, 0.21, 0.5])
-        b = f.add_axes([0.43, 0.27, 0.235, 0.5])
-        cc = f.add_axes([0.775, 0.27, 0.205, 0.5])
+        a = f.add_axes([0.095, 0.27, 0.25, 0.5])
+        b = f.add_axes([0.475, 0.27, 0.175, 0.5])
+        cc = f.add_axes([0.765, 0.27, 0.22, 0.5])
         for ax in (a, b, cc):
             ejes_paper(ax)
         hs = []
@@ -1117,15 +1126,15 @@ def diada():
                           escala=100.0)
             hs.append(h)
         a.set_xticks(range(4))
-        a.set_xticklabels(etiquetas, fontsize=7.5)
+        a.set_xticklabels(etiquetas, fontsize=7)
         a.set_xlim(-0.5, 3.5)
         a.set_ylim(-2, 25)
         formato_eje(a, 5, 0)
-        a.set_xlabel("Edad del hijo al terremoto", fontsize=8)
-        a.set_ylabel("Madres con\nestrés (%)", fontsize=8)
-        a.set_title("Estrés materno tras el terremoto", fontsize=9,
+        a.set_xlabel("Child’s age at the earthquake", fontsize=8)
+        a.set_ylabel("Mothers with\nstress (%)", fontsize=8)
+        a.set_title("Maternal stress after the earthquake", fontsize=9,
                     pad=20)
-        a.legend(hs, ["Zona afectada", "No afectada"], loc="lower center",
+        a.legend(hs, ["Affected zone", "Unaffected"], loc="lower center",
                  bbox_to_anchor=(0.5, 1.0), ncol=2, frameon=False,
                  fontsize=6.8, handletextpad=0.2, columnspacing=0.7,
                  borderaxespad=0.1)
@@ -1134,14 +1143,14 @@ def diada():
             barra(b, x, tuple(lac.loc[k, ["b", "se", "p"]]), OCRE, "^",
                   hueco)
         b.set_xticks([0, 1])
-        b.set_xticklabels(["Sin\nlactancia\nactiva", "Con\nlactancia\nmaterna"],
+        b.set_xticklabels(["Not\nbreastfed", "Breastfed"],
                           fontsize=7)
         b.set_xlim(-0.75, 1.75)
         b.set_ylim(-0.3, 0.6)
         formato_eje(b, 0.2)
-        b.set_ylabel("Asociación con el\nestrés materno (DE)",
+        b.set_ylabel("Association with\nmaternal stress (SD)",
                      fontsize=8)
-        b.set_title("PHQ-4 de la hija", fontsize=9,
+        b.set_title("Daughter’s PHQ-4", fontsize=9,
                     pad=20)
         cc.bar(range(4), [100 * pec.loc[t, "b"] for t in tramos], 0.55,
                color=OCRE, lw=0, zorder=2)
@@ -1150,13 +1159,13 @@ def diada():
                     f"{100 * pec.loc[t, 'b']:.0f}%", ha="center",
                     va="bottom", fontsize=7.5)
         cc.set_xticks(range(4))
-        cc.set_xticklabels(etiquetas, fontsize=7.5)
+        cc.set_xticklabels(etiquetas, fontsize=7)
         cc.set_xlim(-0.5, 3.5)
         cc.set_ylim(0, 65)
         formato_eje(cc, 20, 0)
-        cc.set_xlabel("Edad al terremoto", fontsize=8)
-        cc.set_ylabel("Con lactancia materna (%)", fontsize=8)
-        cc.set_title("Lactancia materna el 27-F", fontsize=8.5, pad=20)
+        cc.set_xlabel("Age at the earthquake", fontsize=8)
+        cc.set_ylabel("Breastfed (%)", fontsize=8)
+        cc.set_title("Breastfed on 27-F", fontsize=8.5, pad=20)
         guarda(f, "diada.pdf")
 
 
@@ -1166,11 +1175,11 @@ def chicos():
     (reports/chicos.csv)."""
     c = pd.read_csv("reports/chicos.csv")
     c = c[c.tramo == "6-11"].set_index(["resultado", "grupo"])
-    filas = [("z_phq4", "Síntomas PHQ-4, autorreporte"),
-             ("cbcl_int", "CBCL internalizante, cuidador"),
-             ("cbcl_ext", "CBCL externalizante, cuidador"),
-             ("z_consumo", "Consumo de alcohol o drogas"),
-             ("z_bull", "Victimización en el colegio")]
+    filas = [("z_phq4", "PHQ-4 symptoms, self-report"),
+             ("cbcl_int", "CBCL internalizing, caregiver"),
+             ("cbcl_ext", "CBCL externalizing, caregiver"),
+             ("z_consumo", "Alcohol or drug use"),
+             ("z_bull", "Victimization at school")]
     with plt.rc_context(PAPER):
         f = plt.figure(figsize=(144 * MM, 54 * MM))
         ax = f.add_axes([0.33, 0.17, 0.63, 0.68])
@@ -1195,11 +1204,11 @@ def chicos():
         ax.set_xlim(-0.6, 1.0)
         ax.xaxis.set_major_locator(matplotlib.ticker.MultipleLocator(0.2))
         ax.xaxis.set_major_formatter(matplotlib.ticker.FuncFormatter(
-            lambda v, _: coma(v, 1, False) if v >= 0 else coma(v, 1)))
+            lambda v, _: cifra(v, 1, False) if v >= 0 else cifra(v, 1)))
         ax.tick_params(axis="x", length=3)
-        ax.set_xlabel("Expuestos con 6–11 meses frente a 2 años (DE)",
+        ax.set_xlabel("Exposed at 6–11 months relative to age 2 (SD)",
                       fontsize=8)
-        ax.legend(hs, ["Mujeres", "Varones"], loc="lower center",
+        ax.legend(hs, ["Girls", "Boys"], loc="lower center",
                   bbox_to_anchor=(0.5, 1.0), ncol=2, frameon=False,
                   fontsize=7.5, handletextpad=0.3, columnspacing=1.2,
                   borderaxespad=0.1)
@@ -1210,10 +1219,10 @@ def datos_elpi():
     """Las cuatro rondas de la ELPI que usamos: qué se mide en cada una y
     qué edad tenían los niños de la muestra (edad al terremoto, 6-49 meses;
     2012, 2-6 años; 2017, 8-12; 2024, 14-18). Rondas equiespaciadas."""
-    rondas = [(2010, "Línea base,\ntras el 27-F", "0–4 años", OCRE),
-              (2012, "Estrés de la madre\ny lactancia", "2–6 años", ACC),
-              (2017, "Hogar y colegio", "8–12 años", ACC),
-              (2024, "Salud mental, PHQ-4", "14–18 años", ACC)]
+    rondas = [(2010, "Baseline,\nafter 27-F", "Ages 0–4", OCRE),
+              (2012, "Maternal stress\nand breastfeeding", "Ages 2–6", ACC),
+              (2017, "Home and school", "Ages 8–12", ACC),
+              (2024, "Mental health, PHQ-4", "Ages 14–18", ACC)]
     f = plt.figure(figsize=(144 * MM, 36 * MM))
     ax = f.add_axes([0.02, 0.02, 0.96, 0.96])
     ax.axis("off")
