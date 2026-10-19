@@ -5,9 +5,8 @@
 de cada grupo explica?
 
 El entorno se mide justo después del terremoto, en la ronda de 2010 (entre
-uno y nueve meses después del 27-F), salvo el barrio, que la ELPI pregunta
-por primera vez en 2017. Cinco índices, orientados de forma que más alto =
-peor. El estrés de la madre no entra: es el segundo mecanismo y se estudia
+uno y nueve meses después del 27-F), con cuatro índices de lo que el
+terremoto puede haber golpeado, orientados de forma que más alto = peor. El estrés de la madre no entra: es el segundo mecanismo y se estudia
 aparte (scripts/34_estres_madre.py).
 
   conflicto en casa     durante la visita de 2010, la madre le grita,
@@ -21,7 +20,6 @@ aparte (scripts/34_estres_madre.py).
   vivienda hacinada     personas por dormitorio en 2010
   vivienda precaria     en 2010, mediagua, o vivienda cedida o compartida
                         con otro hogar
-  barrio inseguro       cuán inseguros ve el niño su barrio y la calle (2017)
 
   1. Perfil de cada índice por edad al terremoto (los grupos del paper:
      6-11 meses, 1 año y 3-4 años frente a 2 años), zona afectada menos no
@@ -53,7 +51,7 @@ p34 = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(p34)
 p33, p15 = p34.p33, p34.p15
 num, stars, xt, si = p15.num, p15.stars, p15.xt, p34.si
-INDICES = ["conflicto", "recursos", "hacinamiento", "precaria", "barrio"]
+INDICES = ["conflicto", "recursos", "hacinamiento", "precaria"]
 TRAMOS = ["6-11", "12-23", "36-49"]
 GRUPOS = (("chicas", 1), ("todos", None))
 B = 300
@@ -112,11 +110,6 @@ def carga():
     f4, f7 = num(e.f4), num(e.f7)
     x["mediagua10"] = (f4 == 7).astype(float).where(f4.between(1, 7))
     x["cedida10"] = f7.isin([3, 6]).astype(float).where(f7.between(1, 6))
-    n = lee("data/interim/2017/Base Niños y Niñas ELPI III (SPSS).sav",
-            ["folio", "a22", "a23"], sav=True).drop_duplicates("folio")
-    n = n.set_index("folio")
-    x["barrio17"] = num(n.a22).where(lambda s_: s_.between(1, 5))
-    x["calle17"] = num(n.a23).where(lambda s_: s_.between(1, 5))
     x = pd.DataFrame(x)
     x.index.name = "folio"
     d = d.merge(x.reset_index(), on="folio", how="left")
@@ -124,7 +117,6 @@ def carga():
     d["recursos"] = indice([-d.log_ing10, d.dano12], 1)
     d["hacinamiento"] = indice([d.hacina10], 1)
     d["precaria"] = indice([d.mediagua10, d.cedida10], 1)
-    d["barrio"] = indice([d.barrio17, d.calle17], 1)
     return d
 
 

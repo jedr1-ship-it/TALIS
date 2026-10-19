@@ -1035,17 +1035,15 @@ def anticipo():
 
 
 def canal_hogar():
-    """Perfil por edad de los cinco índices del entorno medidos justo
-    después del terremoto (2010; el barrio, 2017), chicas
-    (reports/canal_hogar.csv)."""
+    """Perfil por edad de los cuatro índices del entorno medidos justo
+    después del terremoto (2010), chicas (reports/canal_hogar.csv)."""
     c = pd.read_csv("reports/canal_hogar.csv")
     c = c[c.grupo == "chicas"]
     per = c[c.tipo == "perfil"].set_index(["componente", "tramo"])
     indices = [("conflicto", "Conflicto\nen casa\n(2010)"),
                ("recursos", "Falta de\nrecursos\n(2010)"),
                ("hacinamiento", "Vivienda\nhacinada\n(2010)"),
-               ("precaria", "Vivienda\nprecaria\n(2010)"),
-               ("barrio", "Barrio\ninseguro\n(2017)")]
+               ("precaria", "Vivienda\nprecaria\n(2010)")]
     series = [("6-11", "6–11 meses", MARRON, "^", False, -0.22),
               ("12-23", "1 año", AZUL, "o", False, 0.0),
               ("36-49", "3–4 años", GRISR, "o", True, 0.22)]
@@ -1053,8 +1051,8 @@ def canal_hogar():
     def ic(r):
         return (r.valor, (r.hi - r.lo) / 3.92, np.nan)
     with plt.rc_context(PAPER):
-        f = plt.figure(figsize=(118 * MM, 46 * MM))
-        a = f.add_axes([0.15, 0.3, 0.83, 0.56])
+        f = plt.figure(figsize=(112 * MM, 43 * MM))
+        a = f.add_axes([0.16, 0.31, 0.82, 0.55])
         ejes_paper(a)
         hs = []
         for t, lab, col, marca, hueco, dx in series:
