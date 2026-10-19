@@ -53,9 +53,11 @@ def log(*a):
     OUT.append(s)
 
 
-def perfil(d, y, sx=None, corte="seis meses", controles=True, extra=()):
+def perfil(d, y, sx=None, corte="seis meses", controles=True, extra=(),
+           modelo=False):
     """Diferencia zona afectada menos no afectada de cada tramo de edad al
-    terremoto, frente a los expuestos con 24-35 meses."""
+    terremoto, frente a los expuestos con 24-35 meses. Con modelo=True
+    devuelve además el ajuste y la muestra (para las tablas del apéndice)."""
     x = d.dropna(subset=[y, "EQ", "estrato", "w", "cohorte", "edadq_m",
                          *extra]).copy()
     x = x[(x.w > 0) & x.edadq_m.between(6, 49)]
@@ -76,9 +78,11 @@ def perfil(d, y, sx=None, corte="seis meses", controles=True, extra=()):
     rhs += list(extra)
     r = smf.wls(f"{y} ~ {' + '.join(rhs)}", data=x, weights=x.w).fit(
         cov_type="cluster", cov_kwds={"groups": x.est})
-    return ({t: (float(r.params[i]), float(r.bse[i]), float(r.pvalues[i]),
-                 int((x.tramo == t).sum())) for t, i in zip(cats, ii)},
-            int(r.nobs))
+    b = {t: (float(r.params[i]), float(r.bse[i]), float(r.pvalues[i]),
+             int((x.tramo == t).sum())) for t, i in zip(cats, ii)}
+    if modelo:
+        return b, int(r.nobs), r, x
+    return b, int(r.nobs)
 
 
 def linea(etiqueta, res):
