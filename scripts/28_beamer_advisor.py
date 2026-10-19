@@ -889,7 +889,7 @@ def orden_temporal():
             ax.set_title(nom, fontsize=9, pad=4)
             if i == 0:
                 hs = [h1, h2]
-        f.legend(hs, ["2017, a los 8–12 años", "2024, a los 15–18 años"],
+        f.legend(hs, ["2017, a los 8–12 años", "2024, a los 14–18 años"],
                  loc="upper center", bbox_to_anchor=(0.5, 1.0), ncol=2,
                  frameon=False,
                  fontsize=7.5, handletextpad=0.3, columnspacing=1.4)
@@ -1000,7 +1000,7 @@ def estres_madre():
             barra(b, x, tuple(pen.loc[t, ["b", "se", "p"]]), OCRE, "^")
         b.set_ylim(-0.3, 0.5)
         formato_eje(b, 0.1)
-        b.set_ylabel("Más síntomas a los 15–18 si\nla madre tuvo estrés (DE)",
+        b.set_ylabel("Más síntomas a los 14–18 si\nla madre tuvo estrés (DE)",
                      fontsize=8)
         b.set_title("Pero solo deja huella si la hija era bebé", fontsize=9,
                     pad=22)
@@ -1209,11 +1209,11 @@ def chicos():
 def datos_elpi():
     """Las cuatro rondas de la ELPI que usamos: qué se mide en cada una y
     qué edad tenían los niños de la muestra (edad al terremoto, 6-49 meses;
-    2012, 3-6 años; 2017, 8-12; 2024, 15-18). Rondas equiespaciadas."""
-    rondas = [(2010, "27-F y línea base", "0–4 años", OCRE),
-              (2012, "Estrés de la madre\ny lactancia", "3–6 años", ACC),
+    2012, 2-6 años; 2017, 8-12; 2024, 14-18). Rondas equiespaciadas."""
+    rondas = [(2010, "Línea base,\ntras el 27-F", "0–4 años", OCRE),
+              (2012, "Estrés de la madre\ny lactancia", "2–6 años", ACC),
               (2017, "Hogar y colegio", "8–12 años", ACC),
-              (2024, "Salud mental, PHQ-4", "15–18 años", ACC)]
+              (2024, "Salud mental, PHQ-4", "14–18 años", ACC)]
     f = plt.figure(figsize=(144 * MM, 36 * MM))
     ax = f.add_axes([0.02, 0.02, 0.96, 0.96])
     ax.axis("off")

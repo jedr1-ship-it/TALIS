@@ -6,7 +6,7 @@
 % Figuras: python3 scripts/28_beamer_advisor.py
 % Compilar desde presentacion/: xelatex advisor.tex (dos veces)
 \documentclass[aspectratio=169,11pt]{beamer}
-\usepackage[spanish,es-nodecimaldot,es-noshorthands]{babel}
+\usepackage[english,spanish,es-nodecimaldot,es-noshorthands]{babel}
 \usepackage{fontspec}
 \usefonttheme{serif}
 \newfontfamily\demi{Latin Modern Roman Demi}
@@ -33,9 +33,9 @@
 \setbeamersize{text margin left=8mm,text margin right=8mm}
 
 \newcommand{\sub}[1]{{\leavevmode\color{muted}#1}}
-\newcommand{\nota}[1]{\vfill\noindent\parbox{0.9\textwidth}{\raggedright\scriptsize\color{muted}#1}\par\vspace*{1mm}}
+\newcommand{\nota}[1]{\vfill\noindent\parbox{0.9\textwidth}{\scriptsize\color{muted}#1}\par\vspace*{1mm}}
 \newcommand{\cita}[1]{{\footnotesize\color{azul}#1}}
-\newcommand{\notachica}[1]{\vfill\noindent\parbox{\textwidth}{\raggedright\fontsize{7}{8.4}\selectfont\color{muted}#1}\par\vspace*{1mm}}
+\newcommand{\notachica}[1]{\vfill\noindent\parbox{\textwidth}{\fontsize{7}{8.4}\selectfont\color{muted}#1}\par\vspace*{1mm}}
 \newcommand{\no}{{\leavevmode\color{ocre}\ding{55}}}
 \newcommand{\si}{{\leavevmode\color{acc}\ding{51}}}
 \newcommand{\canal}[2]{{\leavevmode\bfseries\color{#1}#2}}
@@ -82,7 +82,7 @@ Salud mental adulta \cita{(Persson y Rossin-Slater, 2018)}\par}
 \vspace{4mm}
 {\small\bfseries Este trabajo\par}
 \vspace{1.5mm}
-{\small Salud mental en la adolescencia, a los 15--18 años\par}
+{\small Salud mental en la adolescencia, a los 14--18 años\par}
 \end{columns}
 \end{frame}
 
@@ -92,10 +92,10 @@ Salud mental adulta \cita{(Persson y Rossin-Slater, 2018)}\par}
 \begin{center}
 {\huge\bfseries ¿Importa la edad\\[2mm] en la que se vive el shock?\par}
 \vspace{10mm}
-{\large “The effects of stress on the brain depend critically\\
-on the timing (age of onset and duration).\\
-When stress occurs early in life it can have profound\\
-and lasting effects on brain organization and function.”\par}
+\parbox{0.74\textwidth}{\large\hyphenpenalty=10000\foreignlanguage{english}{\frenchspacing“The effects of stress on
+the brain depend critically on the timing (age of onset and duration). When
+stress occurs early in life it can have profound and lasting effects on brain
+organization and function.”}}\par
 \vspace{2mm}
 {\small\color{azul}(Gee y Casey, 2015, p.~184)\par}
 \end{center}
@@ -135,7 +135,7 @@ and lasting effects on brain organization and function.”\par}
                 >{\raggedright\arraybackslash}p{108mm}@{}}
 \sub{Encuesta} & ELPI, Encuesta Longitudinal de Primera Infancia \\
 \sub{Muestra}  & 9.996 adolescentes nacidos en 2006--2009, 4.961 mujeres \\
-\sub{Responde} & La madre o el cuidador hasta 2017; el adolescente en 2024 \\
+\sub{Responde} & El cuidador en todas las rondas; el propio niño en 2017 y 2024 \\
 \end{tabular}\par}
 \end{frame}
 
@@ -151,7 +151,7 @@ Y_{imc} = \sum_{a \neq 2} \beta_a \,(\mathrm{Edad}_{ai} \times \mathrm{Afectada}
 {\small
 \renewcommand{\arraystretch}{1.35}
 \begin{tabular}{@{}l l@{}}
-{\color{muted}$Y_{imc}$} & Salud mental a los 15--18 años, PHQ-4 \\
+{\color{muted}$Y_{imc}$} & Salud mental a los 14--18 años, PHQ-4 \\
 {\color{muted}$\mathrm{Edad}_{ai}$} & Edad al terremoto: 6--11 meses, 1 año o 3--4 años; referencia, 2 años \\
 {\color{muted}$\mathrm{Afectada}_m$} & Comuna en la zona de daño destructivo \\
 {\color{muted}$\psi_m$, $\theta_c$} & Efectos fijos de comuna y de cohorte de nacimiento \\
