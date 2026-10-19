@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 Figuras vectoriales de la presentación en LaTeX para el advisor
-(presentacion/advisor.tex): fondo blanco, IBM Plex Sans como en las
+(presentacion/advisor.tex): fondo blanco, Latin Modern como en las
 diapositivas, intervalos al 95% y nada más.
 
   mapa.pdf         aceleración máxima del suelo por comuna, centro-sur
@@ -50,6 +50,7 @@ Uso:    python3 scripts/28_beamer_advisor.py
 """
 import importlib.util
 import json
+import subprocess
 import unicodedata
 import warnings
 from pathlib import Path
@@ -57,6 +58,7 @@ from pathlib import Path
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.patheffects as pe                  # noqa: E402
+from matplotlib import font_manager                  # noqa: E402
 import matplotlib.pyplot as plt                      # noqa: E402
 from matplotlib.collections import PatchCollection   # noqa: E402
 from matplotlib.colors import LinearSegmentedColormap  # noqa: E402
@@ -73,13 +75,21 @@ p27 = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(p27)
 lee, edades_bebes, coma = p27.lee, p27.edades_bebes, p27.coma
 OUTD = Path("presentacion/figuras")
-INK, ACC, MUTED = "#17212B", "#2B5FA8", "#55606B"
-GRIS, NARANJA, EJE, GRID = "#8A939B", "#B4561B", "#9AA3AB", "#E6E8EB"
-BANDA = "#E8EDF5"
+# verde botella y ocre sobre negro y grises neutros
+INK, ACC, MUTED = "#1A1A1A", "#1B6A4E", "#5C5C5C"
+GRIS, OCRE, EJE, GRID = "#8C8C8C", "#A06F00", "#A3A3A3", "#E6E6E6"
+BANDA = "#E4EFE9"
+CITA = "#2B5FA8"          # las citas y lo de Gillmore, siempre en azul
 MM = 1 / 25.4
+# Latin Modern, la letra de LaTeX, desde la instalación de TeX
+for _r in subprocess.run(["kpsewhich", "lmroman10-regular.otf",
+                         "lmroman10-bold.otf", "lmroman10-italic.otf"],
+                        capture_output=True, text=True).stdout.split():
+    font_manager.fontManager.addfont(_r)
 plt.rcParams.update({
-    "font.family": "IBM Plex Sans", "font.size": 8,
-    "axes.unicode_minus": True, "pdf.fonttype": 42,
+    "font.family": "Latin Modern Roman", "mathtext.fontset": "cm",
+    "font.size": 8,
+    "axes.unicode_minus": True, "pdf.fonttype": 3,
     "axes.linewidth": 0.6, "axes.edgecolor": EJE,
     "xtick.color": MUTED, "ytick.color": MUTED,
     "xtick.labelcolor": INK, "ytick.labelcolor": INK,
@@ -158,10 +168,10 @@ def mapa():
                 centros[cod] = (ext[:, 0].mean(), ext[:, 1].mean())
     f = plt.figure(figsize=(50 * MM, 68 * MM))
     ax = f.add_axes([0.0, 0.10, 1.0, 0.90])
-    ax.add_collection(PatchCollection(no, facecolor="#E4E6E9",
+    ax.add_collection(PatchCollection(no, facecolor="#E6E6E6",
                                       edgecolor="white", lw=0.12,
                                       rasterized=True))
-    ax.add_collection(PatchCollection(si, facecolor="#E3A27A",
+    ax.add_collection(PatchCollection(si, facecolor="#D9A936",
                                       edgecolor="white", lw=0.12,
                                       rasterized=True))
     halo = [pe.withStroke(linewidth=1.6, foreground="white")]
@@ -180,8 +190,8 @@ def mapa():
     ax.set_ylim(-41.6, -30.4)
     ax.set_aspect(1 / np.cos(np.radians(36)))
     ax.axis("off")
-    h = [matplotlib.patches.Patch(color="#E3A27A", label="Zona afectada"),
-         matplotlib.patches.Patch(color="#E4E6E9", label="No afectada")]
+    h = [matplotlib.patches.Patch(color="#D9A936", label="Zona afectada"),
+         matplotlib.patches.Patch(color="#E6E6E6", label="No afectada")]
     f.legend(handles=h, loc="lower center", ncol=2, frameon=False,
              fontsize=7, handlelength=1.0, handleheight=0.8,
              columnspacing=1.0, handletextpad=0.4, borderaxespad=0.1)
@@ -275,7 +285,7 @@ def diseno():
     ys = np.arange(len(filas))[::-1]
     for y, (lab, et) in zip(ys, filas):
         t = lee(NV, et)
-        fila(a, y, t, NARANJA if t[2] < 0.05 else ACC)
+        fila(a, y, t, OCRE if t[2] < 0.05 else ACC)
     a.set_yticks(ys)
     a.set_yticklabels([r[0] for r in filas])
     a.set_xlim(-0.6, 0.55)
@@ -297,7 +307,7 @@ def diseno():
             ("Talla", lee(NV, "- talla (z):", s2)),
             ("Función ejecutiva", lee(NV, "- Hearts & Flowers (z):", s2))]
     ys = [7, 6, 5, 3, 2, 1]
-    for y, (lab, t), col in zip(ys, expu + plac, [ACC] * 3 + [NARANJA] * 3):
+    for y, (lab, t), col in zip(ys, expu + plac, [ACC] * 3 + [OCRE] * 3):
         fila(b, y, t, col)
     b.set_yticks(ys + [8, 4])
     b.set_yticklabels([r[0] for r in expu + plac]
@@ -305,7 +315,7 @@ def diseno():
     for tl in b.get_yticklabels()[-2:]:
         tl.set_fontweight("semibold")
     b.get_yticklabels()[-2].set_color(ACC)
-    b.get_yticklabels()[-1].set_color(NARANJA)
+    b.get_yticklabels()[-1].set_color(OCRE)
     b.set_xlim(-0.5, 0.78)
     b.set_ylim(0.4, 8.6)
     b.xaxis.set_major_formatter(matplotlib.ticker.FuncFormatter(
@@ -342,9 +352,9 @@ def trayectoria():
                 ha="right" if izq else "left", va="center", fontsize=7,
                 color=ACC, fontweight="semibold", linespacing=1.1)
     x, t, nom = propio
-    ic(ax, x, t, NARANJA, marca="D", ms=4.2)
+    ic(ax, x, t, OCRE, marca="D", ms=4.2)
     ax.text(x + 0.07, t[0], f"{coma(t[0])}{estrellas(t[2])}\n{nom}",
-            ha="left", va="center", fontsize=7, color=NARANJA,
+            ha="left", va="center", fontsize=7, color=OCRE,
             fontweight="semibold", linespacing=1.1)
     olas = (2010, 2012, 2017, 2024)
     ax.set_xticks(range(4))
@@ -359,7 +369,7 @@ def trayectoria():
     ax.set_ylabel("DE; arriba, más problemas", color=MUTED, fontsize=7.5)
     h = [Line2D([], [], marker="o", ls="none", ms=4.6, color=ACC,
                 label="Reporta la madre o el cuidador"),
-         Line2D([], [], marker="D", ls="none", ms=4.2, color=NARANJA,
+         Line2D([], [], marker="D", ls="none", ms=4.2, color=OCRE,
                 label="Reporta el adolescente")]
     ax.legend(handles=h, loc="lower right", frameon=False, fontsize=7,
               handletextpad=0.3, borderaxespad=0.2)
@@ -418,7 +428,7 @@ def variables():
     c = pd.read_csv("reports/exploratorio_coefs.csv")
     c = c[c.ref == "24-35m"]
     cmap = LinearSegmentedColormap.from_list("dano",
-                                             [ACC, "#F2F1EE", NARANJA])
+                                             [ACC, "#F2F1EE", OCRE])
     columnas = [["Mental health", "Well-being", "Peers and victimization"],
                 ["Cognition and school", "Risk behaviors", "Daily life"],
                 ["Family and social life",
@@ -480,8 +490,8 @@ def variables():
 
 # estilo de los gráficos de resultados: el de una figura de paper de
 # economía (serif, barras de error con remate, leyenda arriba, sin grilla)
-AZUL, MARRON, GRISR = "#3D6AA2", "#B5652E", "#7F7F7F"
-PAPER = {"font.family": "STIXGeneral", "mathtext.fontset": "stix",
+VERDE, GRISR = ACC, "#7F7F7F"
+PAPER = {"font.family": "Latin Modern Roman", "mathtext.fontset": "cm",
          "font.size": 8, "axes.linewidth": 0.8, "axes.edgecolor": "black",
          "xtick.color": "black", "ytick.color": "black",
          "xtick.labelcolor": "black", "ytick.labelcolor": "black",
@@ -518,9 +528,9 @@ def salud_mental():
     quienes tenían dos años, en tres paneles: todos, chicas y chicos."""
     claves = ["0-11m", "12-23m", "36-59m"]
     paneles = [
-        (f"Todos (n = {miles(9996)})", AZUL, "o", False,
+        (f"Todos (n = {miles(9996)})", VERDE, "o", False,
          [frente_a_dos("z_phq4", k) for k in claves]),
-        (f"Mujeres (n = {miles(4961)})", MARRON, "^", False,
+        (f"Mujeres (n = {miles(4961)})", OCRE, "^", False,
          [lee(PN, f"- {k}:", "## Perfil PHQ-4, Chicas") for k in claves]),
         (f"Varones (n = {miles(5035)})", GRISR, "o", True,
          [lee(PN, f"- {k}:", "## Perfil PHQ-4, Chicos") for k in claves])]
@@ -565,7 +575,7 @@ def resto():
     c = pd.read_csv("reports/exploratorio_coefs.csv")
     c = c[(c.ref == "24-35m") & ~c["var"].isin(FUERA)]
     cmap = LinearSegmentedColormap.from_list("dano",
-                                             [ACC, "#F2F1EE", NARANJA])
+                                             [ACC, "#F2F1EE", OCRE])
     columnas = [["Well-being", "Peers and victimization", "Risk behaviors"],
                 ["Cognition and school", "Daily life"],
                 ["Family and social life",
@@ -600,7 +610,7 @@ def resto():
                 filas_dm = sub["var"].nunique()
                 ax.add_patch(matplotlib.patches.Rectangle(
                     (0.05, y0 - 0.5), ancho - 0.05, filas_dm + 1.0,
-                    fill=False, ec=AZUL, lw=0.8, ls="--", zorder=6))
+                    fill=False, ec=VERDE, lw=0.8, ls="--", zorder=6))
             for v in dict.fromkeys(sub["var"]):
                 if v in RECUADRO:
                     ax.add_patch(matplotlib.patches.Rectangle(
@@ -638,7 +648,7 @@ def resto():
     f.text(0.494, 0.057, "Podría explicar la salud mental",
            ha="left", va="center", fontsize=6.5, color=MUTED)
     f.patches.append(matplotlib.patches.Rectangle(
-        (0.745, 0.044), 0.018, 0.026, fill=False, ec=AZUL, lw=0.8, ls="--",
+        (0.745, 0.044), 0.018, 0.026, fill=False, ec=VERDE, lw=0.8, ls="--",
         transform=f.transFigure, figure=f))
     f.text(0.769, 0.057, "Salud mental y bienestar", ha="left",
            va="center", fontsize=6.5, color=MUTED)
@@ -663,7 +673,7 @@ def lactancia():
         # (a) primera etapa
         for x, (g, _) in enumerate(grupos):
             h1 = barra(a, x - 0.12, lee(LM, f"{g} meses, destete en los 3"),
-                       AZUL, "o", escala=100)
+                       VERDE, "o", escala=100)
             h2 = barra(a, x + 0.12, lee(LM, f"{g} meses, destete en los 4"),
                        GRISR, "o", hueco=True, escala=100)
         a.set_xticks(range(2))
@@ -688,8 +698,8 @@ def lactancia():
         destete = {"6-11": lee(LM, "PHQ-4, destetados en los 3 meses"),
                    "12-18": lee(LM, "12-18 meses, PHQ-4, destetados")}
         for x, (g, _) in enumerate(grupos):
-            h3 = barra(b, x - 0.12, brecha[g], AZUL, "s")
-            h4 = barra(b, x + 0.12, destete[g], MARRON, "^")
+            h3 = barra(b, x - 0.12, brecha[g], VERDE, "s")
+            h4 = barra(b, x + 0.12, destete[g], OCRE, "^")
         b.set_xticks(range(2))
         b.set_xticklabels([g[1] for g in grupos], fontsize=8)
         b.set_xlim(-0.5, 1.5)
@@ -726,11 +736,11 @@ def indices_fig():
         return out
     claves = ["0-11m", "12-23m", "36-59m"]
     etiquetas = ["Bebés", "1 año", "3–4 años"]
-    series = [("Adversidad, cuidador", AZUL, "o", False,
+    series = [("Adversidad, cuidador", VERDE, "o", False,
                tramo("- todos, adversidad:")),
-              ("Familia", MARRON, "^", False, tramo("- todos, familia:")),
+              ("Familia", OCRE, "^", False, tramo("- todos, familia:")),
               ("Colegio", GRISR, "o", True, tramo("- todos, colegio:")),
-              ("Economía", AZUL, "s", True, tramo("- todos, economia:"))]
+              ("Economía", VERDE, "s", True, tramo("- todos, economia:"))]
     sin, con = tramo("- sin índices:"), tramo("- con los cuatro:")
     with plt.rc_context(PAPER):
         f = plt.figure(figsize=(144 * MM, 60 * MM))
@@ -760,7 +770,7 @@ def indices_fig():
                  borderaxespad=0.2)
         h1 = h2 = None
         for x, k in enumerate(claves):
-            h1 = barra(b, x - 0.12, sin[k], AZUL, "o")
+            h1 = barra(b, x - 0.12, sin[k], VERDE, "o")
             h2 = barra(b, x + 0.12, con[k], GRISR, "o", hueco=True)
         b.set_xticks(range(3))
         b.set_xticklabels(etiquetas, fontsize=8)
@@ -796,8 +806,8 @@ def descomposicion():
     que acompaña al hogar, al colegio y lo que queda sin explicar
     (reports/descomposicion.csv, Gelbach con bootstrap de comunas)."""
     c = pd.read_csv("reports/descomposicion.csv")
-    capas = [("hogar", "Hogar: familia, adversidad y economía", MARRON),
-             ("colegio", "Colegio", AZUL),
+    capas = [("hogar", "Hogar: familia, adversidad y economía", OCRE),
+             ("colegio", "Colegio", VERDE),
              ("sin explicar", "Sin explicar", "#D4D4D4")]
     with plt.rc_context(PAPER):
         f = plt.figure(figsize=(144 * MM, 60 * MM))
@@ -869,7 +879,7 @@ def orden_temporal():
                 t24 = tuple(c.loc[(m, 2024, k), ["b", "se", "p"]])
                 h1 = barra(ax, x - 0.13, t17, GRISR, "o", hueco=True,
                            escala=esc)
-                h2 = barra(ax, x + 0.13, t24, AZUL, "o", escala=esc)
+                h2 = barra(ax, x + 0.13, t24, VERDE, "o", escala=esc)
             ax.set_xticks(range(3))
             ax.set_xticklabels(ETIQUETAS, fontsize=8)
             ax.set_xlim(-0.5, 2.5)
@@ -899,12 +909,12 @@ def ventanas():
         ejes_paper(ax)
         for x, t in enumerate(tramos):
             if t == "ref":
-                ax.plot(x, 0, "^", ms=6.0, color=MARRON, mfc="white",
+                ax.plot(x, 0, "^", ms=6.0, color=OCRE, mfc="white",
                         mew=1.0, zorder=3)
                 ax.text(x, -0.07, "referencia", ha="center", va="top",
                         fontsize=7.5, color="#5A5A5A")
                 continue
-            barra(ax, x, tuple(c.loc[t, ["b", "se", "p"]]), MARRON, "^")
+            barra(ax, x, tuple(c.loc[t, ["b", "se", "p"]]), OCRE, "^")
         ax.set_xticks(range(len(tramos)))
         ax.set_xticklabels(etiquetas, fontsize=8)
         ax.set_xlim(-0.5, len(tramos) - 0.5)
@@ -934,7 +944,7 @@ def hogar_2017():
             ax = f.add_axes([0.135 + i * 0.485, 0.13, 0.35, 0.72])
             ejes_paper(ax)
             for x, k in enumerate(CLAVES):
-                barra(ax, x, tuple(c.loc[(m, k), ["b", "se", "p"]]), AZUL,
+                barra(ax, x, tuple(c.loc[(m, k), ["b", "se", "p"]]), VERDE,
                       "o", escala=esc)
             ax.set_xticks(range(3))
             ax.set_xticklabels(ETIQUETAS, fontsize=8)
@@ -969,7 +979,7 @@ def estres_madre():
             ax.set_xlabel(f"Edad {quien} al terremoto, en meses",
                           fontsize=8)
         hs = []
-        for zona, col, hueco, dx in (("afectada", MARRON, False, 0.12),
+        for zona, col, hueco, dx in (("afectada", OCRE, False, 0.12),
                                      ("no afectada", GRISR, True, -0.12)):
             for x, t in enumerate(tramos):
                 r = niv.loc[(t, zona)]
@@ -987,7 +997,7 @@ def estres_madre():
                  frameon=False, fontsize=7.5, handletextpad=0.3,
                  columnspacing=1.2, borderaxespad=0.1)
         for x, t in enumerate(tramos):
-            barra(b, x, tuple(pen.loc[t, ["b", "se", "p"]]), MARRON, "^")
+            barra(b, x, tuple(pen.loc[t, ["b", "se", "p"]]), OCRE, "^")
         b.set_ylim(-0.3, 0.5)
         formato_eje(b, 0.1)
         b.set_ylabel("Más síntomas a los 15–18 si\nla madre tuvo estrés (DE)",
@@ -1011,7 +1021,7 @@ def anticipo():
             ax.spines[lado].set_visible(False)
         for x0, x1 in ((0, 1.5), (3.5, 4.2)):
             ax.axvspan(x0, x1, color="#F1F1F1", lw=0, zorder=0)
-        h1, = ax.plot(x, u, color=MARRON, lw=2.2, zorder=3)
+        h1, = ax.plot(x, u, color=OCRE, lw=2.2, zorder=3)
         h2 = ax.axhline(0.5, color=GRISR, lw=1.3, ls="--", zorder=2)
         for xc, yc, txt in ((0.75, 1.13, "Siente el estrés\nde la madre"),
                             (2.5, 0.33, "Ya no depende tanto de ella\n"
@@ -1047,8 +1057,8 @@ def canal_hogar():
                ("conflicto", "Conflicto\nen casa\n(2010)", False),
                ("hacinamiento", "Vivienda\nhacinada\n(2010)", False),
                ("precaria", "Vivienda\nprecaria\n(2010)", False)]
-    series = [("6-11", "6–11 meses", MARRON, "^", False, -0.22),
-              ("12-23", "1 año", AZUL, "o", False, 0.0),
+    series = [("6-11", "6–11 meses", OCRE, "^", False, -0.22),
+              ("12-23", "1 año", VERDE, "o", False, 0.0),
               ("36-49", "3–4 años", GRISR, "o", True, 0.22)]
 
     def ic(r):
@@ -1066,7 +1076,7 @@ def canal_hogar():
         a.set_xticklabels([lab for _, lab, _ in indices], fontsize=7.5)
         for tl, (_, _, gil) in zip(a.get_xticklabels(), indices):
             if gil:
-                tl.set_color(ACC)
+                tl.set_color(CITA)
         a.set_xlim(-0.55, len(indices) - 0.45)
         a.tick_params(axis="x", length=0)
         a.set_ylim(-0.4, 0.4)
@@ -1099,7 +1109,7 @@ def diada():
         for ax in (a, b, cc):
             ejes_paper(ax)
         hs = []
-        for zona, col, hueco, dx in (("afectada", MARRON, False, 0.13),
+        for zona, col, hueco, dx in (("afectada", OCRE, False, 0.13),
                                      ("no afectada", GRISR, True, -0.13)):
             for x, t in enumerate(tramos):
                 r = niv.loc[(t, zona)]
@@ -1121,7 +1131,7 @@ def diada():
                  borderaxespad=0.1)
         for x, (k, hueco) in enumerate((("sin pecho", True),
                                          ("con pecho", False))):
-            barra(b, x, tuple(lac.loc[k, ["b", "se", "p"]]), MARRON, "^",
+            barra(b, x, tuple(lac.loc[k, ["b", "se", "p"]]), OCRE, "^",
                   hueco)
         b.set_xticks([0, 1])
         b.set_xticklabels(["Sin\nlactancia\nactiva", "Con\nlactancia\nmaterna"],
@@ -1134,7 +1144,7 @@ def diada():
         b.set_title("PHQ-4 de la hija", fontsize=9,
                     pad=20)
         cc.bar(range(4), [100 * pec.loc[t, "b"] for t in tramos], 0.55,
-               color=MARRON, lw=0, zorder=2)
+               color=OCRE, lw=0, zorder=2)
         for x, t in enumerate(tramos):
             cc.text(x, 100 * pec.loc[t, "b"] + 1.5,
                     f"{100 * pec.loc[t, 'b']:.0f}%", ha="center",
@@ -1168,7 +1178,7 @@ def chicos():
             ax.spines[lado].set_visible(False)
         ax.axvline(0, color="#9A9A9A", lw=0.7, ls="--", zorder=1)
         hs = []
-        for g, col, marca, hueco, dy in (("chicas", MARRON, "^", False, -0.14),
+        for g, col, marca, hueco, dy in (("chicas", OCRE, "^", False, -0.14),
                                          ("chicos", GRISR, "o", True, 0.14)):
             for y, (k, _) in enumerate(filas):
                 r = c.loc[(k, g)]
@@ -1200,7 +1210,7 @@ def datos_elpi():
     """Las cuatro rondas de la ELPI que usamos: qué se mide en cada una y
     qué edad tenían los niños de la muestra (edad al terremoto, 6-49 meses;
     2012, 3-6 años; 2017, 8-12; 2024, 15-18). Rondas equiespaciadas."""
-    rondas = [(2010, "27-F y línea base", "0–4 años", NARANJA),
+    rondas = [(2010, "27-F y línea base", "0–4 años", OCRE),
               (2012, "Estrés de la madre\ny lactancia", "3–6 años", ACC),
               (2017, "Hogar y colegio", "8–12 años", ACC),
               (2024, "Salud mental, PHQ-4", "15–18 años", ACC)]

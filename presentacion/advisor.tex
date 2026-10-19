@@ -8,23 +8,23 @@
 \documentclass[aspectratio=169,11pt]{beamer}
 \usepackage[spanish,es-nodecimaldot,es-noshorthands]{babel}
 \usepackage{fontspec}
-\setsansfont{IBMPlexSans}[
-  Path=../scripts/fonts/, Extension=.ttf,
-  UprightFont=*-Regular, BoldFont=*-SemiBold, ItalicFont=*-Italic]
+\usefonttheme{serif}
+\newfontfamily\demi{Latin Modern Roman Demi}
 \usepackage{array}
 \usepackage{booktabs}
 \usepackage{pifont}
 
-\definecolor{ink}{HTML}{17212B}
-\definecolor{acc}{HTML}{2B5FA8}
-\definecolor{muted}{HTML}{55606B}
-\definecolor{naranja}{HTML}{B4561B}
-\definecolor{linea}{HTML}{C9CED3}
+\definecolor{ink}{HTML}{1A1A1A}
+\definecolor{acc}{HTML}{1B6A4E}
+\definecolor{muted}{HTML}{5C5C5C}
+\definecolor{ocre}{HTML}{A06F00}
+\definecolor{linea}{HTML}{CCCCCC}
+\definecolor{azul}{HTML}{2B5FA8}
 
 \setbeamercolor{normal text}{fg=ink,bg=white}
 \setbeamercolor{frametitle}{fg=ink}
 \setbeamercolor{structure}{fg=acc}
-\setbeamerfont{frametitle}{size=\Large,series=\bfseries}
+\setbeamerfont{frametitle}{size=\Large,family=\demi}
 \setbeamertemplate{navigation symbols}{}
 \setbeamertemplate{frametitle}{\vspace*{5mm}\insertframetitle\par}
 \setbeamertemplate{footline}{%
@@ -34,16 +34,29 @@
 
 \newcommand{\sub}[1]{{\leavevmode\color{muted}#1}}
 \newcommand{\nota}[1]{\vfill\noindent\parbox{0.9\textwidth}{\raggedright\scriptsize\color{muted}#1}\par\vspace*{1mm}}
-\newcommand{\cita}[1]{{\footnotesize\color{acc}#1}}
-\newcommand{\notachica}[1]{\vfill\noindent\parbox{0.9\textwidth}{\raggedright\fontsize{7}{8.4}\selectfont\color{muted}#1}\par\vspace*{1mm}}
-\newcommand{\no}{{\leavevmode\color{naranja}\ding{55}}}
+\newcommand{\cita}[1]{{\footnotesize\color{azul}#1}}
+\newcommand{\notachica}[1]{\vfill\noindent\parbox{\textwidth}{\raggedright\fontsize{7}{8.4}\selectfont\color{muted}#1}\par\vspace*{1mm}}
+\newcommand{\no}{{\leavevmode\color{ocre}\ding{55}}}
 \newcommand{\si}{{\leavevmode\color{acc}\ding{51}}}
 \newcommand{\canal}[2]{{\leavevmode\bfseries\color{#1}#2}}
 
-\title{27-F y salud mental adolescente}
+\title{Edad al terremoto y salud mental en la adolescencia}
 \date{Octubre de 2026}
 
 \begin{document}
+
+% ----------------------------------------------------------------- Título
+\begin{frame}[plain,noframenumbering]
+\vfill
+\begin{center}
+{\demi\LARGE Edad al terremoto y salud mental\\[1.5mm] en la adolescencia\par}
+\vspace{4mm}
+{\large\color{muted} Evidencia del 27-F en Chile\par}
+\vspace{10mm}
+{\small Octubre de 2026\par}
+\end{center}
+\vfill
+\end{frame}
 
 % ------------------------------------------------------------------ 1. Chile
 \begin{frame}
@@ -86,7 +99,7 @@ on the timing (age of onset and duration).\\
 When stress occurs early in life it can have profound\\
 and lasting effects on brain organization and function.”\par}
 \vspace{2mm}
-{\small\color{acc}(Gee y Casey, 2015, p.~184)\par}
+{\small\color{azul}(Gee y Casey, 2015, p.~184)\par}
 \end{center}
 \vfill
 \end{frame}
@@ -100,11 +113,11 @@ and lasting effects on brain organization and function.”\par}
 \begin{tabular}{@{}>{\raggedright\arraybackslash}p{42mm}
                 >{\raggedright\arraybackslash}p{96mm}@{}}
  & \sub{Cómo opera} \\
-\canal{naranja}{Entorno socioeconómico y familiar}
+\canal{ocre}{Entorno socioeconómico y familiar}
  & El terremoto reduce ingresos, daña la vivienda y aumenta el conflicto
    en casa \cita{(Conger y Donnellan, 2007; Almond, Currie y Duque,
    2018)} \\
-\canal{naranja}{Transmisión del estrés\newline de la madre}
+\canal{ocre}{Transmisión del estrés\newline de la madre}
  & El lactante regula su estrés a través de la madre. Si ella está estresada, se
    lo transmite en el contacto diario \cita{(Persson y Rossin-Slater, 2018)} \\
 \end{tabular}}
@@ -213,7 +226,7 @@ significativas solo al 10\%.}
       lactancia materna, el 62\% de las expuestas entre los 6 y los 11 meses.
 \end{itemize}
 \vspace{1mm}
-{\color{naranja}\bfseries Lo que queda abierto}
+{\color{ocre}\bfseries Lo que queda abierto}
 \begin{itemize}\setlength{\itemsep}{0.8mm}
 \item ¿Qué explica el efecto a los 3--4 años, si no opera a través del entorno
       socioeconómico y familiar ni del estrés materno?\\[1mm]
