@@ -9,7 +9,7 @@ estandarizados, así que no se reporta su media en el grupo de referencia.
 Ancho fijo (\\anchotabla, lo fija la diapositiva). Una tabla por
 diapositiva, con la misma especificación que el gráfico:
 
-  desc     descriptivas de la muestra, todos y por zona (diapositiva 4)
+  desc     descriptivas de la muestra, todos y por sexo (diapositiva 4)
   balance  balance en lo fijado antes del terremoto, chicas, y el PHQ-4 con
            controles al nacer (diapositiva 5; scripts/33_ventanas.py)
   phq4     PHQ-4 por edad al terremoto, todos, chicas y chicos
@@ -264,19 +264,20 @@ def a5():
 # ------------------------------------- descriptivas de la muestra, diapo 4
 
 def desc():
+    """Media y DE de toda la muestra y medias por sexo, ponderadas; sin
+    comparar zonas, que no es la comparación del diseño."""
     p34 = modulo("p34", "34_estres_madre.py")
     d = p34.carga()
     d = d[d.w > 0].copy()
-    d["est"] = d.estrato.astype(int).astype(str)
     d["phq4_alto"] = (d.phq4_score >= 6).astype(float).where(
         d.phq4_score.notna())
     d["edad_ent"] = d.edad_meses / 12
     filas = [("Panel A. Adolescent, 2024", None),
              ("PHQ-4 score (0--12)", "phq4_score"),
              ("PHQ-4 of 6 or more (share)", "phq4_alto"),
-             ("Girl (share)", "mujer"),
              ("Age at interview (years)", "edad_ent"),
              ("Age at the earthquake (months)", "edadq_m"),
+             ("Affected municipality (share)", "EQ"),
              ("Panel B. Birth and household, 2010", None),
              ("Birth weight (kg)", "peso_nacer"),
              ("Gestation (weeks)", "sem_gest"),
@@ -287,28 +288,29 @@ def desc():
              ("Panel C. After the earthquake, 2012", None),
              ("Breastfed on 27-F (share)", "pecho"),
              ("Mother reported stress (share)", "estres12")]
+
+    def media(x, v):
+        x = x.dropna(subset=[v])
+        return np.average(x[v], weights=x.w)
+
     cuerpo = []
     for lab, v in filas:
         if v is None:
             if cuerpo:
                 cuerpo.append("\\addlinespace[3pt]")
-            cuerpo.append(f"\\multicolumn{{7}}{{@{{}}l}}{{\\emph{{{lab}}}}} \\\\")
+            cuerpo.append(f"\\multicolumn{{5}}{{@{{}}l}}{{\\emph{{{lab}}}}} \\\\")
             continue
         x = d.dropna(subset=[v])
-        m = np.average(x[v], weights=x.w)
+        m = media(x, v)
         sd = np.sqrt(np.average((x[v] - m) ** 2, weights=x.w))
-        ma = np.average(x[v][x.EQ == 1], weights=x.w[x.EQ == 1])
-        mn = np.average(x[v][x.EQ == 0], weights=x.w[x.EQ == 0])
-        r = smf.wls(f"{v} ~ EQ", data=x, weights=x.w).fit(
-            cov_type="cluster", cov_kwds={"groups": x.est})
-        dif = f"{r.params['EQ']:.2f}".replace("-", "$-$")
-        cuerpo.append(fila(lab, [f"{m:.2f}", f"{sd:.2f}", f"{ma:.2f}",
-                                 f"{mn:.2f}", dif, f"{r.pvalues['EQ']:.2f}"]))
-    pie = [fila("Adolescents", [f"{len(d):,}", "", f"{int((d.EQ == 1).sum()):,}",
-                                f"{int((d.EQ == 0).sum()):,}", "", ""])]
-    guarda("desc.tex", tabla(["Mean", "SD", "Affected", "Unaffected",
-                              "Difference", "$p$-value"], cuerpo, pie,
-                             [("All", 2), ("By municipality", 4)]))
+        cuerpo.append(fila(lab, [f"{m:.2f}", f"{sd:.2f}",
+                                 f"{media(d[d.mujer == 1], v):.2f}",
+                                 f"{media(d[d.mujer == 0], v):.2f}"]))
+    pie = [fila("Adolescents", [f"{len(d):,}", "",
+                                f"{int((d.mujer == 1).sum()):,}",
+                                f"{int((d.mujer == 0).sum()):,}"])]
+    guarda("desc.tex", tabla(["Mean", "SD", "Girls", "Boys"], cuerpo, pie,
+                             [("All", 2), ("Mean by sex", 2)]))
 
 
 # ------------------------------------------ balance, diapositiva 5
