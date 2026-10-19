@@ -1,14 +1,14 @@
 # El estrés de la madre tras el terremoto (scripts/34_estres_madre.py)
 
 ## 1. Cuánto golpeó a las madres, por edad del hijo
-- 6-11 meses: estrés o angustia 0.150 en zona afectada y 0.038 fuera; síntomas 0.83 y 0.16; N=1270
-- 12-23 meses: estrés o angustia 0.156 en zona afectada y 0.036 fuera; síntomas 0.86 y 0.21; N=2459
+- 6-11 meses: estrés o angustia 0.150 en zona afectada y 0.038 fuera; síntomas 0.83 y 0.16; N=1269
+- 12-23 meses: estrés o angustia 0.156 en zona afectada y 0.036 fuera; síntomas 0.86 y 0.21; N=2456
 - 24-35 meses: estrés o angustia 0.178 en zona afectada y 0.037 fuera; síntomas 0.88 y 0.24; N=2407
-- 36-49 meses: estrés o angustia 0.178 en zona afectada y 0.032 fuera; síntomas 0.92 y 0.23; N=2774
+- 36-49 meses: estrés o angustia 0.178 en zona afectada y 0.032 fuera; síntomas 0.92 y 0.23; N=2772
 Perfil frente a las madres de hijos de 2 años, zona afectada menos no afectada (EF de comuna y cohorte, sin controles):
-- estres12: 6-11 -0.017 (ee 0.021, p=0.429) | 12-23 -0.016 (ee 0.017, p=0.347) | 36-49 +0.011 (ee 0.015, p=0.470) | N=8910
-- n_sint12: 6-11 +0.049 (ee 0.056, p=0.375) | 12-23 +0.029 (ee 0.050, p=0.555) | 36-49 +0.058 (ee 0.049, p=0.235) | N=8910
-- dano12: 6-11 +0.005 (ee 0.012, p=0.688) | 12-23 +0.010 (ee 0.008, p=0.203) | 36-49 +0.006 (ee 0.009, p=0.465) | N=8908
+- estres12: 6-11 -0.016 (ee 0.021, p=0.433) | 12-23 -0.016 (ee 0.017, p=0.353) | 36-49 +0.011 (ee 0.015, p=0.474) | N=8904
+- n_sint12: 6-11 +0.050 (ee 0.056, p=0.367) | 12-23 +0.030 (ee 0.050, p=0.545) | 36-49 +0.058 (ee 0.049, p=0.240) | N=8904
+- dano12: 6-11 +0.005 (ee 0.012, p=0.683) | 12-23 +0.010 (ee 0.008, p=0.214) | 36-49 +0.006 (ee 0.009, p=0.463) | N=8902
 
 ## 2. En qué hijos deja huella: PHQ-4 según el estrés de la madre
 - estres12, todos: 6-11 +0.118 (ee 0.080, p=0.138) | 12-23 +0.128** (ee 0.053, p=0.015) | 24-35 -0.040 (ee 0.050, p=0.428) | 36-49 +0.009 (ee 0.048, p=0.851) | bebés menos 2 años +0.157* (ee 0.094, p=0.093) | N=8904

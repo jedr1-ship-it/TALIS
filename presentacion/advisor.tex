@@ -72,7 +72,7 @@
 
 % ------------------------------------------------------------------ 1. Chile
 \begin{frame}[label=chile]
-\frametitle{Do the effects of an earthquake experienced at ages 0--4 persist?%
+\frametitle{Do the effects of an earthquake in early childhood persist?%
 \boton{\tabla{figpga}{PGA map}}}
 \begin{columns}[c,onlytextwidth]
 \column{0.34\textwidth}
@@ -82,7 +82,7 @@
 \renewcommand{\arraystretch}{1.45}
 \begin{tabular}{@{}p{18mm}>{\raggedright\arraybackslash}p{70mm}@{}}
 \textbf{Shock}   & 27 February 2010 (27-F), magnitude 8.8 \\
-\textbf{Exposed} & Children aged 0--4 \\
+\textbf{Exposed} & Children aged 6 months to 4 years \\
 \end{tabular}
 
 \vspace{4mm}
@@ -148,14 +148,15 @@ organization and function.”}
 \begin{tabular}{@{}>{\raggedright\arraybackslash}p{24mm}
                 >{\raggedright\arraybackslash}p{108mm}@{}}
 \sub{Survey}      & ELPI, Early Childhood Longitudinal Survey, Chile \\
-\sub{Sample}      & 9,996 adolescents born in 2006--2009; 4,961 girls \\
+\sub{Sample}      & 9,996 adolescents born between January 2006 and August 2009, aged 6 to 49 months on 27-F; 4,961 girls \\
 \sub{Respondents} & The caregiver in every round; the child in 2017 and 2024 \\
 \end{tabular}\par}
 \end{frame}
 
 % ----------------------------------------------------------------- 4. Diseño
 \begin{frame}[label=spec]
-\frametitle{Econometric specification\boton{\tabla{tabbal}{Balance}}}
+\frametitle{Econometric specification%
+\boton{\tabla{tabbal}{Balance}\hspace{1mm}\tabla{tabatr}{Attrition}}}
 \vspace{3mm}
 \begin{equation*}
 Y_{imc} = \sum_{a \neq 2} \beta_a \,(\mathrm{Age}_{ai} \times \mathrm{Affected}_m)
@@ -168,9 +169,13 @@ Y_{imc} = \sum_{a \neq 2} \beta_a \,(\mathrm{Age}_{ai} \times \mathrm{Affected}_
 {\color{muted}$Y_{imc}$} & Mental health at ages 14--18, PHQ-4 \\
 {\color{muted}$\mathrm{Age}_{ai}$} & Age at the earthquake: 6--11 months, 1 year, or 3--4 years; reference, 2 years \\
 {\color{muted}$\mathrm{Affected}_m$} & Municipality in the zone of destructive damage \\
-{\color{muted}$\psi_m$, $\theta_c$} & Municipality and birth-cohort fixed effects \\
-{\color{muted}$X_i$} & Child and household controls \\
+{\color{muted}$\psi_m$, $\theta_c$} & Municipality and birth-year fixed effects \\
+{\color{muted}$X_i$} & Linear trend in month of birth; child and household controls \\
 \end{tabular}}
+
+\nota{The earthquake date is the same for everyone, so age at the earthquake is a function of
+the month of birth. Replacing $\gamma_a$, $\theta_c$, and the trend with month-of-birth fixed
+effects leaves the estimates unchanged (Table A4).}
 \end{frame}
 
 % ---------------------------------------------------------- 4. Salud mental
@@ -193,10 +198,10 @@ is the difference between affected and unaffected municipalities, with 95\% CI.}
 {\small\raggedright The earthquake worsened the environment \cita{(Gillmore, 2026)},
 but with no differences by age\par}
 \centering
-\includegraphics{figuras/canal_hogar.pdf}
+\includegraphics[scale=0.94]{figuras/canal_hogar.pdf}
 
-\notachica{Measured in 2010, one to nine months after the earthquake. In blue,
-the mechanisms in \citanota{Gillmore (2026)}. Lower income, per capita; damaged housing,
+\notachica{Measured in 2010, one to nine months after the earthquake, except housing
+damage, reported in 2012. In blue, the mechanisms in \citanota{Gillmore (2026)}. Lower income, per capita; damaged housing,
 destroyed or with major damage; conflict at home, the mother shouting, being
 hostile, or hitting during the visit; overcrowded housing, persons per bedroom;
 precarious housing, an emergency shack (\emph{mediagua}) or a lent or shared
@@ -312,10 +317,10 @@ shaking; the map shows how shaking varied within and across them.
 \titulotabla{Table A1---Descriptive Statistics}{}{datos}
 \setlength{\anchotabla}{0.8\textwidth}\setlength{\anchonota}{\anchotabla}
 \centering
-{\scriptsize\renewcommand{\arraystretch}{0.82}\input{tablas/desc.tex}\par}
-\notatabla{Means and standard deviations weighted with ELPI sampling
-weights. Panel C was reported in 2012; breastfed means still breastfed on
-27-F.}
+{\scriptsize\renewcommand{\arraystretch}{0.8}\input{tablas/desc.tex}\par}
+\notatabla{Adolescents with a PHQ-4 score in 2024 (9,996 of 10,003), weighted
+with ELPI sampling weights. Panel C was reported in 2012; breastfed means still
+breastfed on 27-F.}
 \end{frame}
 
 \begin{frame}[label=tabbal]
@@ -326,9 +331,23 @@ Earthquake}{}{spec}
 {\scriptsize\input{tablas/balance.tex}\par}
 \notatabla{Girls. Each column regresses a characteristic fixed before the
 earthquake on the age group $\times$ affected interactions, with
-municipality, birth-cohort, and age-group fixed effects and no controls.
+municipality, birth-year, and age-group fixed effects and no controls.
 Birth weight, length, and gestation are standardized; the mother's education
 and age were reported in 2010. \input{tablas/balance_nota.tex}\errores}
+\end{frame}
+
+\begin{frame}[label=tabatr]
+\titulotabla{Table A3---Attrition between 2010 and 2024}{}{spec}
+\setlength{\anchotabla}{0.9\textwidth}\setlength{\anchonota}{\anchotabla}
+\centering
+{\scriptsize\renewcommand{\arraystretch}{0.92}\input{tablas/atricion.tex}\par}
+\notatabla{Children assessed in the 2010 baseline (14,161 of 15,175). Columns
+1--3: equals one if interviewed in 2024. Columns 4--5: standardized birth
+weight of all girls assessed in 2010 and of those interviewed in 2024. Age
+at the earthquake is the age at the 2010 assessment minus the months from
+27-F to the region's median assessment month, for stayers and leavers alike.
+The 2010 files do not identify the municipality: region fixed effects, no
+weights, and heteroskedasticity-robust standard errors in parentheses.}
 \end{frame}
 
 \begin{frame}[label=figphq]
@@ -342,21 +361,21 @@ normal, 3--5 as mild, 6--8 as moderate, and 9--12 as severe.}
 \end{frame}
 
 \begin{frame}[label=tabphq]
-\titulotabla{Table A3---Effect on Mental Health}{}{sm}
+\titulotabla{Table A4---Effect on Mental Health}{}{sm}
 \setlength{\anchotabla}{0.84\textwidth}\setlength{\anchonota}{\anchotabla}
 \centering
-{\scriptsize\input{tablas/phq4.tex}\par}
-\notatabla{The table reports the difference between affected and
-unaffected municipalities in the PHQ-4 score (standardized) for each age at
-the earthquake, relative to those aged 2. All regressions include
-municipality, birth-cohort, and age-group fixed effects and controls for age
-in months, sex, the mother's age and education, household size, and rural
-residence (2010), the mother's number of children, and family history of
-mental illness (2012), and use ELPI sampling weights. \errores}
+{\scriptsize\renewcommand{\arraystretch}{0.92}\input{tablas/phq4.tex}\par}
+\notatabla{Difference between affected and unaffected municipalities in the
+standardized PHQ-4 for each age at the earthquake, relative to those aged 2.
+Controls: a linear trend in month of birth, sex, the mother's age and
+education, household size, and rural residence (2010), the mother's number
+of children, and family history of mental illness (2012). Column 4 replaces
+the birth-year and age-group fixed effects and the trend with month-of-birth
+fixed effects. ELPI sampling weights. \errores}
 \end{frame}
 
 \begin{frame}[label=tabent]
-\titulotabla{Table A4---The Socioeconomic and Family Environment}{}{entorno}
+\titulotabla{Table A5---The Socioeconomic and Family Environment}{}{entorno}
 \setlength{\anchotabla}{1.1\textwidth}\setlength{\anchonota}{\textwidth}
 \centering
 {\scriptsize\resizebox{\textwidth}{!}{\input{tablas/entorno.tex}}\par}
@@ -366,11 +385,11 @@ earthquake, except housing damage, reported in 2012. Lower income, per
 capita; damaged housing, destroyed or with major damage; conflict at home,
 the mother shouting, being hostile, or hitting during the visit; overcrowded
 housing, persons per bedroom; precarious housing, an emergency shack or a
-lent or shared dwelling. Specification as in Table A3. \errores}
+lent or shared dwelling. Specification as in Table A4. \errores}
 \end{frame}
 
 \begin{frame}[label=tabdia]
-\titulotabla{Table A5---Maternal Stress, Breastfeeding, and Daughters'
+\titulotabla{Table A6---Maternal Stress, Breastfeeding, and Daughters'
 Mental Health}{}{diada}
 \setlength{\anchotabla}{\textwidth}\setlength{\anchonota}{\textwidth}
 \centering
@@ -380,29 +399,30 @@ distress, or anxiety after the earthquake (2012); breastfed equals one if
 the child was still breastfed on 27-F (2012 report). Column 1 is the
 estimate in the figure; column 2 lets stress and breastfeeding vary with
 the mother's education and employment (2010); column 3 also lets stress vary
-at 6--11 months. Controls and weights as in Table A3. \errores}
+at 6--11 months. Controls and weights as in Table A4. \errores}
 \end{frame}
 
 \begin{frame}[label=tabmed]
-\titulotabla{Table A6---Maternal Stress and Breastfeeding by Age at the
+\titulotabla{Table A7---Maternal Stress and Breastfeeding by Age at the
 Earthquake}{}{diada}
 \setlength{\anchotabla}{0.7\textwidth}\setlength{\anchonota}{\anchotabla}
 \centering
 {\footnotesize\input{tablas/medias.tex}\par}
 \notatabla{Unweighted means, with standard errors in parentheses, by the
-child's age at the earthquake. Columns 1 and 2 report the share of mothers
-who reported stress, distress, or anxiety after the earthquake (2012), in
+child's age at the earthquake, among the adolescents of Table A1 whose
+mother answered each question in 2012. Columns 1 and 2 report the share of
+mothers who reported stress, distress, or anxiety after the earthquake, in
 affected and unaffected municipalities; column 3, the share of children
 still breastfed on 27-F.}
 \end{frame}
 
 \begin{frame}[label=tabgir]
-\titulotabla{Table A7---Other Outcomes, Girls}{}{chicos}
+\titulotabla{Table A8---Other Outcomes, Girls}{}{chicos}
 \setlength{\anchotabla}{1.1\textwidth}\setlength{\anchonota}{\textwidth}
 \centering
 {\scriptsize\resizebox{\textwidth}{!}{\input{tablas/chicas.tex}}\par}
 \notatabla{Girls. Each column is a separate regression with the
-specification of Table A3. The adolescent reports the PHQ-4, substance use
+specification of Table A4. The adolescent reports the PHQ-4, substance use
 (any alcohol, tobacco, cannabis, or other drug in the last 12 months), and
 peer victimization and class climate; the caregiver reports internalizing
 and externalizing problems (CBCL). All measured in 2024 and standardized;
@@ -410,11 +430,11 @@ higher is worse. \errores}
 \end{frame}
 
 \begin{frame}[label=tabboy]
-\titulotabla{Table A8---Other Outcomes, Boys}{}{chicos}
+\titulotabla{Table A9---Other Outcomes, Boys}{}{chicos}
 \setlength{\anchotabla}{1.1\textwidth}\setlength{\anchonota}{\textwidth}
 \centering
 {\scriptsize\resizebox{\textwidth}{!}{\input{tablas/chicos.tex}}\par}
-\notatabla{Boys. Outcomes and specification as in Table A7. \errores}
+\notatabla{Boys. Outcomes and specification as in Table A8. \errores}
 \end{frame}
 
 \end{document}

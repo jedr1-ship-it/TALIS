@@ -1055,14 +1055,15 @@ def anticipo():
 
 def canal_hogar():
     """Perfil por edad de los seis indicadores del entorno medidos justo
-    después del terremoto (2010; el daño, por lo que pasó el 27-F), chicas;
-    en azul, los mecanismos de Gillmore (2026) (reports/canal_hogar.csv)."""
+    después del terremoto (2010; el daño de la vivienda en el 27-F se
+    pregunta en 2012), chicas; en azul, los mecanismos de Gillmore (2026)
+    (reports/canal_hogar.csv)."""
     c = pd.read_csv("reports/canal_hogar.csv")
     c = c[c.grupo == "chicas"]
     per = c[c.tipo == "perfil"].set_index(["componente", "tramo"])
     indices = [("ingreso", "Lower\nincome\n(2010)", True),
                ("sin_empleo", "Mother not\nemployed\n(2010)", True),
-               ("dano", "Damaged\nhousing\n(27-F)", True),
+               ("dano", "Damaged\nhousing\n(2012)", True),
                ("conflicto", "Conflict\nat home\n(2010)", False),
                ("hacinamiento", "Overcrowded\nhousing\n(2010)", False),
                ("precaria", "Precarious\nhousing\n(2010)", False)]
@@ -1219,7 +1220,7 @@ def datos_elpi():
     """Las cuatro rondas de la ELPI que usamos: qué se mide en cada una y
     qué edad tenían los niños de la muestra (edad al terremoto, 6-49 meses;
     2012, 2-6 años; 2017, 8-12; 2024, 14-18). Rondas equiespaciadas."""
-    rondas = [(2010, "Baseline,\nafter 27-F", "Ages 0–4", OCRE),
+    rondas = [(2010, "Baseline,\nafter 27-F", "6–49 months on 27-F", OCRE),
               (2012, "Maternal stress\nand breastfeeding", "Ages 2–6", ACC),
               (2017, "Home and school", "Ages 8–12", ACC),
               (2024, "Mental health, PHQ-4", "Ages 14–18", ACC)]

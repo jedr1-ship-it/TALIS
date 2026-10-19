@@ -1,36 +1,29 @@
-# ¿El desequilibrio viene de la atrición? (scripts/42_balance_atricion.py)
-Zona afectada menos no afectada, frente a quienes tenían 2 años; EF de región, cohorte y grupo de edad; sin pesos; EE robustos.
+# Atrición entre 2010 y 2024 y balance en la línea base (scripts/42_balance_atricion.py)
+Zona afectada menos no afectada, frente a quienes tenían 2 años; EF de región, año de nacimiento y grupo de edad; sin pesos; EE robustos (HC1).
 
-Línea base 2010: 14,653 niños con 6-49 meses el 27-F; responden en 2024: 68.3%.
+Línea base 2010: 15,175 niños; evaluados 14,161; responden en 2024 10,003 (65.9%); entre los evaluados, 67.1%.
+Mes mediano de evaluación por región (meses desde el 27-F): 1: 3, 2: 3, 3: 2, 4: 3, 5: 3, 6: 3, 7: 3, 8: 4, 9: 3, 10: 3, 11: 2, 12: 2, 13: 4, 14: 2, 15: 2
+Validación con los 11,871 que tienen fecha exacta: error medio -0.08 meses (zona afectada -0.12, no afectada +0.05); mismo grupo de edad 93.4%.
 
-## chicas
-Atrición diferencial (responde en 2024, 0/1):
-- responde en 2024: 6-11 meses -0.067 (ee 0.042) | 1 año -0.004 (ee 0.035) | 3-4 años +0.005 (ee 0.034) | N=7,245
-Balance, toda la muestra de 2010:
-- peso al nacer (DE): 6-11 meses +0.127 (ee 0.095) | 1 año +0.122 (ee 0.074) | 3-4 años +0.157** (ee 0.076) | N=6,640
-- talla al nacer (DE): 6-11 meses +0.040 (ee 0.092) | 1 año +0.046 (ee 0.074) | 3-4 años +0.095 (ee 0.077) | N=6,610
-- semanas de gestación (DE): 6-11 meses +0.151 (ee 0.093) | 1 año +0.052 (ee 0.068) | 3-4 años +0.095 (ee 0.071) | N=7,022
-- educación de la madre (años): 6-11 meses -0.327 (ee 0.292) | 1 año -0.429* (ee 0.237) | 3-4 años -0.197 (ee 0.233) | N=7,119
-- edad de la madre (años): 6-11 meses -0.037 (ee 0.625) | 1 año -0.273 (ee 0.509) | 3-4 años +0.525 (ee 0.511) | N=7,175
-Balance, solo quienes responden en 2024:
-- peso al nacer (DE): 6-11 meses +0.190* (ee 0.111) | 1 año +0.109 (ee 0.091) | 3-4 años +0.237*** (ee 0.091) | N=4,530
-- talla al nacer (DE): 6-11 meses +0.034 (ee 0.109) | 1 año +0.025 (ee 0.091) | 3-4 años +0.173* (ee 0.093) | N=4,526
-- semanas de gestación (DE): 6-11 meses +0.159 (ee 0.104) | 1 año +0.096 (ee 0.081) | 3-4 años +0.188** (ee 0.085) | N=4,819
-- educación de la madre (años): 6-11 meses -0.560* (ee 0.338) | 1 año -0.549** (ee 0.276) | 3-4 años -0.299 (ee 0.268) | N=4,883
-- edad de la madre (años): 6-11 meses -0.085 (ee 0.758) | 1 año -0.137 (ee 0.625) | 3-4 años +0.571 (ee 0.624) | N=4,921
+## Atrición diferencial (responde en 2024, 0/1)
+- chicas: 6-11 meses -0.047 (ee 0.044) | 1 año +0.009 (ee 0.035) | 3-4 años +0.019 (ee 0.035) | conjunta p=0.47 | media 0.673 | N=6,990
+- chicos: 6-11 meses +0.019 (ee 0.043) | 1 año +0.049 (ee 0.035) | 3-4 años +0.028 (ee 0.034) | conjunta p=0.57 | media 0.669 | N=7,171
+- todos: 6-11 meses -0.019 (ee 0.030) | 1 año +0.026 (ee 0.025) | 3-4 años +0.019 (ee 0.024) | conjunta p=0.43 | media 0.671 | N=14,161
 
-## todos
-Atrición diferencial (responde en 2024, 0/1):
-- responde en 2024: 6-11 meses -0.021 (ee 0.029) | 1 año +0.010 (ee 0.025) | 3-4 años +0.012 (ee 0.024) | N=14,653
-Balance, toda la muestra de 2010:
-- peso al nacer (DE): 6-11 meses +0.059 (ee 0.067) | 1 año +0.074 (ee 0.055) | 3-4 años +0.092* (ee 0.054) | N=13,435
-- talla al nacer (DE): 6-11 meses +0.023 (ee 0.067) | 1 año +0.028 (ee 0.055) | 3-4 años +0.062 (ee 0.055) | N=13,331
-- semanas de gestación (DE): 6-11 meses +0.125** (ee 0.064) | 1 año +0.117** (ee 0.052) | 3-4 años +0.082 (ee 0.052) | N=14,209
-- educación de la madre (años): 6-11 meses -0.098 (ee 0.206) | 1 año +0.053 (ee 0.169) | 3-4 años +0.017 (ee 0.167) | N=14,354
-- edad de la madre (años): 6-11 meses +0.039 (ee 0.443) | 1 año +0.088 (ee 0.364) | 3-4 años +0.210 (ee 0.362) | N=14,482
-Balance, solo quienes responden en 2024:
-- peso al nacer (DE): 6-11 meses +0.080 (ee 0.081) | 1 año +0.070 (ee 0.066) | 3-4 años +0.087 (ee 0.065) | N=9,153
-- talla al nacer (DE): 6-11 meses +0.075 (ee 0.080) | 1 año +0.051 (ee 0.066) | 3-4 años +0.094 (ee 0.067) | N=9,104
-- semanas de gestación (DE): 6-11 meses +0.184** (ee 0.076) | 1 año +0.165*** (ee 0.063) | 3-4 años +0.174*** (ee 0.063) | N=9,715
-- educación de la madre (años): 6-11 meses -0.219 (ee 0.243) | 1 año -0.011 (ee 0.200) | 3-4 años +0.084 (ee 0.195) | N=9,815
-- edad de la madre (años): 6-11 meses -0.035 (ee 0.532) | 1 año -0.061 (ee 0.445) | 3-4 años +0.262 (ee 0.436) | N=9,898
+## Peso al nacer de las chicas (DE)
+- toda la muestra de 2010: 6-11 meses +0.064 (ee 0.098) | 1 año +0.087 (ee 0.075) | 3-4 años +0.145* (ee 0.076) | conjunta p=0.30 | media -0.115 | N=6,409
+- solo quienes responden en 2024: 6-11 meses +0.120 (ee 0.115) | 1 año +0.073 (ee 0.092) | 3-4 años +0.189** (ee 0.093) | conjunta p=0.24 | media -0.090 | N=4,300
+
+## Robustez de la atrición
+- chicas, sin quienes están a un mes de un corte: 6-11 meses -0.054 (ee 0.049) | 1 año -0.013 (ee 0.041) | 3-4 años -0.002 (ee 0.039) | conjunta p=0.68 | media 0.675 | N=5,514
+- chicos, sin quienes están a un mes de un corte: 6-11 meses +0.032 (ee 0.048) | 1 año +0.083** (ee 0.042) | 3-4 años +0.037 (ee 0.039) | conjunta p=0.26 | media 0.663 | N=5,679
+- todos, sin quienes están a un mes de un corte: 6-11 meses -0.014 (ee 0.034) | 1 año +0.030 (ee 0.029) | 3-4 años +0.011 (ee 0.027) | conjunta p=0.57 | media 0.669 | N=11,193
+- chicas, fecha exacta donde la hay: 6-11 meses -0.046 (ee 0.042) | 1 año +0.013 (ee 0.035) | 3-4 años +0.020 (ee 0.034) | conjunta p=0.42 | media 0.677 | N=7,331
+- chicos, fecha exacta donde la hay: 6-11 meses +0.007 (ee 0.041) | 1 año +0.064* (ee 0.035) | 3-4 años +0.039 (ee 0.033) | conjunta p=0.26 | media 0.670 | N=7,524
+- todos, fecha exacta donde la hay: 6-11 meses -0.024 (ee 0.029) | 1 año +0.036 (ee 0.025) | 3-4 años +0.025 (ee 0.024) | conjunta p=0.16 | media 0.673 | N=14,855
+
+## Resto del balance en 2010 (chicas)
+- educación de la madre (años), toda la muestra de 2010: 6-11 meses -0.247 (ee 0.296) | 1 año -0.564** (ee 0.243) | 3-4 años -0.105 (ee 0.235) | conjunta p=0.11 | media 10.338 | N=6,866
+- edad de la madre (años), toda la muestra de 2010: 6-11 meses +0.219 (ee 0.644) | 1 año +0.034 (ee 0.519) | 3-4 años +0.604 (ee 0.520) | conjunta p=0.63 | media 29.303 | N=6,924
+- educación de la madre (años), solo quienes responden en 2024: 6-11 meses -0.499 (ee 0.349) | 1 año -0.585** (ee 0.279) | 3-4 años -0.066 (ee 0.273) | conjunta p=0.11 | media 10.241 | N=4,632
+- edad de la madre (años), solo quienes responden en 2024: 6-11 meses +0.334 (ee 0.780) | 1 año +0.197 (ee 0.634) | 3-4 años +0.488 (ee 0.642) | conjunta p=0.89 | media 29.575 | N=4,668

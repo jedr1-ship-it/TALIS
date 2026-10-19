@@ -109,7 +109,8 @@ def carga():
     h = h[num(h.a16).isin([1, 3])].drop_duplicates("folio")
     h["trabaja10"] = si(h.c1)
     d = d.merge(h[["folio", "trabaja10"]], on="folio", how="left")
-    d = d[d.edadq_m.between(6, 49)].copy()
+    # muestra de análisis: quienes tienen PHQ-4 (9.996 de 10.003)
+    d = d[d.edadq_m.between(6, 49) & d.z_phq4.notna()].copy()
     d["tramo"] = REF
     for t, lo, hi in TRAMOS:
         d.loc[d.edadq_m.between(lo, hi), "tramo"] = t

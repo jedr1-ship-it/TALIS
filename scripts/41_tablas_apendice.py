@@ -12,8 +12,11 @@ diapositiva, con la misma especificación que el gráfico:
   desc     descriptivas de la muestra, todos y por sexo (diapositiva 4)
   balance  balance en lo fijado antes del terremoto, chicas, y el PHQ-4 con
            controles al nacer (diapositiva 5; scripts/33_ventanas.py)
-  phq4     PHQ-4 por edad al terremoto, todos, chicas y chicos
-           (diapositiva 6; grupos del paper)
+  atricion responder en 2024 y peso al nacer en la línea base de 2010
+           (diapositiva 5; scripts/42_balance_atricion.py)
+  phq4     PHQ-4 por edad al terremoto, todos, chicas y chicos, y chicas con
+           efectos fijos de mes de nacimiento (diapositiva 6; grupos del
+           paper)
   entorno  los seis indicadores del entorno de 2010, chicas (diapositiva 7;
            scripts/35_canal_hogar.py)
   diada    PHQ-4 de las hijas y estrés de la madre según la lactancia, con
@@ -96,13 +99,19 @@ def bloque_edades(res):
     return lineas[:-1]
 
 
-def pie_perfil(res):
+def pie_perfil(res, mes=None):
+    """mes: columnas con efectos fijos de mes de nacimiento, que reemplazan
+    a los de año de nacimiento y grupo de edad."""
     k = len(res)
-    return [fila("Observations", [f"{r[1]:,}" for r in res]),
-            fila("Municipality FE", ["Yes"] * k),
-            fila("Birth-cohort FE", ["Yes"] * k),
-            fila("Age-group FE", ["Yes"] * k),
-            fila("Controls", ["Yes"] * k)]
+    mes = mes or [False] * k
+    si = lambda v: "Yes" if v else "No"           # noqa: E731
+    pie = [fila("Observations", [f"{r[1]:,}" for r in res]),
+           fila("Municipality FE", ["Yes"] * k),
+           fila("Birth-year FE", [si(not m) for m in mes]),
+           fila("Age-group FE", [si(not m) for m in mes])]
+    if any(mes):
+        pie.append(fila("Month-of-birth FE", [si(m) for m in mes]))
+    return pie + [fila("Controls", ["Yes"] * k)]
 
 
 def guarda(nombre, texto):
@@ -126,8 +135,11 @@ def a1():
         for t, _ in EDADES:
             igual(r[0][t][0], ch[(ch.resultado == "z_phq4") & (ch.grupo == g)
                                   & (ch.tramo == t)].b.iloc[0], f"a1 {g} {t}")
-    guarda("phq4.tex", tabla(["All", "Girls", "Boys"], bloque_edades(res),
-                           pie_perfil(res), [("PHQ-4 (SD)", 3)]))
+    res.append(p33.perfil(d, "z_phq4", 1, "paper", modelo=True, mes=True))
+    guarda("phq4.tex", tabla(["All", "Girls", "Boys", "Girls"],
+                             bloque_edades(res),
+                             pie_perfil(res, [False] * 3 + [True]),
+                             [("PHQ-4 (SD)", 4)]))
 
 
 # ---------------------------------------------- a2: entorno, diapositiva 7
@@ -201,7 +213,7 @@ def a3():
                fila("", [ee(dif[1]) for _, dif, _ in res])]
     pie = [fila("Observations", [f"{int(r.nobs):,}" for r, _, _ in res]),
            fila("Municipality FE", ["Yes"] * 3),
-           fila("Birth-cohort FE", ["Yes"] * 3),
+           fila("Birth-year FE", ["Yes"] * 3),
            fila("Age-group FE", ["Yes"] * 3),
            fila("Age group $\\times$ breastfed FE", ["Yes"] * 3),
            fila("Controls", ["Yes"] * 3),
@@ -229,7 +241,7 @@ def a4():
                    fila("", [f"({100 * a.se:.1f})", f"({100 * n.se:.1f})",
                              ""]),
                    "\\addlinespace[2pt]"]
-    pie = [fila("Children", [f"{int(niv.xs('afectada', level='zona').n.sum()):,}",
+    pie = [fila("Observations", [f"{int(niv.xs('afectada', level='zona').n.sum()):,}",
                              f"{int(niv.xs('no afectada', level='zona').n.sum()):,}",
                              f"{int(pec.n.sum()):,}"])]
     guarda("medias.tex", tabla(["Affected", "Unaffected", "On 27-F"],
@@ -275,7 +287,7 @@ def desc():
     filas = [("Panel A. Adolescent, 2024", None),
              ("PHQ-4 score (0--12)", "phq4_score"),
              ("PHQ-4 of 6 or more (share)", "phq4_alto"),
-             ("Age at interview (years)", "edad_ent"),
+             ("Age in August 2024 (years)", "edad_ent"),
              ("Age at the earthquake (months)", "edadq_m"),
              ("Affected municipality (share)", "EQ"),
              ("Panel B. Birth and household, 2010", None),
@@ -322,7 +334,7 @@ def balance():
            for y in ys]
     pie = [fila("Observations", [f"{r[1]:,}" for r in res]),
            fila("Municipality FE", ["Yes"] * 5),
-           fila("Birth-cohort FE", ["Yes"] * 5),
+           fila("Birth-year FE", ["Yes"] * 5),
            fila("Age-group FE", ["Yes"] * 5),
            fila("Controls", ["No"] * 5)]
     guarda("balance.tex", tabla(["Weight", "Length", "Gestation",
@@ -337,14 +349,36 @@ def balance():
     (OUTD / "balance_nota.tex").write_text(
         "Adding the three birth outcomes as controls, the PHQ-4 coefficient "
         f"for girls exposed at 6--11 months is {b[0]:.3f} ({b[1]:.3f}), "
-        f"against {sin[0]:.3f} ({sin[1]:.3f}) in Table A3 "
+        f"against {sin[0]:.3f} ({sin[1]:.3f}) in Table A4 "
         f"({n:,} girls with birth records).\n", encoding="utf-8")
     print(f"-> {OUTD / 'balance_nota.tex'}")
+
+
+# ------------------------------------------- atrición, diapositiva 5
+
+def atricion():
+    """Responder en 2024 por edad al terremoto y zona, y el peso al nacer de
+    las chicas en toda la línea base y en quienes responden."""
+    p42 = modulo("p42", "42_balance_atricion.py")
+    res, _ = p42.resultados()
+    pie = [fila("Joint test, $p$-value", [f"{r[2]:.2f}" for r in res]),
+           fila("Mean of dependent variable",
+                [f"{r[3]:.2f}" for r in res[:3]] + ["", ""]),
+           fila("Observations", [f"{r[1]:,}" for r in res]),
+           fila("Region FE", ["Yes"] * 5),
+           fila("Birth-year FE", ["Yes"] * 5),
+           fila("Age-group FE", ["Yes"] * 5)]
+    guarda("atricion.tex", tabla(
+        ["Girls", "Boys", "All", "\\shortstack{2010\\\\baseline}",
+         "\\shortstack{Interviewed\\\\in 2024}"],
+        bloque_edades(res), pie,
+        [("Interviewed in 2024", 3), ("Birth weight, girls (SD)", 2)]))
 
 
 def main():
     desc()
     balance()
+    atricion()
     a1()
     a2()
     a3()

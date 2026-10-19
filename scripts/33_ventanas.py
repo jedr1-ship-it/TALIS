@@ -54,13 +54,21 @@ def log(*a):
 
 
 def perfil(d, y, sx=None, corte="seis meses", controles=True, extra=(),
-           modelo=False):
+           modelo=False, mes=False):
     """Diferencia zona afectada menos no afectada de cada tramo de edad al
     terremoto, frente a los expuestos con 24-35 meses. Con modelo=True
-    devuelve además el ajuste y la muestra (para las tablas del apéndice)."""
+    devuelve además el ajuste y la muestra (para las tablas del apéndice).
+    Con mes=True, efectos fijos de mes de nacimiento en lugar de los de
+    tramo y año de nacimiento y de la tendencia en la edad en meses: como
+    la fecha del terremoto es la misma para todos, absorben cualquier
+    función de la edad al terremoto y de la cohorte."""
     x = d.dropna(subset=[y, "EQ", "estrato", "w", "cohorte", "edadq_m",
                          *extra]).copy()
     x = x[(x.w > 0) & x.edadq_m.between(6, 49)]
+    # muestra de análisis: quienes tienen PHQ-4 (9.996 de 10.003), para que
+    # ningún resultado sume adolescentes que no están en la Table 3
+    if "z_phq4" in x:
+        x = x[x.z_phq4.notna()]
     if sx is not None:
         x = x[x.mujer == sx]
     bordes, tramos = CORTES[corte]
@@ -73,8 +81,13 @@ def perfil(d, y, sx=None, corte="seis meses", controles=True, extra=(),
     for t, i in zip(cats, ii):
         x[i] = (x.tramo == t).astype(float) * x.EQ
     rhs = ii + ["C(tramo)", "C(est)", "C(coh)"]
+    pre = p15.X_PRE
+    if mes:
+        x["mob"] = x.birth_ym.astype(int).astype(str)
+        rhs = ii + ["C(est)", "C(mob)"]
+        pre = [v for v in pre if v != "edad_meses"]
     if controles:
-        rhs += xt(x, p15.X_PRE) + xt(x, p15.X_POST)
+        rhs += xt(x, pre) + xt(x, p15.X_POST)
     rhs += list(extra)
     r = smf.wls(f"{y} ~ {' + '.join(rhs)}", data=x, weights=x.w).fit(
         cov_type="cluster", cov_kwds={"groups": x.est})
