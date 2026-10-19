@@ -3,9 +3,9 @@
 """
 Tablas del apéndice de la presentación (presentacion/advisor.tex), en el
 formato de la AER: el outcome arriba en multicolumna, coeficiente con su
-error estándar entre paréntesis (sin asteriscos, como pide la AER), la
-media del outcome en el grupo
-de referencia, observaciones, efectos fijos y controles. Ancho fijo
+error estándar entre paréntesis (sin asteriscos, como pide la AER),
+observaciones, efectos fijos y controles. Los outcomes están estandarizados,
+así que no se reporta su media en el grupo de referencia. Ancho fijo
 (\anchotabla, lo fija la diapositiva). Una tabla por
 diapositiva con gráfico de coeficientes, con la misma especificación que el
 gráfico:
@@ -94,25 +94,9 @@ def bloque_edades(res):
     return lineas[:-1]
 
 
-def cifra(v):
-    return f"{v:.3f}".replace("-", "$-$")
-
-
-def media(fit, datos, grupo):
-    """Media ponderada del outcome, en la muestra de estimación, del grupo de
-    referencia."""
-    x = datos.loc[fit.model.data.row_labels]
-    ref = grupo(x).to_numpy()
-    return float(np.average(np.asarray(fit.model.endog)[ref],
-                            weights=np.asarray(fit.model.weights)[ref]))
-
-
 def pie_perfil(res):
     k = len(res)
-    return [fila("Mean of outcome, aged 2",
-                 [cifra(media(r[2], r[3], lambda x: x.tramo == "ref"))
-                  for r in res]),
-            fila("Observations", [f"{r[1]:,}" for r in res]),
+    return [fila("Observations", [f"{r[1]:,}" for r in res]),
             fila("Municipality, cohort, and age-group FE", ["Yes"] * k),
             fila("Controls", ["Yes"] * k)]
 
@@ -211,11 +195,7 @@ def a3():
     cuerpo += [fila("Difference, breastfed $-$ not breastfed",
                     [coef(dif[0]) for _, dif, _ in res]),
                fila("", [ee(dif[1]) for _, dif, _ in res])]
-    datos = (x, y, y)
-    pie = [fila("Mean of outcome, mother without stress",
-                [cifra(media(r, dd, lambda z: z.estres12 == 0))
-                 for (r, _, _), dd in zip(res, datos)]),
-           fila("Observations", [f"{int(r.nobs):,}" for r, _, _ in res]),
+    pie = [fila("Observations", [f"{int(r.nobs):,}" for r, _, _ in res]),
            fila("Municipality, cohort, and age group $\\times$ "
                 "breastfed FE", ["Yes"] * 3),
            fila("Controls", ["Yes"] * 3),
