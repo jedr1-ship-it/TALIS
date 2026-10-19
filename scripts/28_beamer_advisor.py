@@ -1240,6 +1240,117 @@ def datos_elpi():
     ax.set_ylim(-1.75, 1.0)
     guarda(f, "datos_elpi.pdf")
 
+def _modulo(nombre, archivo):
+    spec_ = importlib.util.spec_from_file_location(nombre, HERE / archivo)
+    m = importlib.util.module_from_spec(spec_)
+    spec_.loader.exec_module(m)
+    return m
+
+
+def phq4_hist():
+    """Distribución del PHQ-4 (0-12) en 2024, chicas y chicos, ponderada,
+    con las categorías de Kroenke et al. (2009): 0-2 normal, 3-5 leve, 6-8
+    moderado, 9-12 severo."""
+    p15 = _modulo("p15", "15_paper_estimaciones.py")
+    d, _, _ = p15.load_data()
+    d = d.dropna(subset=["phq4_score", "w"])
+    with plt.rc_context(PAPER):
+        f = plt.figure(figsize=(144 * MM, 62 * MM))
+        a = f.add_axes([0.075, 0.19, 0.91, 0.66])
+        for lado in ("top", "right"):
+            a.spines[lado].set_visible(False)
+        for k, (x0, x1, lab) in enumerate(((-0.5, 2.5, "Normal"),
+                                           (2.5, 5.5, "Mild"),
+                                           (5.5, 8.5, "Moderate"),
+                                           (8.5, 12.5, "Severe"))):
+            if k % 2:
+                a.axvspan(x0, x1, color="#F0F0F0", lw=0, zorder=0)
+            a.text((x0 + x1) / 2, 1.0, lab, transform=a.get_xaxis_transform(),
+                   ha="center", va="bottom", fontsize=8, color=MUTED)
+        hs = []
+        for sx, lab, col, dx in ((1, "Girls", OCRE, -0.2),
+                                 (0, "Boys", GRISR, 0.2)):
+            g = d[d.mujer == sx]
+            sh = (g.groupby("phq4_score").w.sum() / g.w.sum() * 100).reindex(
+                range(13), fill_value=0.0)
+            m = np.average(g.phq4_score, weights=g.w)
+            sd = np.sqrt(np.average((g.phq4_score - m) ** 2, weights=g.w))
+            hs.append(a.bar(np.arange(13) + dx, sh.values, 0.4, color=col,
+                            lw=0, zorder=2,
+                            label=f"{lab}: mean {m:.1f}, SD {sd:.1f}"))
+        a.set_xticks(range(13))
+        a.set_xlim(-0.6, 12.6)
+        a.tick_params(axis="x", length=0)
+        a.set_xlabel("PHQ-4 score", fontsize=8.5)
+        a.set_ylabel("Adolescents (%)", fontsize=8.5)
+        a.legend(handles=hs, loc="upper right", frameon=False, fontsize=8,
+                 bbox_to_anchor=(1.0, 0.95))
+        guarda(f, "phq4_hist.pdf")
+
+
+def mapa_pga():
+    """Aceleración máxima del suelo (PGA, %g) del ShakeMap del USGS en el
+    centroide de cada comuna, centro-sur de Chile, con el epicentro y las
+    ciudades del mapa de la diapositiva 1."""
+    from scipy.spatial import cKDTree
+    p14 = _modulo("p14", "14_pga_dose.py")
+    g = p14.shakemap_grid()
+    arbol = cKDTree(np.c_[g.lon.to_numpy(), g.lat.to_numpy()])
+    dentro = (g.lon.min(), g.lon.max(), g.lat.min(), g.lat.max())
+    feats = json.load(open("data/external/comunas_chile.geojson"))[
+        "features"]
+    polis, valores, centros = [], [], {}
+    CIUDAD = {13101: "Santiago", 5101: "Valparaíso", 8101: "Concepción",
+              9101: "Temuco", 7101: "Talca"}
+    for ft in feats:
+        cod = int(ft["properties"]["cod_comuna"])
+        geo = ft["geometry"]
+        anillos = ([geo["coordinates"]] if geo["type"] == "Polygon"
+                   else geo["coordinates"])
+        for an in anillos:
+            ext = np.asarray(an[0])
+            lon, lat = ext[:, 0].mean(), ext[:, 1].mean()
+            if not (-43 < lat < -28.5 and lon > -76):
+                continue
+            ok = dentro[0] <= lon <= dentro[1] and dentro[2] <= lat <= dentro[3]
+            valores.append(float(g.pga.iloc[arbol.query([lon, lat])[1]])
+                           if ok else 0.0)
+            polis.append(Polygon(ext, closed=True))
+            if cod in CIUDAD and cod not in centros:
+                centros[cod] = (lon, lat)
+    cmap = LinearSegmentedColormap.from_list(
+        "pga", ["#F4F4F4", "#E9CF8E", OCRE, "#4A3300"])
+    f = plt.figure(figsize=(80 * MM, 100 * MM))
+    ax = f.add_axes([0.0, 0.16, 1.0, 0.84])
+    pc = PatchCollection(polis, cmap=cmap, edgecolor="white", lw=0.12,
+                         rasterized=True)
+    pc.set_array(np.asarray(valores))
+    pc.set_clim(0, 60)
+    ax.add_collection(pc)
+    halo = [pe.withStroke(linewidth=1.6, foreground="white")]
+    epi = (-72.898, -36.122)
+    ax.plot(*epi, marker="*", ms=10, color=INK, mec="white", mew=0.5,
+            zorder=5)
+    ax.annotate("Epicenter", epi, xytext=(-5, 0), textcoords="offset points",
+                ha="right", va="center", fontsize=7.5, color=INK,
+                path_effects=halo, zorder=6)
+    for cod, xy in centros.items():
+        ax.plot(*xy, "o", ms=2.2, color=INK, zorder=5)
+        ax.annotate(CIUDAD[cod], xy, xytext=(4, 0), textcoords="offset points",
+                    ha="left", va="center", fontsize=7.5, color=INK,
+                    path_effects=halo, zorder=6)
+    ax.set_xlim(-75.2, -68.6)
+    ax.set_ylim(-41.6, -30.4)
+    ax.set_aspect(1 / np.cos(np.radians(36)))
+    ax.axis("off")
+    cax = f.add_axes([0.15, 0.085, 0.7, 0.025])
+    cb = f.colorbar(pc, cax=cax, orientation="horizontal", extend="max")
+    cb.outline.set_visible(False)
+    cb.ax.tick_params(labelsize=7, length=2)
+    cb.set_label("Peak ground acceleration (%g)", fontsize=7.5)
+    guarda(f, "mapa_pga.pdf")
+
+
 def main():
     mapa()
     hallazgos()
@@ -1260,6 +1371,8 @@ def main():
     diada()
     chicos()
     datos_elpi()
+    phq4_hist()
+    mapa_pga()
 
 
 if __name__ == "__main__":

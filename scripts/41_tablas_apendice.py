@@ -4,26 +4,28 @@
 Tablas del apéndice de la presentación (presentacion/advisor.tex), en el
 formato de la AER: el outcome arriba en multicolumna, coeficiente con su
 error estándar entre paréntesis (sin asteriscos, como pide la AER),
-observaciones, efectos fijos y controles. Los outcomes están estandarizados,
-así que no se reporta su media en el grupo de referencia. Ancho fijo
-(\anchotabla, lo fija la diapositiva). Una tabla por
-diapositiva con gráfico de coeficientes, con la misma especificación que el
-gráfico:
+observaciones, una fila por efecto fijo y controles. Los outcomes están
+estandarizados, así que no se reporta su media en el grupo de referencia.
+Ancho fijo (\\anchotabla, lo fija la diapositiva). Una tabla por
+diapositiva, con la misma especificación que el gráfico:
 
-  a1  PHQ-4 por edad al terremoto, todos, chicas y chicos (diapositiva 6;
-      scripts/33_ventanas.py, grupos del paper)
-  a2  los seis indicadores del entorno de 2010, chicas (diapositiva 7;
-      scripts/35_canal_hogar.py)
-  a3  PHQ-4 de las hijas y estrés de la madre según la lactancia, con dos
-      robusteces (diapositiva 8; scripts/34_estres_madre.py, sección 5)
-  a4  las medias de la diapositiva 8: madres con estrés y niños que tomaban
-      pecho, por edad al terremoto (reports/estres_madre.csv)
-  a5  síntomas, CBCL, consumo y victimización, chicas (diapositiva 9;
-      scripts/36_chicos.py); a6, lo mismo para los chicos
+  desc     descriptivas de la muestra, todos y por zona (diapositiva 4)
+  balance  balance en lo fijado antes del terremoto, chicas, y el PHQ-4 con
+           controles al nacer (diapositiva 5; scripts/33_ventanas.py)
+  phq4     PHQ-4 por edad al terremoto, todos, chicas y chicos
+           (diapositiva 6; grupos del paper)
+  entorno  los seis indicadores del entorno de 2010, chicas (diapositiva 7;
+           scripts/35_canal_hogar.py)
+  diada    PHQ-4 de las hijas y estrés de la madre según la lactancia, con
+           dos robusteces (diapositiva 8; scripts/34_estres_madre.py, 5)
+  medias   las medias de la diapositiva 8: madres con estrés y niños que
+           tomaban pecho, por edad al terremoto (reports/estres_madre.csv)
+  chicas, chicos  síntomas, CBCL, consumo y victimización (diapositiva 9;
+           scripts/36_chicos.py)
 
 Comprueba que cada coeficiente coincide con el que dibuja el gráfico.
 
-Salida: presentacion/tablas/a1.tex ... a6.tex
+Salida: presentacion/tablas/*.tex
 Uso:    python3 scripts/41_tablas_apendice.py
 """
 import importlib.util
@@ -124,7 +126,7 @@ def a1():
         for t, _ in EDADES:
             igual(r[0][t][0], ch[(ch.resultado == "z_phq4") & (ch.grupo == g)
                                   & (ch.tramo == t)].b.iloc[0], f"a1 {g} {t}")
-    guarda("a1.tex", tabla(["All", "Girls", "Boys"], bloque_edades(res),
+    guarda("phq4.tex", tabla(["All", "Girls", "Boys"], bloque_edades(res),
                            pie_perfil(res), [("PHQ-4 (SD)", 3)]))
 
 
@@ -144,7 +146,7 @@ def a2():
            "\\shortstack{Damaged\\\\housing}", "\\shortstack{Conflict\\\\at home}",
            "\\shortstack{Overcrowded\\\\housing}",
            "\\shortstack{Precarious\\\\housing}"]
-    guarda("a2.tex", tabla(cab, bloque_edades(res), pie_perfil(res),
+    guarda("entorno.tex", tabla(cab, bloque_edades(res), pie_perfil(res),
                            [("Mechanisms in Gillmore (2026), SD", 3),
                             ("Other household conditions, SD", 3)]))
 
@@ -206,7 +208,7 @@ def a3():
            fila("Stress and breastfed $\\times$ mother's education and "
                 "employment", ["No", "Yes", "Yes"]),
            fila("Stress $\\times$ 6--11 months", ["No", "No", "Yes"])]
-    guarda("a3.tex", tabla(["Baseline", "\\shortstack{Mother's\\\\SES}",
+    guarda("diada.tex", tabla(["Baseline", "\\shortstack{Mother's\\\\SES}",
                             "\\shortstack{Mother's SES\\\\and infancy}"],
                            cuerpo, pie, [("Daughters' PHQ-4 (SD)", 3)]))
 
@@ -230,7 +232,7 @@ def a4():
     pie = [fila("Children", [f"{int(niv.xs('afectada', level='zona').n.sum()):,}",
                              f"{int(niv.xs('no afectada', level='zona').n.sum()):,}",
                              f"{int(pec.n.sum()):,}"])]
-    guarda("a4.tex", tabla(["Affected", "Unaffected", "On 27-F"],
+    guarda("medias.tex", tabla(["Affected", "Unaffected", "On 27-F"],
                            cuerpo[:-1], pie,
                            [("Mothers with stress (\\%)", 2),
                             ("Breastfed (\\%)", 1)]))
@@ -248,7 +250,7 @@ def a5():
     cab = ["PHQ-4", "Substance use", "Victimization", "Internalizing",
            "Externalizing"]
     ch = pd.read_csv("reports/chicos.csv")
-    for g, sx, nombre in (("chicas", 1, "a5.tex"), ("chicos", 0, "a6.tex")):
+    for g, sx, nombre in (("chicas", 1, "chicas.tex"), ("chicos", 0, "chicos.tex")):
         res = [p33.perfil(d, y, sx, "paper", modelo=True) for y in ys]
         for y, r in zip(ys, res):
             igual(r[0]["6-11"][0], ch[(ch.resultado == y) & (ch.grupo == g)
@@ -259,7 +261,88 @@ def a5():
                               ("Caregiver report, CBCL (SD)", 2)]))
 
 
+# ------------------------------------- descriptivas de la muestra, diapo 4
+
+def desc():
+    p34 = modulo("p34", "34_estres_madre.py")
+    d = p34.carga()
+    d = d[d.w > 0].copy()
+    d["est"] = d.estrato.astype(int).astype(str)
+    d["phq4_alto"] = (d.phq4_score >= 6).astype(float).where(
+        d.phq4_score.notna())
+    d["edad_ent"] = d.edad_meses / 12
+    filas = [("Panel A. Adolescent, 2024", None),
+             ("PHQ-4 score (0--12)", "phq4_score"),
+             ("PHQ-4 of 6 or more (share)", "phq4_alto"),
+             ("Girl (share)", "mujer"),
+             ("Age at interview (years)", "edad_ent"),
+             ("Age at the earthquake (months)", "edadq_m"),
+             ("Panel B. Birth and household, 2010", None),
+             ("Birth weight (kg)", "peso_nacer"),
+             ("Gestation (weeks)", "sem_gest"),
+             ("Mother's age (years)", "edad_madre10"),
+             ("Mother's education (years)", "educ_madre10"),
+             ("Household size", "tot_per10"),
+             ("Rural (share)", "rural10"),
+             ("Panel C. After the earthquake, 2012", None),
+             ("Breastfed on 27-F (share)", "pecho"),
+             ("Mother reported stress (share)", "estres12")]
+    cuerpo = []
+    for lab, v in filas:
+        if v is None:
+            if cuerpo:
+                cuerpo.append("\\addlinespace[3pt]")
+            cuerpo.append(f"\\multicolumn{{7}}{{@{{}}l}}{{\\emph{{{lab}}}}} \\\\")
+            continue
+        x = d.dropna(subset=[v])
+        m = np.average(x[v], weights=x.w)
+        sd = np.sqrt(np.average((x[v] - m) ** 2, weights=x.w))
+        ma = np.average(x[v][x.EQ == 1], weights=x.w[x.EQ == 1])
+        mn = np.average(x[v][x.EQ == 0], weights=x.w[x.EQ == 0])
+        r = smf.wls(f"{v} ~ EQ", data=x, weights=x.w).fit(
+            cov_type="cluster", cov_kwds={"groups": x.est})
+        dif = f"{r.params['EQ']:.2f}".replace("-", "$-$")
+        cuerpo.append(fila(lab, [f"{m:.2f}", f"{sd:.2f}", f"{ma:.2f}",
+                                 f"{mn:.2f}", dif, f"{r.pvalues['EQ']:.2f}"]))
+    pie = [fila("Adolescents", [f"{len(d):,}", "", f"{int((d.EQ == 1).sum()):,}",
+                                f"{int((d.EQ == 0).sum()):,}", "", ""])]
+    guarda("desc.tex", tabla(["Mean", "SD", "Affected", "Unaffected",
+                              "Difference", "$p$-value"], cuerpo, pie,
+                             [("All", 2), ("By municipality", 4)]))
+
+
+# ------------------------------------------ balance, diapositiva 5
+
+def balance():
+    d, _, _ = p15.load_data()
+    ys = ["z_peso", "z_talla", "z_gest", "educ_madre10", "edad_madre10"]
+    res = [p33.perfil(d, y, 1, "paper", controles=False, modelo=True)
+           for y in ys]
+    pie = [fila("Observations", [f"{r[1]:,}" for r in res]),
+           fila("Municipality FE", ["Yes"] * 5),
+           fila("Birth-cohort FE", ["Yes"] * 5),
+           fila("Age-group FE", ["Yes"] * 5),
+           fila("Controls", ["No"] * 5)]
+    guarda("balance.tex", tabla(["Weight", "Length", "Gestation",
+                                 "Education", "Age"],
+                                bloque_edades(res), pie,
+                                [("At birth (SD)", 3),
+                                 ("Mother, 2010 (years)", 2)]))
+    sin = p33.perfil(d, "z_phq4", 1, "paper")[0]["6-11"]
+    con = p33.perfil(d, "z_phq4", 1, "paper",
+                     extra=("z_peso", "z_talla", "z_gest"))
+    b, n = con[0]["6-11"], con[1]
+    (OUTD / "balance_nota.tex").write_text(
+        "Adding the three birth outcomes as controls, the PHQ-4 coefficient "
+        f"for girls exposed at 6--11 months is {b[0]:.3f} ({b[1]:.3f}), "
+        f"against {sin[0]:.3f} ({sin[1]:.3f}) in Table A3 "
+        f"({n:,} girls with birth records).\n", encoding="utf-8")
+    print(f"-> {OUTD / 'balance_nota.tex'}")
+
+
 def main():
+    desc()
+    balance()
     a1()
     a2()
     a3()
