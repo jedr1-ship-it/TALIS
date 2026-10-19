@@ -5,18 +5,23 @@
 de cada grupo explica?
 
 El entorno se mide justo después del terremoto, en la ronda de 2010 (entre
-uno y nueve meses después del 27-F), con cuatro índices de lo que el
-terremoto puede haber golpeado, orientados de forma que más alto = peor. El estrés de la madre no entra: es el segundo mecanismo y se estudia
-aparte (scripts/34_estres_madre.py).
+uno y nueve meses después del 27-F), con seis indicadores de lo que el
+terremoto puede haber golpeado, orientados de forma que más alto = peor. Los
+tres primeros son los mecanismos de Gillmore (2026) que se pueden medir en
+nuestros grupos; su cuarto, el estrés de la madre, se estudia aparte
+(scripts/34_estres_madre.py), y el tabaco de la madre solo se pregunta para
+ventanas anteriores al 27-F (scripts/38_tabaco_madre.py).
 
+  menor ingreso         ingreso del hogar por persona el mes anterior a la
+                        entrevista de 2010, suma de las fuentes de cada
+                        integrante, con signo cambiado (Gillmore)
+  madre sin empleo      la madre no trabajó la semana anterior a la
+                        entrevista de 2010 (Gillmore)
+  vivienda dañada       destruida o con daños mayores en el terremoto
+                        (pregunta de 2012 sobre el 27-F; Gillmore)
   conflicto en casa     durante la visita de 2010, la madre le grita,
                         muestra hostilidad o le pega (HOME, lo anota el
                         encuestador)
-  falta de recursos     ingreso del hogar por persona el mes anterior a la
-                        entrevista de 2010, suma de las fuentes de cada
-                        integrante (signo cambiado), y vivienda
-                        destruida o con daños mayores en el terremoto
-                        (pregunta de 2012 sobre el 27-F)
   vivienda hacinada     personas por dormitorio en 2010
   vivienda precaria     en 2010, mediagua, o vivienda cedida o compartida
                         con otro hogar
@@ -51,7 +56,8 @@ p34 = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(p34)
 p33, p15 = p34.p33, p34.p15
 num, stars, xt, si = p15.num, p15.stars, p15.xt, p34.si
-INDICES = ["conflicto", "recursos", "hacinamiento", "precaria"]
+INDICES = ["ingreso", "sin_empleo", "dano", "conflicto", "hacinamiento",
+           "precaria"]
 TRAMOS = ["6-11", "12-23", "36-49"]
 GRUPOS = (("chicas", 1), ("todos", None))
 B = 300
@@ -102,6 +108,13 @@ def carga():
     h = h.groupby("folio").agg(y=("y", "sum"), n=("y", "size"),
                                validos=("y", "count"))
     x["log_ing10"] = np.log((h.y / h.n).where((h.validos > 0) & (h.y > 0)))
+    hg = lee("data/interim/2010/Hogar_2010.dta",
+             ["folio", "a16", "c1", "c2", "c3"])
+    madre = hg[num(hg.a16).isin([1, 3])].drop_duplicates("folio")
+    madre = madre.set_index("folio")
+    c1, c2, c3 = num(madre.c1), num(madre.c2), num(madre.c3)
+    trabaja = (c1 == 1) | c2.between(1, 6) | (c3 == 1)
+    x["sin_empleo10"] = (1.0 - trabaja.astype(float)).where(c1.isin([1, 2]))
     e = lee("data/interim/2010/Entrevistada_2010.dta",
             ["folio", "f4", "f6_1", "f7"]).drop_duplicates("folio")
     e = e.set_index("folio")
@@ -114,7 +127,9 @@ def carga():
     x.index.name = "folio"
     d = d.merge(x.reset_index(), on="folio", how="left")
     d["conflicto"] = indice([d.grita10, d.hostil10, d.pega10], 1)
-    d["recursos"] = indice([-d.log_ing10, d.dano12], 1)
+    d["ingreso"] = indice([-d.log_ing10], 1)
+    d["sin_empleo"] = indice([d.sin_empleo10], 1)
+    d["dano"] = indice([d.dano12], 1)
     d["hacinamiento"] = indice([d.hacina10], 1)
     d["precaria"] = indice([d.mediagua10, d.cedida10], 1)
     return d

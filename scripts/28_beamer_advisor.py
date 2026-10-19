@@ -1035,15 +1035,18 @@ def anticipo():
 
 
 def canal_hogar():
-    """Perfil por edad de los cuatro índices del entorno medidos justo
-    después del terremoto (2010), chicas (reports/canal_hogar.csv)."""
+    """Perfil por edad de los seis indicadores del entorno medidos justo
+    después del terremoto (2010; el daño, por lo que pasó el 27-F), chicas;
+    en azul, los mecanismos de Gillmore (2026) (reports/canal_hogar.csv)."""
     c = pd.read_csv("reports/canal_hogar.csv")
     c = c[c.grupo == "chicas"]
     per = c[c.tipo == "perfil"].set_index(["componente", "tramo"])
-    indices = [("conflicto", "Conflicto\nen casa\n(2010)"),
-               ("recursos", "Falta de\nrecursos\n(2010)"),
-               ("hacinamiento", "Vivienda\nhacinada\n(2010)"),
-               ("precaria", "Vivienda\nprecaria\n(2010)")]
+    indices = [("ingreso", "Menor\ningreso\n(2010)", True),
+               ("sin_empleo", "Madre sin\nempleo\n(2010)", True),
+               ("dano", "Vivienda\ndañada\n(27-F)", True),
+               ("conflicto", "Conflicto\nen casa\n(2010)", False),
+               ("hacinamiento", "Vivienda\nhacinada\n(2010)", False),
+               ("precaria", "Vivienda\nprecaria\n(2010)", False)]
     series = [("6-11", "6–11 meses", MARRON, "^", False, -0.22),
               ("12-23", "1 año", AZUL, "o", False, 0.0),
               ("36-49", "3–4 años", GRISR, "o", True, 0.22)]
@@ -1051,16 +1054,19 @@ def canal_hogar():
     def ic(r):
         return (r.valor, (r.hi - r.lo) / 3.92, np.nan)
     with plt.rc_context(PAPER):
-        f = plt.figure(figsize=(112 * MM, 43 * MM))
-        a = f.add_axes([0.16, 0.31, 0.82, 0.55])
+        f = plt.figure(figsize=(130 * MM, 45 * MM))
+        a = f.add_axes([0.13, 0.3, 0.85, 0.57])
         ejes_paper(a)
         hs = []
         for t, lab, col, marca, hueco, dx in series:
-            for x, (k, _) in enumerate(indices):
+            for x, (k, _, _) in enumerate(indices):
                 h = barra(a, x + dx, ic(per.loc[(k, t)]), col, marca, hueco)
             hs.append(h)
         a.set_xticks(range(len(indices)))
-        a.set_xticklabels([lab for _, lab in indices], fontsize=7.5)
+        a.set_xticklabels([lab for _, lab, _ in indices], fontsize=7.5)
+        for tl, (_, _, gil) in zip(a.get_xticklabels(), indices):
+            if gil:
+                tl.set_color(ACC)
         a.set_xlim(-0.55, len(indices) - 0.45)
         a.tick_params(axis="x", length=0)
         a.set_ylim(-0.4, 0.4)
