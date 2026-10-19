@@ -35,6 +35,7 @@
 \newcommand{\sub}[1]{{\leavevmode\color{muted}#1}}
 \newcommand{\nota}[1]{\vfill\noindent\parbox{0.9\textwidth}{\scriptsize\color{muted}#1}\par\vspace*{1mm}}
 \newcommand{\cita}[1]{{\footnotesize\color{azul}#1}}
+\newcommand{\citanota}[1]{{\color{azul}#1}}
 \newcommand{\notachica}[1]{\vfill\noindent\parbox{\textwidth}{\fontsize{7}{8.4}\selectfont\color{muted}#1}\par\vspace*{1mm}}
 \newcommand{\no}{{\leavevmode\color{ocre}\ding{55}}}
 \newcommand{\si}{{\leavevmode\color{acc}\ding{51}}}
@@ -164,10 +165,10 @@ Y_{imc} = \sum_{a \neq 2} \beta_a \,(\mathrm{Age}_{ai} \times \mathrm{Affected}_
 \centering
 \includegraphics[width=\textwidth]{figuras/salud_mental.pdf}
 
-\nota{Mental health is measured with the PHQ-4, four questions answered by the
-adolescent on symptoms of anxiety and depression (nervousness, worry, loss of
-interest, and feeling down); Kroenke et al.\ 2009. Each point is the difference
-between affected and unaffected municipalities, with 95\% CI.}
+\nota{Mental health is measured with the PHQ-4 \citanota{(Kroenke et al.,
+2009)}, four questions answered by the adolescent on symptoms of anxiety and
+depression (nervousness, worry, loss of interest, and feeling down). Each point
+is the difference between affected and unaffected municipalities, with 95\% CI.}
 \end{frame}
 
 % --------------------------------------------------------------- 5. Hogar
@@ -179,7 +180,7 @@ but with no differences by age\par}
 \includegraphics{figuras/canal_hogar.pdf}
 
 \notachica{Measured in 2010, one to nine months after the earthquake. In blue,
-the mechanisms in Gillmore (2026). Lower income, per capita; damaged housing,
+the mechanisms in \citanota{Gillmore (2026)}. Lower income, per capita; damaged housing,
 destroyed or with major damage; conflict at home, the mother shouting, being
 hostile, or hitting during the visit; overcrowded housing, persons per bedroom;
 precarious housing, an emergency shack (\emph{mediagua}) or a lent or shared
