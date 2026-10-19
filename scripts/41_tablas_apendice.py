@@ -97,7 +97,9 @@ def bloque_edades(res):
 def pie_perfil(res):
     k = len(res)
     return [fila("Observations", [f"{r[1]:,}" for r in res]),
-            fila("Municipality, cohort, and age-group FE", ["Yes"] * k),
+            fila("Municipality FE", ["Yes"] * k),
+            fila("Birth-cohort FE", ["Yes"] * k),
+            fila("Age-group FE", ["Yes"] * k),
             fila("Controls", ["Yes"] * k)]
 
 
@@ -196,8 +198,10 @@ def a3():
                     [coef(dif[0]) for _, dif, _ in res]),
                fila("", [ee(dif[1]) for _, dif, _ in res])]
     pie = [fila("Observations", [f"{int(r.nobs):,}" for r, _, _ in res]),
-           fila("Municipality, cohort, and age group $\\times$ "
-                "breastfed FE", ["Yes"] * 3),
+           fila("Municipality FE", ["Yes"] * 3),
+           fila("Birth-cohort FE", ["Yes"] * 3),
+           fila("Age-group FE", ["Yes"] * 3),
+           fila("Age group $\\times$ breastfed FE", ["Yes"] * 3),
            fila("Controls", ["Yes"] * 3),
            fila("Stress and breastfed $\\times$ mother's education and "
                 "employment", ["No", "Yes", "Yes"]),

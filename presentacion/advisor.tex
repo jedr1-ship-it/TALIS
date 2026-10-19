@@ -39,8 +39,8 @@
 \newcommand{\nota}[1]{\vfill\noindent\parbox{0.9\textwidth}{\scriptsize\color{muted}#1}\par\vspace*{1mm}}
 \newcommand{\cita}[1]{{\footnotesize\color{azul}#1}}
 \newcommand{\citanota}[1]{{\color{azul}#1}}
-% revista de una referencia: enlace al DOI, en azul, negrita y cursiva
-\newcommand{\revista}[2]{\href{https://doi.org/#1}{\textcolor{azul}{\bfseries\itshape #2}}}
+% revista de una referencia: enlace al DOI, en negrita y cursiva
+\newcommand{\revista}[2]{\href{https://doi.org/#1}{{\bfseries\itshape #2}}}
 \newcommand{\notachica}[1]{\vfill\noindent\parbox{\textwidth}{\fontsize{7}{8.4}\selectfont\color{muted}#1}\par\vspace*{1mm}}
 \newcommand{\no}{{\leavevmode\color{ocre}\ding{55}}}
 \newcommand{\si}{{\leavevmode\color{acc}\ding{51}}}
@@ -222,12 +222,11 @@ effects and controls, also for the mother's education and for age; 95\% CI.}
 
 \end{frame}
 
-% -------------------------------------------------------------- 8. Cierre
+% ------------------------------------------------------------ 8. Hallazgos
 \begin{frame}
-\frametitle{Findings and open questions}
-{\small
-{\color{acc}\bfseries What the data suggest}
-\begin{itemize}\setlength{\itemsep}{0.8mm}
+\frametitle{Findings}
+\vspace{4mm}
+\begin{itemize}\setlength{\itemsep}{4mm}
 \item Girls exposed at 6--11 months have worse mental health than those
       exposed at age 2, by 0.30 SD on the PHQ-4.
 \item The socioeconomic and family environment changed similarly at all ages
@@ -235,15 +234,19 @@ effects and controls, also for the mother's education and for age; 95\% CI.}
 \item Maternal stress is associated with worse mental health only among
       daughters who were breastfed, 62\% of those exposed at 6--11 months.
 \end{itemize}
-\vspace{1mm}
-{\color{ocre}\bfseries What remains open}
-\begin{itemize}\setlength{\itemsep}{0.8mm}
+\end{frame}
+
+% ------------------------------------------------- 9. Lo que queda abierto
+\begin{frame}
+\frametitle{Open questions}
+\vspace{4mm}
+\begin{itemize}\setlength{\itemsep}{4mm}
 \item What explains the effect at ages 3--4, if it operates neither through
-      the socioeconomic and family environment nor through maternal stress?\\[1mm]
+      the socioeconomic and family environment nor through maternal stress?\\[3mm]
       \textbf{Hypothesis:} at that age children can already remember
       consciously what they experience, and the memory of the earthquake
       could affect their mental health.
-\end{itemize}}
+\end{itemize}
 \end{frame}
 
 % ------------------------------------------------------------ Referencias
@@ -284,8 +287,8 @@ Exploiting a Natural Experiment.” \revista{10.1007/s13524-011-0054-z}{Demograp
   \hspace*{8mm}\vspace*{4mm}}
 \newlength{\anchotabla}
 \newlength{\anchonota}
-\newcommand{\titulotabla}[3]{\vspace*{4mm}{\centering\small\scshape
-  #1\volver{#3}\par}\vspace{2.5mm}}
+\newcommand{\titulotabla}[3]{\vspace*{2mm}{\centering\small\scshape
+  #1\volver{#3}\par}\vspace{1.5mm}}
 \newcommand{\notatabla}[1]{\vfill{\centering\parbox{\anchonota}{%
   \fontsize{6.5}{7.8}\selectfont\textit{Notes:} #1}\par}\vspace*{1mm}}
 \newcommand{\errores}{Standard errors clustered by municipality of
@@ -324,7 +327,7 @@ lent or shared dwelling. Specification as in Table A1. \errores}
 Mental Health}{}{diada}
 \setlength{\anchotabla}{\textwidth}\setlength{\anchonota}{\textwidth}
 \centering
-{\scriptsize\renewcommand{\arraystretch}{0.9}\input{tablas/a3.tex}\par}
+{\scriptsize\renewcommand{\arraystretch}{0.84}\input{tablas/a3.tex}\par}
 \notatabla{Girls. Maternal stress equals one if the mother reported stress,
 distress, or anxiety after the earthquake (2012); breastfed equals one if
 the child was still breastfed on 27-F (2012 report). Column 1 is the
