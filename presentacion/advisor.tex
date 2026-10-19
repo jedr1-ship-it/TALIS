@@ -39,6 +39,8 @@
 \newcommand{\nota}[1]{\vfill\noindent\parbox{0.9\textwidth}{\scriptsize\color{muted}#1}\par\vspace*{1mm}}
 \newcommand{\cita}[1]{{\footnotesize\color{azul}#1}}
 \newcommand{\citanota}[1]{{\color{azul}#1}}
+% revista de una referencia: enlace al DOI, en azul, negrita y cursiva
+\newcommand{\revista}[2]{\href{https://doi.org/#1}{\textcolor{azul}{\bfseries\itshape #2}}}
 \newcommand{\notachica}[1]{\vfill\noindent\parbox{\textwidth}{\fontsize{7}{8.4}\selectfont\color{muted}#1}\par\vspace*{1mm}}
 \newcommand{\no}{{\leavevmode\color{ocre}\ding{55}}}
 \newcommand{\si}{{\leavevmode\color{acc}\ding{51}}}
@@ -250,104 +252,120 @@ effects and controls, also for the mother's education and for age; 95\% CI.}
 {\scriptsize\raggedright\setlength{\leftskip}{5mm}\setlength{\parindent}{-5mm}%
 \setlength{\parskip}{1.6mm}%
 Almond, Douglas, Janet Currie, and Valentina Duque. 2018. “Childhood
-Circumstances and Adult Outcomes: Act II.” \emph{Journal of Economic
+Circumstances and Adult Outcomes: Act II.” \revista{10.1257/jel.20171164}{Journal of Economic
 Literature} 56 (4): 1360--1446.\par
 Andrabi, Tahir, Benjamin Daniels, and Jishnu Das. 2023. “Human Capital
 Accumulation and Disasters: Evidence from the Pakistan Earthquake of 2005.”
-\emph{Journal of Human Resources} 58 (4): 1057--1096.\par
+\revista{10.3368/jhr.59.2.0520-10887R1}{Journal of Human Resources} 58 (4): 1057--1096.\par
 Conger, Rand D., and M. Brent Donnellan. 2007. “An Interactionist Perspective
-on the Socioeconomic Context of Human Development.” \emph{Annual Review of
+on the Socioeconomic Context of Human Development.” \revista{10.1146/annurev.psych.58.110405.085551}{Annual Review of
 Psychology} 58: 175--199.\par
 Gee, Dylan G., and B. J. Casey. 2015. “The Impact of Developmental Timing for
-Stress and Recovery.” \emph{Neurobiology of Stress} 1: 184--194.\par
+Stress and Recovery.” \revista{10.1016/j.ynstr.2015.02.001}{Neurobiology of Stress} 1: 184--194.\par
 Gillmore, Roberto. 2026. “Natural Disasters and Early Child Development:
-Evidence from an Earthquake.” \emph{Economics of Education Review} 115:
+Evidence from an Earthquake.” \revista{10.1016/j.econedurev.2026.102817}{Economics of Education Review} 115:
 102817.\par
 Kroenke, Kurt, Robert L. Spitzer, Janet B. W. Williams, and Bernd Löwe. 2009.
 “An Ultra-Brief Screening Scale for Anxiety and Depression: The PHQ-4.”
-\emph{Psychosomatics} 50 (6): 613--621.\par
+\revista{10.1176/appi.psy.50.6.613}{Psychosomatics} 50 (6): 613--621.\par
 Persson, Petra, and Maya Rossin-Slater. 2018. “Family Ruptures, Stress, and
-the Mental Health of the Next Generation.” \emph{American Economic Review}
+the Mental Health of the Next Generation.” \revista{10.1257/aer.20141406}{American Economic Review}
 108 (4--5): 1214--1252.\par
 Torche, Florencia. 2011. “The Effect of Maternal Stress on Birth Outcomes:
-Exploiting a Natural Experiment.” \emph{Demography} 48 (4): 1473--1491.\par}
+Exploiting a Natural Experiment.” \revista{10.1007/s13524-011-0054-z}{Demography} 48 (4): 1473--1491.\par}
 \end{frame}
 
 % ---------------------------------------------------------------- Apéndice
+% Tablas en formato AER (scripts/41_tablas_apendice.py): título en
+% versalitas, ancho fijo y nota del mismo ancho que la tabla.
 \appendix
 \setbeamertemplate{footline}{%
   \hfill{\scriptsize\color{muted}A\insertframenumber}%
   \hspace*{8mm}\vspace*{4mm}}
-\newcommand{\notatabla}[1]{\vfill\noindent\parbox{\textwidth}{\fontsize{6.5}{7.8}\selectfont\color{muted}#1}\par\vspace*{1mm}}
-\newcommand{\estrellas}{Standard errors clustered by municipality of selection
-(116 clusters) in parentheses. *** \emph{p}~<~0.01, ** \emph{p}~<~0.05,
-* \emph{p}~<~0.10.}
+\newlength{\anchotabla}
+\newlength{\anchonota}
+\newcommand{\titulotabla}[3]{\vspace*{4mm}{\centering\small\scshape
+  #1\volver{#3}\par}\vspace{2.5mm}}
+\newcommand{\notatabla}[1]{\vfill{\centering\parbox{\anchonota}{%
+  \fontsize{6.5}{7.8}\selectfont\textit{Notes:} #1}\par}\vspace*{1mm}}
+\newcommand{\errores}{Standard errors clustered by municipality of
+selection (116 clusters) in parentheses.}
 
 \begin{frame}[label=tabA1]
-\frametitle{Table A1. Effect on mental health\volver{sm}}
+\titulotabla{Table A1---Effect on Mental Health}{}{sm}
+\setlength{\anchotabla}{0.84\textwidth}\setlength{\anchonota}{\anchotabla}
 \centering
-{\footnotesize\input{tablas/a1.tex}\par}
-\notatabla{The dependent variable is the PHQ-4 score, standardized. Each
-coefficient is the difference between affected and unaffected municipalities
-for that age group at the earthquake, relative to those aged 2. WLS with ELPI
-sampling weights. Controls: age in months, sex, the mother's age and
-education, household size and rural residence (2010), the mother's number of
-children, and family history of mental illness (2012). \estrellas}
+{\scriptsize\input{tablas/a1.tex}\par}
+\notatabla{The table reports the difference between affected and
+unaffected municipalities in the PHQ-4 score (standardized) for each age at
+the earthquake, relative to those aged 2. All regressions include
+municipality, birth-cohort, and age-group fixed effects and controls for age
+in months, sex, the mother's age and education, household size, and rural
+residence (2010), the mother's number of children, and family history of
+mental illness (2012), and use ELPI sampling weights. Mean of outcome is the
+weighted mean for those aged 2 at the earthquake. \errores}
 \end{frame}
 
 \begin{frame}[label=tabA2]
-\frametitle{Table A2. The socioeconomic and family environment\volver{entorno}}
+\titulotabla{Table A2---The Socioeconomic and Family Environment}{}{entorno}
+\setlength{\anchotabla}{1.1\textwidth}\setlength{\anchonota}{\textwidth}
 \centering
 {\scriptsize\resizebox{\textwidth}{!}{\input{tablas/a2.tex}}\par}
-\notatabla{Girls. Each column is an index standardized to mean 0 and SD 1;
-higher is worse. Measured in 2010, one to nine months after the earthquake;
-housing damage refers to the earthquake and was reported in 2012. Lower
-income, per capita; damaged housing, destroyed or with major damage;
-conflict at home, the mother shouting, being hostile, or hitting during the
-visit; overcrowded housing, persons per bedroom; precarious housing, an
-emergency shack or a lent or shared dwelling. Specification as in Table A1.
-\estrellas}
+\notatabla{Girls. Each column is a standardized index of the household
+environment; higher is worse. Measured in 2010, one to nine months after the
+earthquake, except housing damage, reported in 2012. Lower income, per
+capita; damaged housing, destroyed or with major damage; conflict at home,
+the mother shouting, being hostile, or hitting during the visit; overcrowded
+housing, persons per bedroom; precarious housing, an emergency shack or a
+lent or shared dwelling. Specification as in Table A1. \errores}
 \end{frame}
 
 \begin{frame}[label=tabA3]
-\frametitle{Table A3. Maternal stress, breastfeeding, and daughters' PHQ-4\volver{diada}}
+\titulotabla{Table A3---Maternal Stress, Breastfeeding, and Daughters'
+Mental Health}{}{diada}
+\setlength{\anchotabla}{\textwidth}\setlength{\anchonota}{\textwidth}
 \centering
-{\scriptsize\renewcommand{\arraystretch}{0.95}\input{tablas/a3.tex}\par}
-\notatabla{Girls; PHQ-4 standardized. Maternal stress: the mother reported
-stress, distress, or anxiety after the earthquake (2012). Breastfed: still
-breastfeeding on 27-F (2012 report). Column 1 is the estimate in the figure;
-column 2 lets stress and breastfeeding vary with the mother's education and
-employment (2010); column 3 also lets stress vary at 6--11 months.
-\estrellas}
+{\scriptsize\renewcommand{\arraystretch}{0.9}\input{tablas/a3.tex}\par}
+\notatabla{Girls. Maternal stress equals one if the mother reported stress,
+distress, or anxiety after the earthquake (2012); breastfed equals one if
+the child was still breastfed on 27-F (2012 report). Column 1 is the
+estimate in the figure; column 2 lets stress and breastfeeding vary with
+the mother's education and employment (2010); column 3 also lets stress vary
+at 6--11 months. Controls and weights as in Table A1. \errores}
 \end{frame}
 
 \begin{frame}[label=tabA4]
-\frametitle{Table A4. Maternal stress and breastfeeding by age\volver{diada}}
+\titulotabla{Table A4---Maternal Stress and Breastfeeding by Age at the
+Earthquake}{}{diada}
+\setlength{\anchotabla}{0.7\textwidth}\setlength{\anchonota}{\anchotabla}
 \centering
 {\footnotesize\input{tablas/a4.tex}\par}
-\notatabla{Means, with standard errors in parentheses, by the child's age at
-the earthquake. Columns 1 and 2: share of mothers who reported stress,
-distress, or anxiety after the earthquake (2012), in affected and unaffected
-municipalities. Column 3: share of children still breastfed on 27-F.}
+\notatabla{Unweighted means, with standard errors in parentheses, by the
+child's age at the earthquake. Columns 1 and 2 report the share of mothers
+who reported stress, distress, or anxiety after the earthquake (2012), in
+affected and unaffected municipalities; column 3, the share of children
+still breastfed on 27-F.}
 \end{frame}
 
 \begin{frame}[label=tabA5]
-\frametitle{Table A5. Other outcomes, girls\volver{chicos}}
+\titulotabla{Table A5---Other Outcomes, Girls}{}{chicos}
+\setlength{\anchotabla}{1.1\textwidth}\setlength{\anchonota}{\textwidth}
 \centering
 {\scriptsize\resizebox{\textwidth}{!}{\input{tablas/a5.tex}}\par}
 \notatabla{Girls. Each column is a separate regression with the
-specification of Table A1. CBCL internalizing and externalizing scores are
-reported by the caregiver (2024). Substance use: any alcohol, tobacco,
-cannabis, or other drug use in the last 12 months. Victimization: peer
-victimization and class climate. All standardized; higher is worse.
-\estrellas}
+specification of Table A1. The adolescent reports the PHQ-4, substance use
+(any alcohol, tobacco, cannabis, or other drug in the last 12 months), and
+peer victimization and class climate; the caregiver reports internalizing
+and externalizing problems (CBCL). All measured in 2024 and standardized;
+higher is worse. \errores}
 \end{frame}
 
 \begin{frame}[label=tabA6]
-\frametitle{Table A6. Other outcomes, boys\volver{chicos}}
+\titulotabla{Table A6---Other Outcomes, Boys}{}{chicos}
+\setlength{\anchotabla}{1.1\textwidth}\setlength{\anchonota}{\textwidth}
 \centering
 {\scriptsize\resizebox{\textwidth}{!}{\input{tablas/a6.tex}}\par}
-\notatabla{Boys. Same outcomes and specification as Table A5. \estrellas}
+\notatabla{Boys. Outcomes and specification as in Table A5. \errores}
 \end{frame}
 
 \end{document}

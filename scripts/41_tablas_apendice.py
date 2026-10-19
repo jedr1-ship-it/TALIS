@@ -2,8 +2,11 @@
 # -*- coding: utf-8 -*-
 """
 Tablas del apéndice de la presentación (presentacion/advisor.tex), en el
-formato de la AER: coeficiente con su error estándar entre paréntesis,
-estrellas, observaciones, R², efectos fijos y controles. Una tabla por
+formato de la AER: el outcome arriba en multicolumna, coeficiente con su
+error estándar entre paréntesis (sin asteriscos, como pide la AER), la
+media del outcome en el grupo
+de referencia, observaciones, efectos fijos y controles. Ancho fijo
+(\anchotabla, lo fija la diapositiva). Una tabla por
 diapositiva con gráfico de coeficientes, con la misma especificación que el
 gráfico:
 
@@ -45,16 +48,13 @@ def modulo(nombre, archivo):
 
 p33 = modulo("p33", "33_ventanas.py")
 p15 = p33.p15
-stars = p15.stars
 EDADES = [("6-11", "6--11 months $\\times$ Affected"),
           ("12-23", "1 year $\\times$ Affected"),
           ("36-49", "3--4 years $\\times$ Affected")]
 
 
-def coef(b, p):
-    s = f"{b:.3f}".replace("-", "$-$")
-    st = stars(p)
-    return s + (f"$^{{{st}}}$" if st else "")
+def coef(b):
+    return f"{b:.3f}".replace("-", "$-$")
 
 
 def ee(se):
@@ -65,30 +65,54 @@ def fila(etiqueta, celdas):
     return f"{etiqueta} & " + " & ".join(celdas) + " \\\\"
 
 
-def tabla(cabecera, cuerpo, pie):
-    """cabecera: nombres de columna; cuerpo y pie: líneas ya armadas."""
+def tabla(cabecera, cuerpo, pie, arriba):
+    """cabecera: nombres de columna; arriba: (outcome, nº de columnas) para la
+    fila de multicolumna; cuerpo y pie: líneas ya armadas. El ancho lo da
+    \\anchotabla."""
     k = len(cabecera)
+    celdas, reglas, j = [], [], 2
+    for etiqueta, n in arriba:
+        celdas.append(f"\\multicolumn{{{n}}}{{c}}{{{etiqueta}}}")
+        reglas.append(f"\\cmidrule(lr){{{j}-{j + n - 1}}}")
+        j += n
     return "\n".join(
-        [f"\\begin{{tabular}}{{@{{}}l*{{{k}}}{{c}}@{{}}}}", "\\toprule",
+        ["\\begin{tabular*}{\\anchotabla}{@{\\extracolsep{\\fill}}l"
+         f"*{{{k}}}{{c}}@{{}}}}", "\\toprule",
+         " & " + " & ".join(celdas) + " \\\\", " ".join(reglas),
          fila("", [f"({i + 1})" for i in range(k)]),
          fila("", cabecera), "\\midrule", *cuerpo, "\\midrule", *pie,
-         "\\bottomrule", "\\end{tabular}"]) + "\n"
+         "\\bottomrule", "\\end{tabular*}"]) + "\n"
 
 
 def bloque_edades(res):
     """Filas de coeficientes por grupo de edad; res: lista de (b, n, r, x)."""
     lineas = []
     for t, lab in EDADES:
-        lineas.append(fila(lab, [coef(r[0][t][0], r[0][t][2]) for r in res]))
+        lineas.append(fila(lab, [coef(r[0][t][0]) for r in res]))
         lineas.append(fila("", [ee(r[0][t][1]) for r in res]))
         lineas.append("\\addlinespace[2pt]")
     return lineas[:-1]
 
 
+def cifra(v):
+    return f"{v:.3f}".replace("-", "$-$")
+
+
+def media(fit, datos, grupo):
+    """Media ponderada del outcome, en la muestra de estimación, del grupo de
+    referencia."""
+    x = datos.loc[fit.model.data.row_labels]
+    ref = grupo(x).to_numpy()
+    return float(np.average(np.asarray(fit.model.endog)[ref],
+                            weights=np.asarray(fit.model.weights)[ref]))
+
+
 def pie_perfil(res):
     k = len(res)
-    return [fila("Observations", [f"{r[1]:,}" for r in res]),
-            fila("R$^2$", [f"{r[2].rsquared:.3f}" for r in res]),
+    return [fila("Mean of outcome, aged 2",
+                 [cifra(media(r[2], r[3], lambda x: x.tramo == "ref"))
+                  for r in res]),
+            fila("Observations", [f"{r[1]:,}" for r in res]),
             fila("Municipality, cohort, and age-group FE", ["Yes"] * k),
             fila("Controls", ["Yes"] * k)]
 
@@ -115,7 +139,7 @@ def a1():
             igual(r[0][t][0], ch[(ch.resultado == "z_phq4") & (ch.grupo == g)
                                   & (ch.tramo == t)].b.iloc[0], f"a1 {g} {t}")
     guarda("a1.tex", tabla(["All", "Girls", "Boys"], bloque_edades(res),
-                           pie_perfil(res)))
+                           pie_perfil(res), [("PHQ-4 (SD)", 3)]))
 
 
 # ---------------------------------------------- a2: entorno, diapositiva 7
@@ -134,7 +158,9 @@ def a2():
            "\\shortstack{Damaged\\\\housing}", "\\shortstack{Conflict\\\\at home}",
            "\\shortstack{Overcrowded\\\\housing}",
            "\\shortstack{Precarious\\\\housing}"]
-    guarda("a2.tex", tabla(cab, bloque_edades(res), pie_perfil(res)))
+    guarda("a2.tex", tabla(cab, bloque_edades(res), pie_perfil(res),
+                           [("Mechanisms in Gillmore (2026), SD", 3),
+                            ("Other household conditions, SD", 3)]))
 
 
 # --------------------------------- a3: estrés y lactancia, diapositiva 8
@@ -178,15 +204,18 @@ def a3():
     cuerpo = []
     for k, lab in (("e_sin", "Maternal stress $\\times$ not breastfed"),
                    ("e_pecho", "Maternal stress $\\times$ breastfed")):
-        cuerpo += [fila(lab, [coef(r.params[k], r.pvalues[k])
+        cuerpo += [fila(lab, [coef(r.params[k])
                               for r, _, _ in res]),
                    fila("", [ee(r.bse[k]) for r, _, _ in res]),
                    "\\addlinespace[2pt]"]
     cuerpo += [fila("Difference, breastfed $-$ not breastfed",
-                    [coef(dif[0], dif[2]) for _, dif, _ in res]),
+                    [coef(dif[0]) for _, dif, _ in res]),
                fila("", [ee(dif[1]) for _, dif, _ in res])]
-    pie = [fila("Observations", [f"{int(r.nobs):,}" for r, _, _ in res]),
-           fila("R$^2$", [f"{r.rsquared:.3f}" for r, _, _ in res]),
+    datos = (x, y, y)
+    pie = [fila("Mean of outcome, mother without stress",
+                [cifra(media(r, dd, lambda z: z.estres12 == 0))
+                 for (r, _, _), dd in zip(res, datos)]),
+           fila("Observations", [f"{int(r.nobs):,}" for r, _, _ in res]),
            fila("Municipality, cohort, and age group $\\times$ "
                 "breastfed FE", ["Yes"] * 3),
            fila("Controls", ["Yes"] * 3),
@@ -195,7 +224,7 @@ def a3():
            fila("Stress $\\times$ 6--11 months", ["No", "No", "Yes"])]
     guarda("a3.tex", tabla(["Baseline", "\\shortstack{Mother's\\\\SES}",
                             "\\shortstack{Mother's SES\\\\and infancy}"],
-                           cuerpo, pie))
+                           cuerpo, pie, [("Daughters' PHQ-4 (SD)", 3)]))
 
 
 # ------------------------------------------- a4: medias de la diapositiva 8
@@ -217,10 +246,10 @@ def a4():
     pie = [fila("Children", [f"{int(niv.xs('afectada', level='zona').n.sum()):,}",
                              f"{int(niv.xs('no afectada', level='zona').n.sum()):,}",
                              f"{int(pec.n.sum()):,}"])]
-    guarda("a4.tex", tabla(["\\shortstack{Stress,\\\\affected (\\%)}",
-                            "\\shortstack{Stress,\\\\unaffected (\\%)}",
-                            "\\shortstack{Breastfed\\\\on 27-F (\\%)}"],
-                           cuerpo[:-1], pie))
+    guarda("a4.tex", tabla(["Affected", "Unaffected", "On 27-F"],
+                           cuerpo[:-1], pie,
+                           [("Mothers with stress (\\%)", 2),
+                            ("Breastfed (\\%)", 1)]))
 
 
 # ------------------------------------ a5 y a6: chicas y chicos, diapositiva 9
@@ -231,9 +260,9 @@ def a5():
     c = d[["alcohol", "fuma", "cannabis", "otras_drogas"]]
     d["consumo"] = c.max(axis=1).where(c.notna().any(axis=1))
     d["z_consumo"] = (d.consumo - d.consumo.mean()) / d.consumo.std()
-    ys = ["z_phq4", "cbcl_int", "cbcl_ext", "z_consumo", "z_bull"]
-    cab = ["PHQ-4", "CBCL int.", "CBCL ext.", "Substance use",
-           "Victimization"]
+    ys = ["z_phq4", "z_consumo", "z_bull", "cbcl_int", "cbcl_ext"]
+    cab = ["PHQ-4", "Substance use", "Victimization", "Internalizing",
+           "Externalizing"]
     ch = pd.read_csv("reports/chicos.csv")
     for g, sx, nombre in (("chicas", 1, "a5.tex"), ("chicos", 0, "a6.tex")):
         res = [p33.perfil(d, y, sx, "paper", modelo=True) for y in ys]
@@ -241,7 +270,9 @@ def a5():
             igual(r[0]["6-11"][0], ch[(ch.resultado == y) & (ch.grupo == g)
                                       & (ch.tramo == "6-11")].b.iloc[0],
                   f"a5 {g} {y}")
-        guarda(nombre, tabla(cab, bloque_edades(res), pie_perfil(res)))
+        guarda(nombre, tabla(cab, bloque_edades(res), pie_perfil(res),
+                             [("Adolescent report (SD)", 3),
+                              ("Caregiver report, CBCL (SD)", 2)]))
 
 
 def main():
