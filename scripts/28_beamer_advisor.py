@@ -1035,8 +1035,8 @@ def anticipo():
 
 
 def canal_hogar():
-    """(a) Perfil por edad de los dos índices del entorno de 2012 y 2017;
-    (b) brecha en PHQ-4 sin y con el hogar, misma muestra, chicas
+    """(a) Perfil por edad de los siete índices del entorno de 2012 y 2017;
+    (b) brecha en PHQ-4 sin y con el entorno, misma muestra, chicas
     (reports/canal_hogar.csv)."""
     c = pd.read_csv("reports/canal_hogar.csv")
     c = c[c.grupo == "chicas"]
@@ -1044,34 +1044,56 @@ def canal_hogar():
     des = c[c.tipo == "descomp"].set_index(["componente", "tramo"])
     tramos = ["6-11", "12-23", "36-49"]
     etiquetas = ["6–11 meses", "1 año", "3–4 años"]
-    series = [("conflicto", "Conflicto en casa", AZUL, "o", False),
-              ("recursos", "Falta de recursos", GRISR, "o", True)]
+    indices = [("conflicto", "Conflicto en casa"),
+               ("recursos", "Falta de recursos"),
+               ("padre_fuera", "Padre fuera del hogar"),
+               ("sin_empleo", "Madre sin empleo"),
+               ("hacinamiento", "Hacinamiento"),
+               ("estimulacion", "Poca estimulación"),
+               ("barrio", "Barrio inseguro")]
+    series = [("6-11", "6–11 meses", MARRON, "^", False, -0.24),
+              ("12-23", "1 año", AZUL, "o", False, 0.0),
+              ("36-49", "3–4 años", GRISR, "o", True, 0.24)]
 
     def ic(r):
         return (r.valor, (r.hi - r.lo) / 3.92, np.nan)
     with plt.rc_context(PAPER):
-        f = plt.figure(figsize=(144 * MM, 60 * MM))
-        a = f.add_axes([0.13, 0.2, 0.35, 0.58])
-        b = f.add_axes([0.63, 0.2, 0.35, 0.58])
-        for ax in (a, b):
-            ejes_paper(ax)
-            ax.set_xticks(range(3))
-            ax.set_xticklabels(etiquetas, fontsize=8)
-            ax.set_xlim(-0.5, 2.5)
-            ax.set_xlabel("Edad al terremoto", fontsize=8)
+        f = plt.figure(figsize=(144 * MM, 46 * MM))
+        a = f.add_axes([0.2, 0.23, 0.35, 0.59])
+        b = f.add_axes([0.69, 0.23, 0.29, 0.59])
+        for lado in ("top", "right"):
+            a.spines[lado].set_visible(False)
+        a.axvline(0, color="#9A9A9A", lw=0.7, ls="--", zorder=1)
         hs = []
-        for (k, lab, col, marca, hueco), dx in zip(series, (-0.12, 0.12)):
-            for x, t in enumerate(tramos):
-                h = barra(a, x + dx, ic(per.loc[(k, t)]), col, marca, hueco)
+        for t, lab, col, marca, hueco, dy in series:
+            for y, (k, _) in enumerate(indices):
+                r = per.loc[(k, t)]
+                h = a.errorbar(r.valor, y + dy, xerr=1.96 * ic(r)[1],
+                               fmt=marca, color=col,
+                               mfc="white" if hueco else col, mec=col,
+                               mew=0.9, ms=4.0 if marca != "^" else 4.4,
+                               capsize=1.8, elinewidth=0.9, capthick=0.9,
+                               zorder=3)
             hs.append(h)
-        a.set_ylim(-0.5, 0.4)
-        formato_eje(a, 0.2)
-        a.set_ylabel("Diferencia con quienes\ntenían 2 años (DE)", fontsize=8)
-        a.set_title("Índices del entorno", fontsize=9, pad=24)
+        a.set_yticks(range(len(indices)))
+        a.set_yticklabels([lab for _, lab in indices], fontsize=7.5)
+        a.set_ylim(len(indices) - 0.5, -0.5)
+        a.tick_params(axis="y", length=0)
+        a.set_xlim(-0.6, 0.4)
+        a.xaxis.set_major_locator(matplotlib.ticker.MultipleLocator(0.2))
+        a.xaxis.set_major_formatter(matplotlib.ticker.FuncFormatter(
+            lambda v, _: coma(v, 1, False) if v >= 0 else coma(v, 1)))
+        a.set_xlabel("Diferencia con quienes tenían 2 años (DE)", fontsize=8)
+        a.set_title("Índices del entorno", fontsize=9, pad=16)
         a.legend(hs, [s_[1] for s_ in series], loc="lower center",
-                 bbox_to_anchor=(0.5, 1.0), ncol=2, frameon=False,
-                 fontsize=6.8, handletextpad=0.2, columnspacing=0.7,
+                 bbox_to_anchor=(0.5, 1.0), ncol=3, frameon=False,
+                 fontsize=6.8, handletextpad=0.2, columnspacing=0.8,
                  borderaxespad=0.1)
+        ejes_paper(b)
+        b.set_xticks(range(3))
+        b.set_xticklabels(etiquetas, fontsize=8)
+        b.set_xlim(-0.5, 2.5)
+        b.set_xlabel("Edad al terremoto", fontsize=8)
         h1 = h2 = None
         for x, t in enumerate(tramos):
             h1 = barra(b, x - 0.12, ic(des.loc[("brecha", t)]), MARRON, "^")
@@ -1080,8 +1102,8 @@ def canal_hogar():
         b.set_ylim(-0.15, 0.7)
         formato_eje(b, 0.2)
         b.set_ylabel("Diferencia con quienes\ntenían 2 años (DE)", fontsize=8)
-        b.set_title("Brecha en el PHQ-4", fontsize=9, pad=24)
-        b.legend([h1, h2], ["Sin controles", "Con controles del entorno"],
+        b.set_title("Brecha en el PHQ-4", fontsize=9, pad=16)
+        b.legend([h1, h2], ["Sin controles", "Con el entorno"],
                  loc="lower center", bbox_to_anchor=(0.5, 1.0), ncol=2,
                  frameon=False, fontsize=6.8, handletextpad=0.2,
                  columnspacing=0.8, borderaxespad=0.1)
