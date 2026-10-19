@@ -53,6 +53,29 @@ Niños con dato por grupo de nacimiento: expuestos ya nacidos el 27-F / en gesta
 - geografía falsa, corto plazo, solo zona no afectada, norte frente a sur, CBCL internalizante: -0.004 (ee 0.234, p=0.985); N=2,748
 - geografía falsa, mediano plazo, solo zona no afectada, norte frente a sur, CBCL internalizante: -0.189 (ee 0.148, p=0.202); N=3,004
 
+### Por edad al terremoto: cada grupo frente a los concebidos después (columna 3)
+
+2012 (corto plazo, CBCL 1½-5)
+- internalizante, chicas: en gestación -0.204 (ee 0.152, p=0.180) | 0-5 meses -0.072 (ee 0.159, p=0.653) | 6-11 meses -0.170 (ee 0.149, p=0.252) | 1 año -0.174 (ee 0.130, p=0.181) | 2 años -0.182 (ee 0.128, p=0.155) | 3-4 años -0.195 (ee 0.122, p=0.112) | N=5,382
+- internalizante, chicos: en gestación -0.044 (ee 0.150, p=0.768) | 0-5 meses -0.147 (ee 0.156, p=0.347) | 6-11 meses -0.060 (ee 0.134, p=0.652) | 1 año -0.108 (ee 0.137, p=0.431) | 2 años -0.087 (ee 0.133, p=0.512) | 3-4 años -0.056 (ee 0.137, p=0.684) | N=5,662
+- internalizante, todos: en gestación -0.155 (ee 0.121, p=0.199) | 0-5 meses -0.150 (ee 0.128, p=0.244) | 6-11 meses -0.130 (ee 0.117, p=0.264) | 1 año -0.152 (ee 0.113, p=0.178) | 2 años -0.153 (ee 0.115, p=0.183) | 3-4 años -0.129 (ee 0.112, p=0.250) | N=11,044
+- ansiedad/depresión, chicas: en gestación -0.069 (ee 0.132, p=0.600) | 0-5 meses +0.003 (ee 0.150, p=0.985) | 6-11 meses -0.137 (ee 0.136, p=0.315) | 1 año -0.168 (ee 0.123, p=0.170) | 2 años -0.144 (ee 0.125, p=0.247) | 3-4 años -0.184 (ee 0.126, p=0.143) | N=5,382
+- ansiedad/depresión, chicos: en gestación +0.023 (ee 0.127, p=0.857) | 0-5 meses -0.131 (ee 0.132, p=0.320) | 6-11 meses -0.056 (ee 0.114, p=0.622) | 1 año -0.072 (ee 0.114, p=0.529) | 2 años -0.061 (ee 0.107, p=0.569) | 3-4 años -0.112 (ee 0.120, p=0.349) | N=5,662
+- ansiedad/depresión, todos: en gestación -0.061 (ee 0.105, p=0.563) | 0-5 meses -0.096 (ee 0.112, p=0.395) | 6-11 meses -0.100 (ee 0.098, p=0.306) | 1 año -0.114 (ee 0.097, p=0.239) | 2 años -0.112 (ee 0.101, p=0.267) | 3-4 años -0.148 (ee 0.102, p=0.147) | N=11,044
+
+2017 (mediano plazo, CBCL 6-18)
+- internalizante, chicas: en gestación -0.038 (ee 0.170, p=0.825) | 0-5 meses +0.149 (ee 0.156, p=0.340) | 6-11 meses +0.069 (ee 0.149, p=0.644) | 1 año +0.068 (ee 0.139, p=0.625) | 2 años +0.026 (ee 0.132, p=0.843) | 3-4 años -0.005 (ee 0.125, p=0.969) | N=5,707
+- internalizante, chicos: en gestación +0.204 (ee 0.145, p=0.159) | 0-5 meses -0.038 (ee 0.147, p=0.798) | 6-11 meses -0.032 (ee 0.154, p=0.835) | 1 año +0.191 (ee 0.130, p=0.143) | 2 años +0.193* (ee 0.114, p=0.090) | 3-4 años +0.263** (ee 0.118, p=0.026) | N=5,914
+- internalizante, todos: en gestación +0.083 (ee 0.116, p=0.474) | 0-5 meses +0.067 (ee 0.101, p=0.506) | 6-11 meses +0.007 (ee 0.106, p=0.947) | 1 año +0.147 (ee 0.095, p=0.121) | 2 años +0.131 (ee 0.090, p=0.146) | 3-4 años +0.142 (ee 0.088, p=0.104) | N=11,621
+- ansiedad/depresión, chicas: en gestación -0.044 (ee 0.167, p=0.790) | 0-5 meses +0.167 (ee 0.156, p=0.283) | 6-11 meses +0.061 (ee 0.137, p=0.657) | 1 año +0.072 (ee 0.129, p=0.576) | 2 años +0.010 (ee 0.118, p=0.931) | 3-4 años -0.024 (ee 0.113, p=0.828) | N=5,707
+- ansiedad/depresión, chicos: en gestación +0.128 (ee 0.143, p=0.374) | 0-5 meses -0.025 (ee 0.143, p=0.863) | 6-11 meses -0.053 (ee 0.134, p=0.692) | 1 año +0.138 (ee 0.120, p=0.248) | 2 años +0.129 (ee 0.099, p=0.196) | 3-4 años +0.201** (ee 0.095, p=0.034) | N=5,914
+- ansiedad/depresión, todos: en gestación +0.040 (ee 0.118, p=0.732) | 0-5 meses +0.076 (ee 0.103, p=0.457) | 6-11 meses +0.002 (ee 0.091, p=0.985) | 1 año +0.125 (ee 0.089, p=0.161) | 2 años +0.087 (ee 0.080, p=0.277) | 3-4 años +0.099 (ee 0.075, p=0.183) | N=11,621
+
+2017 (mediano plazo, vocabulario TVIP; más alto = mejor)
+- TVIP, chicas: en gestación -0.088 (ee 0.142, p=0.534) | 0-5 meses +0.084 (ee 0.126, p=0.507) | 6-11 meses -0.028 (ee 0.108, p=0.799) | 1 año -0.101 (ee 0.102, p=0.323) | 2 años -0.144 (ee 0.104, p=0.168) | 3-4 años -0.144 (ee 0.111, p=0.193) | N=6,982
+- TVIP, chicos: en gestación -0.320*** (ee 0.119, p=0.007) | 0-5 meses -0.337*** (ee 0.116, p=0.004) | 6-11 meses -0.285*** (ee 0.095, p=0.003) | 1 año -0.207** (ee 0.091, p=0.023) | 2 años -0.252** (ee 0.099, p=0.011) | 3-4 años -0.178* (ee 0.097, p=0.066) | N=7,201
+- TVIP, todos: en gestación -0.186* (ee 0.100, p=0.064) | 0-5 meses -0.110 (ee 0.100, p=0.269) | 6-11 meses -0.144 (ee 0.088, p=0.103) | 1 año -0.150* (ee 0.078, p=0.054) | 2 años -0.198** (ee 0.084, p=0.019) | 3-4 años -0.147 (ee 0.094, p=0.118) | N=14,183
+
 ### Lo que responde el niño en 2017 (expuestos a los 7-12 años frente a concebidos después a los 7)
 - se siente solo en el curso, chicas: -0.079 (ee 0.368, p=0.830); N=4,929 (expuestos 4,858, controles 71)
 - se siente solo en el curso, chicos: -0.304 (ee 0.218, p=0.162); N=5,022 (expuestos 4,953, controles 69)

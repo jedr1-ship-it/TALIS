@@ -283,6 +283,81 @@ def gillmore(df):
             f"a sur, CBCL internalizante: {fmt(*r)}; N={n:,}")
 
 
+# edad al 27-F en meses (negativa: en gestación); grupos de los nacidos antes
+# del corte de Gillmore, cada uno frente a los concebidos después
+EDADES_G = [(-10, -1, "gest", "en gestación"), (0, 5, "m0_5", "0-5 meses"),
+            (6, 11, "m6_11", "6-11 meses"), (12, 23, "m12_23", "1 año"),
+            (24, 35, "m24_35", "2 años"), (36, 59, "m36_59", "3-4 años")]
+
+
+def ajusta_varios(d, y, terms):
+    d = d.dropna(subset=[y, "geo", "w", "cohorte"]).copy()
+    d = d[d.w > 0]
+    d["com"] = d.geo.astype(int).astype(str)
+    d["coh"] = d.cohorte.astype(int).astype(str)
+    d["ola"] = d.wave.astype(str)
+    terms = [t for t in terms if d[t].sum() >= 30]
+    f = f"{y} ~ {' + '.join(terms)} + C(com) + C(coh)"
+    if d.ola.nunique() > 1:
+        f += " + C(ola)"
+    xs = []
+    for v in p08.XVARS:
+        s = d[v]
+        if s.notna().sum() == 0 or s.nunique() < 2:
+            continue
+        if s.isna().any():
+            d[f"{v}_mi"] = s.isna().astype(float)
+            d[v] = s.fillna(s.median())
+            xs += [v, f"{v}_mi"]
+        else:
+            xs.append(v)
+    f += " + " + " + ".join(xs)
+    r = smf.wls(f, data=d, weights=d.w).fit(
+        cov_type="cluster", cov_kwds={"groups": d["com"]})
+    return {t: (float(r.params[t]), float(r.bse[t]), float(r.pvalues[t]),
+                int((d[t] > 0).sum())) for t in terms}, int(r.nobs)
+
+
+def gillmore_edades(df):
+    log("\n### Por edad al terremoto: cada grupo frente a los concebidos "
+        "después (columna 3)")
+    x = df.copy()
+    x["edadq"] = (2010 * 12 + 1) - x.birth_ym
+    terms = []
+    for lo, hi, k, _ in EDADES_G:
+        x[f"G{k}"] = (x.affected * x.earthquake
+                      * x.edadq.between(lo, hi).astype(float))
+        terms.append(f"G{k}")
+    nombre = {f"G{k}": lab for _, _, k, lab in EDADES_G}
+    st = x[(((x.wave == 2012) & (x.affected == 1))
+            | ((x.wave == 2017) & (x.affected == 0)
+               & x.cohorte.between(2011, 2015))) & (x.inst == 1)]
+    mt = x[(x.wave == 2017) & x.cohorte.between(2006, 2015) & (x.inst == 2)]
+    mt = mt[(mt.affected == 0) | num(mt.edad_meses).between(84, 151)]
+    tv = x[(x.wave == 2017) & x.cohorte.between(2006, 2015)]
+    tv = tv[(tv.affected == 0) | num(tv.edad_meses).between(84, 151)]
+    for hz, d, ys in (("2012 (corto plazo, CBCL 1½-5)", st,
+                       (("z_int", "internalizante"),
+                        ("z_ansdep", "ansiedad/depresión"))),
+                      ("2017 (mediano plazo, CBCL 6-18)", mt,
+                       (("z_int", "internalizante"),
+                        ("z_ansdep", "ansiedad/depresión"))),
+                      ("2017 (mediano plazo, vocabulario TVIP; más alto = "
+                       "mejor)", tv, (("z_tvip", "TVIP"),))):
+        log(f"\n{hz}")
+        for y, lab in ys:
+            for g, sx in SEXOS:
+                dd = d if sx is None else d[d.mujer == sx]
+                b, n = ajusta_varios(dd, y, terms)
+                log(f"- {lab}, {g}: " + " | ".join(
+                    f"{nombre[t]} {fmt(*v[:3])}" for t, v in b.items())
+                    + f" | N={n:,}")
+                for t, v in b.items():
+                    FILAS.append({"parte": "gillmore_edad", "horizonte": hz,
+                                  "y": y, "grupo": g, "tramo": nombre[t],
+                                  "b": v[0], "se": v[1], "p": v[2], "n": n})
+
+
 def gillmore_nino(df, n17):
     log("\n### Lo que responde el niño en 2017 (expuestos a los 7-12 años "
         "frente a concebidos después a los 7)")
@@ -367,6 +442,7 @@ def main():
     n17, c17 = ninos17(), cuidador17()
     inventario(df, n17, c17)
     gillmore(df)
+    gillmore_edades(df)
     gillmore_nino(df, n17)
     perfiles(df, n17, c17)
     pd.DataFrame(FILAS).to_csv("reports/salud_mental_antes.csv", index=False)
