@@ -1054,8 +1054,8 @@ def canal_hogar():
     def ic(r):
         return (r.valor, (r.hi - r.lo) / 3.92, np.nan)
     with plt.rc_context(PAPER):
-        f = plt.figure(figsize=(130 * MM, 45 * MM))
-        a = f.add_axes([0.13, 0.3, 0.85, 0.57])
+        f = plt.figure(figsize=(130 * MM, 50 * MM))
+        a = f.add_axes([0.13, 0.28, 0.85, 0.595])
         ejes_paper(a)
         hs = []
         for t, lab, col, marca, hueco, dx in series:
