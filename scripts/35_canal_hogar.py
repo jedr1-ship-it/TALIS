@@ -1,28 +1,31 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-¿Cambió el hogar distinto según la edad del hijo? ¿Qué parte de la brecha
+¿Cambió el entorno distinto según la edad del hijo? ¿Qué parte de la brecha
 de cada grupo explica?
 
-El hogar se mide después del terremoto y antes de los síntomas, en 2012 y
-2017, con lo que reporta la madre o el cuidador. Cinco índices,
-fijados antes de estimar y orientados de forma que más alto = peor. El
-estrés de la madre no entra: es el segundo mecanismo y se estudia aparte
-(scripts/34_estres_madre.py).
+El entorno se mide justo después del terremoto, en la ronda de 2010 (entre
+uno y nueve meses después del 27-F), salvo el barrio, que la ELPI pregunta
+por primera vez en 2017. Cinco índices, orientados de forma que más alto =
+peor. El estrés de la madre no entra: es el segundo mecanismo y se estudia
+aparte (scripts/34_estres_madre.py).
 
-  conflicto en casa     le grita, lo amenaza o le pega en 2012; presenció
-                        peleas, lo zamarreó o golpeó, le gritó o insultó en
-                        2017
-  falta de recursos     ingreso per cápita del hogar en 2012 y 2017 (signo
-                        cambiado) y vivienda destruida o con daños mayores
-  padre fuera del hogar el padre no vive en el hogar, 2012 y 2017
-  madre sin empleo      la madre no trabajó la semana anterior, 2012 y 2017
-  hacinamiento          personas por dormitorio en 2012; categoría de
-                        hacinamiento en 2017
+  conflicto en casa     durante la visita de 2010, la madre le grita,
+                        muestra hostilidad o le pega (HOME, lo anota el
+                        encuestador)
+  falta de recursos     ingreso del hogar por persona el mes anterior a la
+                        entrevista de 2010, suma de las fuentes de cada
+                        integrante (signo cambiado), y vivienda
+                        destruida o con daños mayores en el terremoto
+                        (pregunta de 2012 sobre el 27-F)
+  vivienda hacinada     personas por dormitorio en 2010
+  vivienda precaria     en 2010, mediagua, o vivienda cedida o compartida
+                        con otro hogar
+  barrio inseguro       cuán inseguros ve el niño su barrio y la calle (2017)
 
   1. Perfil de cada índice por edad al terremoto (los grupos del paper:
      6-11 meses, 1 año y 3-4 años frente a 2 años), zona afectada menos no
-     afectada. Si es plano, el golpe al hogar fue igual para todas las
+     afectada. Si es plano, el golpe al entorno fue igual para todas las
      edades.
   2. Descomposición de Gelbach (2016) de la brecha en PHQ-4 de cada tramo
      en lo que explica cada índice y lo que queda, con bootstrap de
@@ -50,8 +53,7 @@ p34 = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(p34)
 p33, p15 = p34.p33, p34.p15
 num, stars, xt, si = p15.num, p15.stars, p15.xt, p34.si
-INDICES = ["conflicto", "recursos", "padre_fuera", "sin_empleo",
-           "hacinamiento"]
+INDICES = ["conflicto", "recursos", "hacinamiento", "precaria", "barrio"]
 TRAMOS = ["6-11", "12-23", "36-49"]
 GRUPOS = (("chicas", 1), ("todos", None))
 B = 300
@@ -86,63 +88,43 @@ def lee(f, cols, sav=False):
 
 def carga():
     d = p34.carga()
-    e = lee("data/interim/2012/Entrevistada_2012.dta",
-            ["folio", "f20c", "f20e", "f20h"]).drop_duplicates("folio")
-    for v, k in (("f20c", "grito12"), ("f20e", "amenaza12"),
-                 ("f20h", "pega12")):
-        s = num(e[v])
-        e[k] = np.where(s.between(1, 4), (s >= 2).astype(float), np.nan)
-    h = lee("data/interim/2012/Hogar_2012.dta", ["folio", "l11_monto"])
-    y12 = num(h.l11_monto).where(lambda s: (s > 0) & (s != 99))
-    h = pd.DataFrame({"folio": h.folio, "y": y12})
-    h = h.groupby("folio").agg(y=("y", "max"), n=("y", "size"))
-    h["log_ing12"] = np.log(h.y / h.n)
-    hg = lee("data/interim/2012/Hogar_2012.dta",
-             ["folio", "i2", "k1", "k2", "k3"])
-    i2 = num(hg.i2)
-    h["padre_fuera12"] = 1.0 - hg.assign(p=i2.isin([2, 4])).groupby(
-        "folio").p.max().astype(float)
-    madre = hg[i2.isin([1, 3])].drop_duplicates("folio").set_index("folio")
-    k1, k2, k3 = num(madre.k1), num(madre.k2), num(madre.k3)
-    trabaja = (k1 == 1) | k2.between(1, 6) | (k3 == 1)
-    h["sin_empleo12"] = (1.0 - trabaja.astype(float)).where(k1.isin([1, 2]))
-    e2 = lee("data/interim/2012/Entrevistada_2012.dta", ["folio", "m5a"])
-    e2 = e2.drop_duplicates("folio").set_index("folio")
-    h["hacina12"] = h.n / num(e2.m5a).where(lambda s: s.between(0, 20)).clip(
-        lower=1)
-    c = lee("data/interim/2017/Base Cuidador Principal ELPI III (SPSS).sav",
-            ["folio", "ytotcorh", "pc29a", "h1", "o1", "o2", "o3",
-             "hacinamiento"]
-            + [f"pc27{k}" for k in "cdfghijkn"], sav=True)
-    g = c.groupby("folio")
-    c17 = pd.DataFrame({"y": g.ytotcorh.max(), "n": g.size()})
-    c17["log_ing17"] = np.log(c17.y.where(c17.y > 0) / c17.n)
-    h1 = num(c.h1)
-    c17["padre_fuera17"] = 1.0 - c.assign(p=h1.isin([3, 5])).groupby(
-        "folio").p.max().astype(float)
-    m17 = c[h1.isin([2, 4])].drop_duplicates("folio").set_index("folio")
-    o1 = num(m17.o1)
-    tr = (o1 == 1) | (num(m17.o2) == 1) | (num(m17.o3) == 1)
-    c17["sin_empleo17"] = (1.0 - tr.astype(float)).where(o1.isin([1, 2]))
-    c17["hacina17"] = g.hacinamiento.max().where(lambda s: s.between(1, 4))
-    c = c.dropna(subset=["pc29a"]).drop_duplicates("folio").set_index("folio")
-    c17["peleas17"] = si(c.pc29a)
-    fis = pd.concat([si(c[f"pc27{k}"]) for k in "cfgijk"], axis=1)
-    psi = pd.concat([si(c[f"pc27{k}"]) for k in "dhn"], axis=1)
-    c17["golpes17"] = fis.max(axis=1).where(fis.notna().any(axis=1))
-    c17["grito17"] = psi.max(axis=1).where(psi.notna().any(axis=1))
-    d = (d.merge(e[["folio", "grito12", "amenaza12", "pega12"]], on="folio",
-                 how="left")
-          .merge(h.drop(columns=["y", "n"]).reset_index(), on="folio",
-                 how="left")
-          .merge(c17.drop(columns=["y", "n"]).reset_index(), on="folio",
-                 how="left"))
-    d["conflicto"] = indice([d.grito12, d.amenaza12, d.pega12, d.peleas17,
-                             d.golpes17, d.grito17], 3)
-    d["recursos"] = indice([-d.log_ing12, -d.log_ing17, d.dano12], 2)
-    d["padre_fuera"] = indice([d.padre_fuera12, d.padre_fuera17], 1)
-    d["sin_empleo"] = indice([d.sin_empleo12, d.sin_empleo17], 1)
-    d["hacinamiento"] = indice([d.hacina12, d.hacina17], 1)
+    ev = lee("data/interim/2010/Evaluaciones_2010.dta",
+             ["folio", "hm1_9", "hm1_10", "hm1_11"]).drop_duplicates("folio")
+    ev = ev.set_index("folio")
+    x = {}
+    for v, k in (("hm1_9", "grita10"), ("hm1_10", "hostil10"),
+                 ("hm1_11", "pega10")):
+        s_ = num(ev[v])
+        x[k] = (1.0 - s_).where(s_.isin([0, 1]))
+    fuentes = [f"d{k}m" for k in range(1, 9)]
+    h = lee("data/interim/2010/Hogar_2010.dta", ["folio"] + fuentes)
+    m = pd.concat([num(h[c]).where(lambda s_: (s_ >= 0) & (s_ != 99))
+                   for c in fuentes], axis=1)
+    h["y"] = m.sum(axis=1).where(m.notna().any(axis=1))
+    h = h.groupby("folio").agg(y=("y", "sum"), n=("y", "size"),
+                               validos=("y", "count"))
+    x["log_ing10"] = np.log((h.y / h.n).where((h.validos > 0) & (h.y > 0)))
+    e = lee("data/interim/2010/Entrevistada_2010.dta",
+            ["folio", "f4", "f6_1", "f7"]).drop_duplicates("folio")
+    e = e.set_index("folio")
+    x["hacina10"] = h.n / num(e.f6_1).where(
+        lambda s_: s_.between(0, 20)).clip(lower=1)
+    f4, f7 = num(e.f4), num(e.f7)
+    x["mediagua10"] = (f4 == 7).astype(float).where(f4.between(1, 7))
+    x["cedida10"] = f7.isin([3, 6]).astype(float).where(f7.between(1, 6))
+    n = lee("data/interim/2017/Base Niños y Niñas ELPI III (SPSS).sav",
+            ["folio", "a22", "a23"], sav=True).drop_duplicates("folio")
+    n = n.set_index("folio")
+    x["barrio17"] = num(n.a22).where(lambda s_: s_.between(1, 5))
+    x["calle17"] = num(n.a23).where(lambda s_: s_.between(1, 5))
+    x = pd.DataFrame(x)
+    x.index.name = "folio"
+    d = d.merge(x.reset_index(), on="folio", how="left")
+    d["conflicto"] = indice([d.grita10, d.hostil10, d.pega10], 1)
+    d["recursos"] = indice([-d.log_ing10, d.dano12], 1)
+    d["hacinamiento"] = indice([d.hacina10], 1)
+    d["precaria"] = indice([d.mediagua10, d.cedida10], 1)
+    d["barrio"] = indice([d.barrio17, d.calle17], 1)
     return d
 
 

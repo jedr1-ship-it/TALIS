@@ -1035,16 +1035,17 @@ def anticipo():
 
 
 def canal_hogar():
-    """Perfil por edad de los cinco índices del entorno de 2012 y 2017,
-    chicas (reports/canal_hogar.csv)."""
+    """Perfil por edad de los cinco índices del entorno medidos justo
+    después del terremoto (2010; el barrio, 2017), chicas
+    (reports/canal_hogar.csv)."""
     c = pd.read_csv("reports/canal_hogar.csv")
     c = c[c.grupo == "chicas"]
     per = c[c.tipo == "perfil"].set_index(["componente", "tramo"])
-    indices = [("conflicto", "Conflicto\nen casa"),
-               ("recursos", "Falta de\nrecursos"),
-               ("padre_fuera", "Padre fuera\ndel hogar"),
-               ("sin_empleo", "Madre sin\nempleo"),
-               ("hacinamiento", "Vivienda\nhacinada")]
+    indices = [("conflicto", "Conflicto\nen casa\n(2010)"),
+               ("recursos", "Falta de\nrecursos\n(2010)"),
+               ("hacinamiento", "Vivienda\nhacinada\n(2010)"),
+               ("precaria", "Vivienda\nprecaria\n(2010)"),
+               ("barrio", "Barrio\ninseguro\n(2017)")]
     series = [("6-11", "6–11 meses", MARRON, "^", False, -0.22),
               ("12-23", "1 año", AZUL, "o", False, 0.0),
               ("36-49", "3–4 años", GRISR, "o", True, 0.22)]
@@ -1052,8 +1053,8 @@ def canal_hogar():
     def ic(r):
         return (r.valor, (r.hi - r.lo) / 3.92, np.nan)
     with plt.rc_context(PAPER):
-        f = plt.figure(figsize=(118 * MM, 48 * MM))
-        a = f.add_axes([0.15, 0.25, 0.83, 0.61])
+        f = plt.figure(figsize=(118 * MM, 46 * MM))
+        a = f.add_axes([0.15, 0.3, 0.83, 0.56])
         ejes_paper(a)
         hs = []
         for t, lab, col, marca, hueco, dx in series:
@@ -1064,7 +1065,7 @@ def canal_hogar():
         a.set_xticklabels([lab for _, lab in indices], fontsize=7.5)
         a.set_xlim(-0.55, len(indices) - 0.45)
         a.tick_params(axis="x", length=0)
-        a.set_ylim(-0.6, 0.4)
+        a.set_ylim(-0.4, 0.4)
         formato_eje(a, 0.2)
         a.set_ylabel("Diferencia con quienes\ntenían 2 años (DE)", fontsize=8)
         a.legend(hs, [s_[1] for s_ in series], loc="lower center",
