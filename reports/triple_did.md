@@ -27,3 +27,14 @@ Diferencia zona afectada menos no afectada entre quienes tomaban pecho, menos la
 - 24-35: -0.280 (ee 0.153, p=0.067); con educación y empleo de la madre x pecho y x zona: -0.293 (ee 0.150); tomaban pecho 343
 - 36-49: -0.026 (ee 0.296, p=0.931); con educación y empleo de la madre x pecho y x zona: -0.044 (ee 0.295); tomaban pecho 112
 - 6-11 meses menos 2 años: +0.627 (ee 0.203, p=0.002)
+
+## Comprobaciones
+- chicas, 6-11 meses frente a 2 años: tomaba pecho +0.498 (ee 0.117), no tomaba +0.044 (ee 0.204)
+- chicas, pecho x zona, menores de 2 años: +0.228 (ee 0.138, p=0.100); 2 años o más: -0.310 (ee 0.224)
+- chicas, perfil principal, 6-11 meses: +0.331 (ee 0.110); sin los de 2 años que tomaban pecho en la referencia: +0.285 (ee 0.112)
+- chicos, 6-11 meses frente a 2 años: tomaba pecho +0.139 (ee 0.109), no tomaba -0.126 (ee 0.152)
+- chicos, pecho x zona, menores de 2 años: -0.021 (ee 0.091, p=0.814); 2 años o más: -0.111 (ee 0.233)
+- chicos, perfil principal, 6-11 meses: +0.042 (ee 0.097); sin los de 2 años que tomaban pecho en la referencia: +0.019 (ee 0.097)
+- tomaban pecho el 27-F con 6-11 meses, destetados en los tres meses siguientes: zona afectada 0.204, no afectada 0.205
+- tomaban pecho el 27-F con 12-23 meses, destetados en los tres meses siguientes: zona afectada 0.191, no afectada 0.179
+- estrés de la madre (2012), hijos de 6-11 meses: afectada, con pecho 0.161 | afectada, sin pecho 0.134 | no afectada, con pecho 0.034 | no afectada, sin pecho 0.045

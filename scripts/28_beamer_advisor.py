@@ -552,7 +552,7 @@ def salud_mental():
             for x, t in enumerate(pts):
                 barra(ax, x, t, col, marca, hueco)
             ax.set_xticks(range(3))
-            ax.set_xticklabels(["6–11\nmonths", "1\nyear", "3–4\nyears"],
+            ax.set_xticklabels(["6–11\nmonths", "1–2\nyears", "3–4\nyears"],
                                fontsize=8)
             ax.set_xlim(-0.5, 2.5)
             ax.set_ylim(-0.3, 0.62)
@@ -560,7 +560,7 @@ def salud_mental():
             ax.yaxis.set_major_formatter(matplotlib.ticker.FuncFormatter(
                 lambda v, _: cifra(v, 1, False) if v >= 0 else cifra(v, 1)))
             if i == 0:
-                ax.set_ylabel("Difference relative to\nthose aged 2 (SD)",
+                ax.set_ylabel("Difference relative to\nthose aged 2–3 (SD)",
                               fontsize=8.5)
             else:
                 ax.set_yticklabels([])
@@ -1068,7 +1068,7 @@ def canal_hogar():
                ("hacinamiento", "Overcrowded\nhousing\n(2010)", False),
                ("precaria", "Precarious\nhousing\n(2010)", False)]
     series = [("6-11", "6–11 months", OCRE, "^", False, -0.22),
-              ("12-23", "1 year", VERDE, "o", False, 0.0),
+              ("12-23", "1–2 years", VERDE, "o", False, 0.0),
               ("36-49", "3–4 years", GRISR, "o", True, 0.22)]
 
     def ic(r):
@@ -1091,7 +1091,7 @@ def canal_hogar():
         a.tick_params(axis="x", length=0)
         a.set_ylim(-0.4, 0.4)
         formato_eje(a, 0.2)
-        a.set_ylabel("Difference relative to\nthose aged 2 (SD)", fontsize=8)
+        a.set_ylabel("Difference relative to\nthose aged 2–3 (SD)", fontsize=8)
         a.legend(hs, [s_[1] for s_ in series], loc="lower center",
                  bbox_to_anchor=(0.5, 1.0), ncol=3, frameon=False,
                  fontsize=7, handletextpad=0.2, columnspacing=1.0,
@@ -1106,7 +1106,7 @@ def diada():
     (reports/estres_madre.csv)."""
     c = pd.read_csv("reports/estres_madre.csv")
     tramos = ["6-11", "12-23", "24-35", "36-49"]
-    etiquetas = ["6–11\nmonths", "1\nyear", "2\nyears", "3–4\nyears"]
+    etiquetas = ["6–11\nmonths", "1–2\nyears", "2–3\nyears", "3–4\nyears"]
     niv = c[c.panel == "nivel"].set_index(["tramo", "zona"])
     lac = c[(c.panel == "lactancia") & (c.grupo == "chicas")].set_index(
         "tramo")
@@ -1207,7 +1207,7 @@ def chicos():
         ax.xaxis.set_major_formatter(matplotlib.ticker.FuncFormatter(
             lambda v, _: cifra(v, 1, False) if v >= 0 else cifra(v, 1)))
         ax.tick_params(axis="x", length=3)
-        ax.set_xlabel("Exposed at 6–11 months relative to age 2 (SD)",
+        ax.set_xlabel("Exposed at 6–11 months relative to ages 2–3 (SD)",
                       fontsize=8)
         ax.legend(hs, ["Girls", "Boys"], loc="lower center",
                   bbox_to_anchor=(0.5, 1.0), ncol=2, frameon=False,

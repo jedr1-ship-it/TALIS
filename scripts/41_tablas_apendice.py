@@ -54,7 +54,7 @@ def modulo(nombre, archivo):
 p33 = modulo("p33", "33_ventanas.py")
 p15 = p33.p15
 EDADES = [("6-11", "6--11 months $\\times$ Affected"),
-          ("12-23", "1 year $\\times$ Affected"),
+          ("12-23", "1--2 years $\\times$ Affected"),
           ("36-49", "3--4 years $\\times$ Affected")]
 
 
@@ -231,7 +231,7 @@ def a4():
     c = pd.read_csv("reports/estres_madre.csv")
     niv = c[c.panel == "nivel"].set_index(["tramo", "zona"])
     pec = c[c.panel == "pecho"].set_index("tramo")
-    nombres = {"6-11": "6--11 months", "12-23": "1 year", "24-35": "2 years",
+    nombres = {"6-11": "6--11 months", "12-23": "1--2 years", "24-35": "2--3 years",
                "36-49": "3--4 years"}
     cuerpo = []
     for t, lab in nombres.items():

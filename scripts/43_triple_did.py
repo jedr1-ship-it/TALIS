@@ -54,7 +54,7 @@ p34 = modulo("p34", "34_estres_madre.py")
 p28 = modulo("p28", "28_beamer_advisor.py")
 p15 = p34.p15
 TRAMOS = ["6-11", "12-23", "24-35", "36-49"]
-ETIQ = ["6–11\nmonths", "1\nyear", "2\nyears", "3–4\nyears"]
+ETIQ = ["6–11\nmonths", "1–2\nyears", "2–3\nyears", "3–4\nyears"]
 GRUPOS = (("chicas", 1), ("chicos", 0), ("todos", None))
 OUT = []
 
@@ -137,10 +137,62 @@ def main():
                       "primera_etapa": fs.params["EQ"]})
     c = pd.DataFrame(filas)
     c.to_csv("reports/triple_did.csv", index=False)
+    comprobaciones(d)
     figura(c)
     Path("reports/triple_did.md").write_text("\n".join(OUT) + "\n",
                                              encoding="utf-8")
     print("-> reports/triple_did.md, reports/triple_did.csv")
+
+
+def comprobaciones(d):
+    """El efecto de 6-11 meses según la lactancia, el grupo de referencia,
+    la lactancia en los menores de 2 años y si el terremoto cortó la
+    lactancia."""
+    log("\n## Comprobaciones")
+    for g, sx in GRUPOS[:2]:
+        x = prepara(d, sx)
+        ctr = p34.xt(x, p15.X_PRE) + p34.xt(x, p15.X_POST)
+        fe = ["C(tramo)", "C(tramo):pecho", "pecho", "C(est)", "C(coh)"] + ctr
+
+        def fit(datos, rhs):
+            return smf.wls("z_phq4 ~ " + " + ".join(rhs), data=datos,
+                           weights=datos.w).fit(
+                cov_type="cluster", cov_kwds={"groups": datos.est})
+        x["S_bf"] = x.A6_11 * x.pecho
+        x["S_no"] = x.A6_11 * (1 - x.pecho)
+        r = fit(x, ["S_bf", "S_no", "A12_23", "A36_49"] + fe)
+        log(f"- {g}, 6-11 meses frente a 2 años: tomaba pecho "
+            f"{r.params['S_bf']:+.3f} (ee {r.bse['S_bf']:.3f}), no tomaba "
+            f"{r.params['S_no']:+.3f} (ee {r.bse['S_no']:.3f})")
+        x["U2"] = x.tramo.isin(["6-11", "12-23"]) * x.EQ * x.pecho
+        x["O2"] = x.tramo.isin(["24-35", "36-49"]) * x.EQ * x.pecho
+        r = fit(x, ["U2", "O2", "A6_11", "A12_23", "A36_49"] + fe)
+        log(f"- {g}, pecho x zona, menores de 2 años: {r.params['U2']:+.3f} "
+            f"(ee {r.bse['U2']:.3f}, p={r.pvalues['U2']:.3f}); 2 años o más: "
+            f"{r.params['O2']:+.3f} (ee {r.bse['O2']:.3f})")
+        base = ["A6_11", "A12_23", "A36_49", "C(tramo)", "C(est)",
+                "C(coh)"] + ctr
+        y = x[~((x.tramo == "24-35") & (x.pecho == 1))]
+        r0, r1 = fit(x, base), fit(y, base)
+        log(f"- {g}, perfil principal, 6-11 meses: {r0.params['A6_11']:+.3f}"
+            f" (ee {r0.bse['A6_11']:.3f}); sin los de 2 años que tomaban "
+            f"pecho en la referencia: {r1.params['A6_11']:+.3f} "
+            f"(ee {r1.bse['A6_11']:.3f})")
+    x = d[(d.pecho == 1) & d.tramo.isin(["6-11", "12-23"])].dropna(
+        subset=["meses_pecho", "estrato", "w"]).copy()
+    x["corta3"] = ((x.meses_pecho < x.edadq_m + 3)
+                   & (x.meses_pecho < 900)).astype(float)
+    for t in ("6-11", "12-23"):
+        z = x[x.tramo == t]
+        log(f"- tomaban pecho el 27-F con {t} meses, destetados en los tres "
+            f"meses siguientes: zona afectada {z[z.EQ == 1].corta3.mean():.3f}"
+            f", no afectada {z[z.EQ == 0].corta3.mean():.3f}")
+    z = d[d.tramo == "6-11"].dropna(subset=["estres12", "pecho"])
+    log("- estrés de la madre (2012), hijos de 6-11 meses: " + " | ".join(
+        f"{'afectada' if e else 'no afectada'}, "
+        f"{'con pecho' if b else 'sin pecho'} "
+        f"{z[(z.EQ == e) & (z.pecho == b)].estres12.mean():.3f}"
+        for e in (1, 0) for b in (1, 0)))
 
 
 def figura(c):
