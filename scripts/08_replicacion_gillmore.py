@@ -205,7 +205,9 @@ def piece_2017(R):
 
 
 # ================================================================= ensamblaje
-def assemble(R, cfg):
+def combina(R, cfg):
+    """Todas las filas de 2012 y 2017 con nacimiento, tratamiento, pesos y
+    z-scores; assemble() elige de aquí las muestras ST y MT."""
     w12, w17 = piece_2012(R), piece_2017(R)
 
     # geografía heredada 2017 → filas 2012 (D1)
@@ -259,7 +261,11 @@ def assemble(R, cfg):
     df["z_bat"] = z("batelle_pt_total").fillna(z("battelle_pt_total"))
     df["z_cbcl1"] = -(z("cbcl1_pt_t").fillna(z("cbcl1_pt_inter_t")))
     df["z_cbcl2"] = -z("cbcl2_pt_inter_t")
+    return df
 
+
+def assemble(R, cfg):
+    df = combina(R, cfg)
     st = pd.concat([df[(df.wave == 2012) & (df.affected == 1)],
                     df[(df.wave == 2017) & (df.affected == 0)
                        & df.cohorte.between(2011, 2015)]])
