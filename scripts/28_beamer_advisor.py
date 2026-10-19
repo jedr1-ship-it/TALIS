@@ -1035,7 +1035,7 @@ def anticipo():
 
 
 def canal_hogar():
-    """(a) Perfil por edad de los tres índices del hogar de 2012 y 2017;
+    """(a) Perfil por edad de los dos índices del entorno de 2012 y 2017;
     (b) brecha en PHQ-4 sin y con el hogar, misma muestra, chicas
     (reports/canal_hogar.csv)."""
     c = pd.read_csv("reports/canal_hogar.csv")
@@ -1044,8 +1044,7 @@ def canal_hogar():
     des = c[c.tipo == "descomp"].set_index(["componente", "tramo"])
     tramos = ["6-11", "12-23", "36-49"]
     etiquetas = ["6–11 meses", "1 año", "3–4 años"]
-    series = [("estres_padres", "Estrés de los padres", MARRON, "^", False),
-              ("conflicto", "Conflicto en casa", AZUL, "o", False),
+    series = [("conflicto", "Conflicto en casa", AZUL, "o", False),
               ("recursos", "Falta de recursos", GRISR, "o", True)]
 
     def ic(r):
@@ -1061,7 +1060,7 @@ def canal_hogar():
             ax.set_xlim(-0.5, 2.5)
             ax.set_xlabel("Edad al terremoto", fontsize=8)
         hs = []
-        for (k, lab, col, marca, hueco), dx in zip(series, (-0.2, 0, 0.2)):
+        for (k, lab, col, marca, hueco), dx in zip(series, (-0.12, 0.12)):
             for x, t in enumerate(tramos):
                 h = barra(a, x + dx, ic(per.loc[(k, t)]), col, marca, hueco)
             hs.append(h)
@@ -1070,7 +1069,7 @@ def canal_hogar():
         a.set_ylabel("Diferencia con quienes\ntenían 2 años (DE)", fontsize=8)
         a.set_title("Índices del entorno", fontsize=9, pad=24)
         a.legend(hs, [s_[1] for s_ in series], loc="lower center",
-                 bbox_to_anchor=(0.5, 1.0), ncol=3, frameon=False,
+                 bbox_to_anchor=(0.5, 1.0), ncol=2, frameon=False,
                  fontsize=6.8, handletextpad=0.2, columnspacing=0.7,
                  borderaxespad=0.1)
         h1 = h2 = None

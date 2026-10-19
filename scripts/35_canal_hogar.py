@@ -5,12 +5,11 @@
 de cada grupo explica?
 
 El hogar se mide después del terremoto y antes de los síntomas, en 2012 y
-2017, casi todo con lo que reporta la madre o el cuidador. Tres índices,
-fijados antes de estimar y orientados de forma que más alto = peor:
+2017, casi todo con lo que reporta la madre o el cuidador. Dos índices,
+fijados antes de estimar y orientados de forma que más alto = peor. El
+estrés de la madre no entra: es el segundo mecanismo y se estudia aparte
+(scripts/34_estres_madre.py).
 
-  estrés de los padres  síntomas de la madre tras el terremoto, depresión
-                        diagnosticada y angustia parental (PSI) en 2012;
-                        depresión (CES-D) y angustia parental en 2017
   conflicto en casa     le grita, lo amenaza o le pega en 2012; presenció
                         peleas, lo zamarreó o golpeó, le gritó o insultó en
                         2017
@@ -45,7 +44,7 @@ p34 = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(p34)
 p33, p15 = p34.p33, p34.p15
 num, stars, xt, si = p15.num, p15.stars, p15.xt, p34.si
-INDICES = ["estres_padres", "conflicto", "recursos"]
+INDICES = ["conflicto", "recursos"]
 TRAMOS = ["6-11", "12-23", "36-49"]
 GRUPOS = (("chicas", 1), ("todos", None))
 B = 300
@@ -103,20 +102,11 @@ def carga():
     psi = pd.concat([si(c[f"pc27{k}"]) for k in "dhn"], axis=1)
     c17["golpes17"] = fis.max(axis=1).where(fis.notna().any(axis=1))
     c17["grito17"] = psi.max(axis=1).where(psi.notna().any(axis=1))
-    ev = lee("data/interim/2017/Base Evaluaciones ELPI III.sav",
-             ["folio", "cesd10_pb", "psi_pb_pd"], sav=True)
-    ev = ev.drop_duplicates("folio").set_index("folio")
-    ev["cesd17"] = num(ev.cesd10_pb).where(lambda s: s >= 0)
-    ev["psi_pd17"] = num(ev.psi_pb_pd).where(lambda s: s >= 0)
     d = (d.merge(e[["folio", "grito12", "amenaza12", "pega12"]], on="folio",
                  how="left")
           .merge(h[["log_ing12"]].reset_index(), on="folio", how="left")
           .merge(c17[["log_ing17", "peleas17", "golpes17", "grito17"]]
-                 .reset_index(), on="folio", how="left")
-          .merge(ev[["cesd17", "psi_pd17"]].reset_index(), on="folio",
-                 how="left"))
-    d["estres_padres"] = indice([d.n_sint12, d.depre12, d.psi_pd12,
-                                 d.cesd17, d.psi_pd17], 2)
+                 .reset_index(), on="folio", how="left"))
     d["conflicto"] = indice([d.grito12, d.amenaza12, d.pega12, d.peleas17,
                              d.golpes17, d.grito17], 3)
     d["recursos"] = indice([-d.log_ing12, -d.log_ing17, d.dano12], 2)
@@ -125,7 +115,7 @@ def carga():
 
 def matrices(d, sx):
     """y, X y M de la especificación de scripts/33 (grupos del paper,
-    frente a 2 años), en la muestra con los tres índices."""
+    frente a 2 años), en la muestra con los dos índices."""
     x = d.dropna(subset=["z_phq4", "EQ", "estrato", "w", "cohorte",
                          "edadq_m"] + INDICES).copy()
     x = x[(x.w > 0) & x.edadq_m.between(6, 49)]
