@@ -111,10 +111,12 @@ def base():
     R = p08.load_raw()
     x12 = p08.dta(INT / "2012/Evaluaciones_2012.dta",
                   ["folio", "cbcl1_pt_i", "cbcl1_pb_2", "cbcl2_pt_i",
-                   "cbcl2_pb_1"]).drop_duplicates("folio")
+                   "cbcl2_pb_1", "cbcl1_pt_e", "cbcl2_pt_e",
+                   "cbcl2_pt_t"]).drop_duplicates("folio")
     x17 = p08.dta(INT / "2017/Base Evaluaciones ELPI III.dta",
                   ["folio", "cbcl1_pt_inter_i", "cbcl1_pb_2",
-                   "cbcl2_pt_inter_i", "cbcl2_pb_1"]).drop_duplicates("folio")
+                   "cbcl2_pt_inter_i", "cbcl2_pb_1", "cbcl1_pt_inter_e",
+                   "cbcl2_pt_inter_e"]).drop_duplicates("folio")
     R["ev12"] = R["ev12"].merge(x12, on="folio", how="left")
     R["ev17"] = R["ev17"].merge(x17, on="folio", how="left")
     df = p08.combina(R, p08.BEST)
@@ -124,8 +126,15 @@ def base():
     df["t_int"] = i1.where(i1.notna(), i2)
     df["ansdep"] = num(df.cbcl1_pb_2).where(df.inst == 1,
                                             num(df.cbcl2_pb_1))
+    e1 = num(df.cbcl1_pt_e).fillna(num(df.cbcl1_pt_inter_e))
+    e2 = num(df.cbcl2_pt_e).fillna(num(df.cbcl2_pt_inter_e))
+    t1 = num(df.cbcl1_pt_t).fillna(num(df.cbcl1_pt_inter_t))
+    t2 = num(df.cbcl2_pt_t).fillna(num(df.cbcl2_pt_inter_t))
+    df["t_ext"] = e1.where(df.inst == 1, e2)
+    df["t_tot"] = t1.where(df.inst == 1, t2)
     g = [df.wave, df.inst, num(df.edad_meses) // 12]
-    for v, s in (("z_int", df.t_int), ("z_ansdep", df.ansdep)):
+    for v, s in (("z_int", df.t_int), ("z_ansdep", df.ansdep),
+                 ("z_ext", df.t_ext), ("z_tot", df.t_tot)):
         gr = s.groupby(g)
         df[v] = (s - gr.transform("mean")) / gr.transform("std")
     df["grupo"] = grupo_nac(df.birth_ym)
@@ -244,8 +253,11 @@ def gillmore(df):
                   ("mediano plazo: 2017, expuestos a los 7-12 años frente a "
                    "concebidos después a los 6-7", mt)):
         log(f"\n### {hz}")
-        for y, lab in (("z_int", "CBCL internalizante"),
-                       ("z_ansdep", "CBCL ansiedad/depresión")):
+        for y, lab in (("z_tot", "CBCL total, la medida no cognitiva de "
+                                 "Gillmore"),
+                       ("z_int", "CBCL internalizante"),
+                       ("z_ansdep", "CBCL ansiedad/depresión"),
+                       ("z_ext", "CBCL externalizante")):
             for g, sx in SEXOS:
                 dd = d if sx is None else d[d.mujer == sx]
                 r, n, na = ajusta(dd, y)
@@ -275,7 +287,7 @@ def gillmore_nino(df, n17):
     log("\n### Lo que responde el niño en 2017 (expuestos a los 7-12 años "
         "frente a concebidos después a los 7)")
     x = (df[(df.wave == 2017) & df.cohorte.between(2006, 2015)]
-         .drop(columns=["z_int", "z_ansdep"])
+         .drop(columns=["z_int", "z_ansdep", "z_ext", "z_tot"])
          .merge(n17[["folio", "z_tae_baja", "no_feliz", "z_soledad"]],
                 on="folio", how="inner"))
     for y, lab in (("z_soledad", "se siente solo en el curso"),

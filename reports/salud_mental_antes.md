@@ -20,20 +20,32 @@ Niños con dato por grupo de nacimiento: expuestos ya nacidos el 27-F / en gesta
 ## 3. Diseño de Gillmore con el CBCL (columna 3; más alto = más síntomas)
 
 ### corto plazo: expuestos en 2012 frente a concebidos después en 2017, a los 18-71 meses
+- CBCL total, la medida no cognitiva de Gillmore, chicas: -0.199* (ee 0.116, p=0.088); N=5,382 (expuestos 3,797, controles 1,585)
+- CBCL total, la medida no cognitiva de Gillmore, chicos: -0.120 (ee 0.132, p=0.362); N=5,662 (expuestos 3,931, controles 1,731)
+- CBCL total, la medida no cognitiva de Gillmore, todos: -0.183* (ee 0.109, p=0.095); N=11,044 (expuestos 7,728, controles 3,316)
 - CBCL internalizante, chicas: -0.172 (ee 0.115, p=0.135); N=5,382 (expuestos 3,797, controles 1,585)
 - CBCL internalizante, chicos: -0.082 (ee 0.120, p=0.494); N=5,662 (expuestos 3,931, controles 1,731)
 - CBCL internalizante, todos: -0.146 (ee 0.103, p=0.156); N=11,044 (expuestos 7,728, controles 3,316)
 - CBCL ansiedad/depresión, chicas: -0.125 (ee 0.109, p=0.251); N=5,382 (expuestos 3,797, controles 1,585)
 - CBCL ansiedad/depresión, chicos: -0.061 (ee 0.096, p=0.520); N=5,662 (expuestos 3,931, controles 1,731)
 - CBCL ansiedad/depresión, todos: -0.104 (ee 0.088, p=0.236); N=11,044 (expuestos 7,728, controles 3,316)
+- CBCL externalizante, chicas: -0.221* (ee 0.120, p=0.065); N=5,382 (expuestos 3,797, controles 1,585)
+- CBCL externalizante, chicos: -0.154 (ee 0.132, p=0.242); N=5,662 (expuestos 3,931, controles 1,731)
+- CBCL externalizante, todos: -0.219** (ee 0.109, p=0.045); N=11,044 (expuestos 7,728, controles 3,316)
 
 ### mediano plazo: 2017, expuestos a los 7-12 años frente a concebidos después a los 6-7
+- CBCL total, la medida no cognitiva de Gillmore, chicas: +0.066 (ee 0.119, p=0.581); N=5,707 (expuestos 5,194, controles 513)
+- CBCL total, la medida no cognitiva de Gillmore, chicos: +0.149 (ee 0.103, p=0.147); N=5,914 (expuestos 5,359, controles 555)
+- CBCL total, la medida no cognitiva de Gillmore, todos: +0.104 (ee 0.082, p=0.202); N=11,621 (expuestos 10,553, controles 1,068)
 - CBCL internalizante, chicas: +0.035 (ee 0.126, p=0.779); N=5,707 (expuestos 5,194, controles 513)
 - CBCL internalizante, chicos: +0.162 (ee 0.114, p=0.154); N=5,914 (expuestos 5,359, controles 555)
 - CBCL internalizante, todos: +0.109 (ee 0.085, p=0.201); N=11,621 (expuestos 10,553, controles 1,068)
 - CBCL ansiedad/depresión, chicas: +0.029 (ee 0.115, p=0.802); N=5,707 (expuestos 5,194, controles 513)
 - CBCL ansiedad/depresión, chicos: +0.111 (ee 0.101, p=0.269); N=5,914 (expuestos 5,359, controles 555)
 - CBCL ansiedad/depresión, todos: +0.080 (ee 0.079, p=0.310); N=11,621 (expuestos 10,553, controles 1,068)
+- CBCL externalizante, chicas: +0.028 (ee 0.104, p=0.792); N=5,707 (expuestos 5,194, controles 513)
+- CBCL externalizante, chicos: +0.073 (ee 0.101, p=0.470); N=5,914 (expuestos 5,359, controles 555)
+- CBCL externalizante, todos: +0.049 (ee 0.075, p=0.514); N=11,621 (expuestos 10,553, controles 1,068)
 
 ### Placebos
 - concebidos después, 2011-2013 frente a 2014-2016, CBCL internalizante: +0.052 (ee 0.097, p=0.592); N=3,962
