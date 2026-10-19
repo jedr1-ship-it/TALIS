@@ -5,7 +5,7 @@
 de cada grupo explica?
 
 El hogar se mide después del terremoto y antes de los síntomas, en 2012 y
-2017, casi todo con lo que reporta la madre o el cuidador. Siete índices,
+2017, con lo que reporta la madre o el cuidador. Cinco índices,
 fijados antes de estimar y orientados de forma que más alto = peor. El
 estrés de la madre no entra: es el segundo mecanismo y se estudia aparte
 (scripts/34_estres_madre.py).
@@ -19,11 +19,6 @@ estrés de la madre no entra: es el segundo mecanismo y se estudia aparte
   madre sin empleo      la madre no trabajó la semana anterior, 2012 y 2017
   hacinamiento          personas por dormitorio en 2012; categoría de
                         hacinamiento en 2017
-  poca estimulación     la madre le lee y le canta (2012), el cuidador le
-                        lee y le cuenta cuentos (2017) y libros infantiles
-                        en casa (2012 y 2017), con signo cambiado
-  barrio inseguro       cuánto de inseguro ve el niño su barrio y la calle
-                        (2017)
 
   1. Perfil de cada índice por edad al terremoto (los grupos del paper:
      6-11 meses, 1 año y 3-4 años frente a 2 años), zona afectada menos no
@@ -56,7 +51,7 @@ spec.loader.exec_module(p34)
 p33, p15 = p34.p33, p34.p15
 num, stars, xt, si = p15.num, p15.stars, p15.xt, p34.si
 INDICES = ["conflicto", "recursos", "padre_fuera", "sin_empleo",
-           "hacinamiento", "estimulacion", "barrio"]
+           "hacinamiento"]
 TRAMOS = ["6-11", "12-23", "36-49"]
 GRUPOS = (("chicas", 1), ("todos", None))
 B = 300
@@ -111,21 +106,13 @@ def carga():
     k1, k2, k3 = num(madre.k1), num(madre.k2), num(madre.k3)
     trabaja = (k1 == 1) | k2.between(1, 6) | (k3 == 1)
     h["sin_empleo12"] = (1.0 - trabaja.astype(float)).where(k1.isin([1, 2]))
-    e2 = lee("data/interim/2012/Entrevistada_2012.dta",
-             ["folio", "m5a", "f21a_m_t", "f21c_m_t"])
+    e2 = lee("data/interim/2012/Entrevistada_2012.dta", ["folio", "m5a"])
     e2 = e2.drop_duplicates("folio").set_index("folio")
     h["hacina12"] = h.n / num(e2.m5a).where(lambda s: s.between(0, 20)).clip(
         lower=1)
-    h["lee12"] = num(e2.f21a_m_t).where(lambda s: s.between(1, 4))
-    h["canta12"] = num(e2.f21c_m_t).where(lambda s: s.between(1, 4))
-    ev = lee("data/interim/2012/Evaluaciones_2012.dta",
-             ["folio", "hm1_13", "hm2_15"]).drop_duplicates("folio")
-    ev = ev.set_index("folio")
-    h["libros12"] = num(ev.hm1_13).where(lambda s: s >= 0).fillna(
-        num(ev.hm2_15).where(lambda s: s >= 0))
     c = lee("data/interim/2017/Base Cuidador Principal ELPI III (SPSS).sav",
             ["folio", "ytotcorh", "pc29a", "h1", "o1", "o2", "o3",
-             "hacinamiento", "cn4f_cp", "cn4g_cp", "pc35"]
+             "hacinamiento"]
             + [f"pc27{k}" for k in "cdfghijkn"], sav=True)
     g = c.groupby("folio")
     c17 = pd.DataFrame({"y": g.ytotcorh.max(), "n": g.size()})
@@ -138,20 +125,12 @@ def carga():
     tr = (o1 == 1) | (num(m17.o2) == 1) | (num(m17.o3) == 1)
     c17["sin_empleo17"] = (1.0 - tr.astype(float)).where(o1.isin([1, 2]))
     c17["hacina17"] = g.hacinamiento.max().where(lambda s: s.between(1, 4))
-    for v, k in (("cn4f_cp", "lee17"), ("cn4g_cp", "cuentos17")):
-        c17[k] = g[v].max().where(lambda s: s.between(1, 4))
-    c17["libros17"] = g.pc35.max().where(lambda s: s.between(1, 3))
     c = c.dropna(subset=["pc29a"]).drop_duplicates("folio").set_index("folio")
     c17["peleas17"] = si(c.pc29a)
     fis = pd.concat([si(c[f"pc27{k}"]) for k in "cfgijk"], axis=1)
     psi = pd.concat([si(c[f"pc27{k}"]) for k in "dhn"], axis=1)
     c17["golpes17"] = fis.max(axis=1).where(fis.notna().any(axis=1))
     c17["grito17"] = psi.max(axis=1).where(psi.notna().any(axis=1))
-    n = lee("data/interim/2017/Base Niños y Niñas ELPI III (SPSS).sav",
-            ["folio", "a22", "a23"], sav=True).drop_duplicates("folio")
-    n = n.set_index("folio")
-    c17["barrio17"] = num(n.a22).where(lambda s: s.between(1, 5))
-    c17["calle17"] = num(n.a23).where(lambda s: s.between(1, 5))
     d = (d.merge(e[["folio", "grito12", "amenaza12", "pega12"]], on="folio",
                  how="left")
           .merge(h.drop(columns=["y", "n"]).reset_index(), on="folio",
@@ -164,9 +143,6 @@ def carga():
     d["padre_fuera"] = indice([d.padre_fuera12, d.padre_fuera17], 1)
     d["sin_empleo"] = indice([d.sin_empleo12, d.sin_empleo17], 1)
     d["hacinamiento"] = indice([d.hacina12, d.hacina17], 1)
-    d["estimulacion"] = indice([-d.lee12, -d.canta12, -d.libros12,
-                                -d.lee17, -d.cuentos17, -d.libros17], 3)
-    d["barrio"] = indice([d.barrio17, d.calle17], 1)
     return d
 
 

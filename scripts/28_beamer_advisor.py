@@ -1035,7 +1035,7 @@ def anticipo():
 
 
 def canal_hogar():
-    """(a) Perfil por edad de los siete índices del entorno de 2012 y 2017;
+    """(a) Perfil por edad de los cinco índices del entorno de 2012 y 2017;
     (b) brecha en PHQ-4 sin y con el entorno, misma muestra, chicas
     (reports/canal_hogar.csv)."""
     c = pd.read_csv("reports/canal_hogar.csv")
@@ -1048,9 +1048,7 @@ def canal_hogar():
                ("recursos", "Falta de\nrecursos"),
                ("padre_fuera", "Padre fuera\ndel hogar"),
                ("sin_empleo", "Madre sin\nempleo"),
-               ("hacinamiento", "Vivienda\nhacinada"),
-               ("estimulacion", "Poca\nestimulación"),
-               ("barrio", "Barrio\ninseguro")]
+               ("hacinamiento", "Vivienda\nhacinada")]
     series = [("6-11", "6–11 meses", MARRON, "^", False, -0.26),
               ("12-23", "1 año", AZUL, "o", False, 0.0),
               ("36-49", "3–4 años", GRISR, "o", True, 0.26)]
@@ -1058,7 +1056,7 @@ def canal_hogar():
     def ic(r):
         return (r.valor, (r.hi - r.lo) / 3.92, np.nan)
     with plt.rc_context(PAPER):
-        f = plt.figure(figsize=(144 * MM, 46 * MM))
+        f = plt.figure(figsize=(144 * MM, 52 * MM))
         a = f.add_axes([0.125, 0.25, 0.59, 0.58])
         b = f.add_axes([0.795, 0.25, 0.195, 0.58])
         ejes_paper(a)
