@@ -14,11 +14,14 @@ diapositiva, con la misma especificación que el gráfico:
            controles al nacer (diapositiva 5; scripts/33_ventanas.py)
   atricion responder en 2024 y peso al nacer en la línea base de 2010
            (diapositiva 5; scripts/42_balance_atricion.py)
-  phq4     PHQ-4 por edad al terremoto, todos, chicas y chicos, y chicas con
-           efectos fijos de mes de nacimiento (diapositiva 6; grupos del
-           paper)
+  phq4     PHQ-4: panel A, 6-11 meses frente a todas las demás edades
+           (scripts/45_contraste.py); panel B, perfil frente a 2-3 años;
+           todos, chicas, chicos y chicas con efectos fijos de mes de
+           nacimiento (diapositiva 6)
   entorno  los seis indicadores del entorno de 2010, chicas (diapositiva 7;
            scripts/35_canal_hogar.py)
+  lactancia  el efecto de 6-11 meses según la lactancia el 27-F, chicas y
+           chicos (diapositiva 8; scripts/45_contraste.py)
   diada    PHQ-4 de las hijas y estrés de la madre según la lactancia, con
            dos robusteces (diapositiva 8; scripts/34_estres_madre.py, 5)
   medias   las medias de la diapositiva 8: madres con estrés y niños que
@@ -89,14 +92,33 @@ def tabla(cabecera, cuerpo, pie, arriba):
          "\\bottomrule", "\\end{tabular*}"]) + "\n"
 
 
-def bloque_edades(res):
+def bloque_edades(res, edades=EDADES):
     """Filas de coeficientes por grupo de edad; res: lista de (b, n, r, x)."""
     lineas = []
-    for t, lab in EDADES:
+    for t, lab in edades:
         lineas.append(fila(lab, [coef(r[0][t][0]) for r in res]))
         lineas.append(fila("", [ee(r[0][t][1]) for r in res]))
         lineas.append("\\addlinespace[2pt]")
     return lineas[:-1]
+
+
+def paneles(res_a, res_b):
+    """Panel A: 6-11 meses frente a todas las demás edades; panel B: el
+    perfil frente a 2-3 años. Misma muestra y especificación."""
+    k = len(res_a) + 1
+    return ([f"\\multicolumn{{{k}}}{{@{{}}l}}{{\\emph{{Panel A. Relative "
+             "to all other ages}} \\\\"]
+            + bloque_edades(res_a, EDADES[:1])
+            + ["\\addlinespace[3pt]",
+               f"\\multicolumn{{{k}}}{{@{{}}l}}{{\\emph{{Panel B. Relative "
+               "to ages 2--3}} \\\\"]
+            + bloque_edades(res_b))
+
+
+def contrastes(tipo, grupo=None):
+    c = pd.read_csv("reports/contraste.csv")
+    c = c[c.tipo == tipo]
+    return c if grupo is None else c[c.grupo == grupo]
 
 
 def pie_perfil(res, mes=None):
@@ -136,8 +158,14 @@ def a1():
             igual(r[0][t][0], ch[(ch.resultado == "z_phq4") & (ch.grupo == g)
                                   & (ch.tramo == t)].b.iloc[0], f"a1 {g} {t}")
     res.append(p33.perfil(d, "z_phq4", 1, "paper", modelo=True, mes=True))
+    res_a = [p33.perfil(d, "z_phq4", sx, "paper", modelo=True, solo="6-11",
+                        **kw) for sx, kw in ((None, {}), (1, {}), (0, {}),
+                                             (1, {"mes": True}))]
+    c = contrastes("phq4").set_index("grupo")
+    for g, r in zip(("todos", "chicas", "chicos", "chicas, mes"), res_a):
+        igual(r[0]["6-11"][0], c.loc[g, "b"], f"a1 contraste {g}")
     guarda("phq4.tex", tabla(["All", "Girls", "Boys", "Girls"],
-                             bloque_edades(res),
+                             paneles(res_a, res),
                              pie_perfil(res, [False] * 3 + [True]),
                              [("PHQ-4 (SD)", 4)]))
 
@@ -158,7 +186,12 @@ def a2():
            "\\shortstack{Damaged\\\\housing}", "\\shortstack{Conflict\\\\at home}",
            "\\shortstack{Overcrowded\\\\housing}",
            "\\shortstack{Precarious\\\\housing}"]
-    guarda("entorno.tex", tabla(cab, bloque_edades(res), pie_perfil(res),
+    res_a = [p33.perfil(d, i, 1, "paper", modelo=True, solo="6-11")
+             for i in p35.INDICES]
+    c = contrastes("entorno").set_index("resultado")
+    for i, r in zip(p35.INDICES, res_a):
+        igual(r[0]["6-11"][0], c.loc[i, "b"], f"a2 contraste {i}")
+    guarda("entorno.tex", tabla(cab, paneles(res_a, res), pie_perfil(res),
                            [("Mechanisms in Gillmore (2026), SD", 3),
                             ("Other household conditions, SD", 3)]))
 
@@ -225,6 +258,37 @@ def a3():
                            cuerpo, pie, [("Daughters' PHQ-4 (SD)", 3)]))
 
 
+# ------------------------- lactancia: el efecto de 6-11 meses, diapositiva 8
+
+def lactancia():
+    """El efecto de 6-11 meses frente a todas las demás edades, por
+    separado para quienes tomaban pecho el 27-F y quienes no (los números
+    de reports/contraste.csv, que calcula scripts/45_contraste.py)."""
+    c = contrastes("pecho")
+    cols = ["chicas", "chicas, SES", "chicos"]
+    cuerpo = []
+    for clave, lab in (("con pecho", "6--11 months $\\times$ Affected "
+                        "$\\times$ breastfed"),
+                       ("sin pecho", "6--11 months $\\times$ Affected "
+                        "$\\times$ not breastfed"),
+                       ("diferencia", "Difference, breastfed $-$ not "
+                        "breastfed")):
+        r = c[c.resultado == clave].set_index("grupo").loc[cols]
+        cuerpo += [fila(lab, [coef(b) for b in r.b]),
+                   fila("", [ee(se) for se in r.se]), "\\addlinespace[2pt]"]
+    n = c[c.resultado == "diferencia"].set_index("grupo").loc[cols].n
+    pie = [fila("Observations", [f"{int(v):,}" for v in n]),
+           fila("Municipality FE", ["Yes"] * 3),
+           fila("Birth-year FE", ["Yes"] * 3),
+           fila("Age-group FE", ["Yes"] * 3),
+           fila("Age group $\\times$ breastfed FE", ["Yes"] * 3),
+           fila("Controls", ["Yes"] * 3),
+           fila("Mother's education and employment $\\times$ breastfed "
+                "and $\\times$ affected", ["No", "Yes", "No"])]
+    guarda("lactancia.tex", tabla(["Girls", "Girls", "Boys"], cuerpo[:-1],
+                                  pie, [("PHQ-4 (SD)", 3)]))
+
+
 # ------------------------------------------- a4: medias de la diapositiva 8
 
 def a4():
@@ -268,7 +332,12 @@ def a5():
             igual(r[0]["6-11"][0], ch[(ch.resultado == y) & (ch.grupo == g)
                                       & (ch.tramo == "6-11")].b.iloc[0],
                   f"a5 {g} {y}")
-        guarda(nombre, tabla(cab, bloque_edades(res), pie_perfil(res),
+        res_a = [p33.perfil(d, y, sx, "paper", modelo=True, solo="6-11")
+                 for y in ys]
+        c = contrastes("otros", g).set_index("resultado")
+        for y, r in zip(ys, res_a):
+            igual(r[0]["6-11"][0], c.loc[y, "b"], f"a5 contraste {g} {y}")
+        guarda(nombre, tabla(cab, paneles(res_a, res), pie_perfil(res),
                              [("Adolescent report (SD)", 3),
                               ("Caregiver report, CBCL (SD)", 2)]))
 
@@ -342,15 +411,18 @@ def balance():
                                 bloque_edades(res), pie,
                                 [("At birth (SD)", 3),
                                  ("Mother, 2010 (years)", 2)]))
-    sin = p33.perfil(d, "z_phq4", 1, "paper")[0]["6-11"]
-    con = p33.perfil(d, "z_phq4", 1, "paper",
-                     extra=("z_peso", "z_talla", "z_gest"))
+    # la misma muestra con y sin los controles al nacer: las chicas sin
+    # registro de nacimiento cambian el coeficiente, los controles no
+    nacer = ("z_peso", "z_talla", "z_gest")
+    sin = p33.perfil(d.dropna(subset=list(nacer)), "z_phq4", 1, "paper",
+                     solo="6-11")[0]["6-11"]
+    con = p33.perfil(d, "z_phq4", 1, "paper", solo="6-11", extra=nacer)
     b, n = con[0]["6-11"], con[1]
     (OUTD / "balance_nota.tex").write_text(
-        "Adding the three birth outcomes as controls, the PHQ-4 coefficient "
-        f"for girls exposed at 6--11 months is {b[0]:.3f} ({b[1]:.3f}), "
-        f"against {sin[0]:.3f} ({sin[1]:.3f}) in Table A4 "
-        f"({n:,} girls with birth records).\n", encoding="utf-8")
+        f"Among the {n:,} girls with birth records, the PHQ-4 coefficient "
+        "for those exposed at 6--11 months, relative to all other ages, is "
+        f"{sin[0]:.3f} ({sin[1]:.3f}) without and {b[0]:.3f} ({b[1]:.3f}) "
+        "with the three birth outcomes as controls.\n", encoding="utf-8")
     print(f"-> {OUTD / 'balance_nota.tex'}")
 
 
@@ -380,6 +452,7 @@ def main():
     balance()
     atricion()
     a1()
+    lactancia()
     a2()
     a3()
     a4()

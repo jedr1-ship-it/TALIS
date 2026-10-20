@@ -241,8 +241,9 @@ def figura(c):
                  fontsize=7.5, handletextpad=0.3, columnspacing=1.2,
                  borderaxespad=0.1)
         f.savefig("reports/triple_did.png", dpi=220)
+        f.savefig("presentacion/figuras/triple_did.pdf")
         plt.close(f)
-    print("-> reports/triple_did.png")
+    print("-> reports/triple_did.png, presentacion/figuras/triple_did.pdf")
 
 
 if __name__ == "__main__":

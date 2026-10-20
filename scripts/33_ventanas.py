@@ -54,14 +54,16 @@ def log(*a):
 
 
 def perfil(d, y, sx=None, corte="seis meses", controles=True, extra=(),
-           modelo=False, mes=False):
+           modelo=False, mes=False, solo=None):
     """Diferencia zona afectada menos no afectada de cada tramo de edad al
     terremoto, frente a los expuestos con 24-35 meses. Con modelo=True
     devuelve además el ajuste y la muestra (para las tablas del apéndice).
     Con mes=True, efectos fijos de mes de nacimiento en lugar de los de
     tramo y año de nacimiento y de la tendencia en la edad en meses: como
     la fecha del terremoto es la misma para todos, absorben cualquier
-    función de la edad al terremoto y de la cohorte."""
+    función de la edad al terremoto y de la cohorte. Con solo="6-11", una
+    única interacción: ese tramo frente a todas las demás edades juntas
+    (los efectos fijos de tramo se mantienen)."""
     x = d.dropna(subset=[y, "EQ", "estrato", "w", "cohorte", "edadq_m",
                          *extra]).copy()
     x = x[(x.w > 0) & x.edadq_m.between(6, 49)]
@@ -76,7 +78,7 @@ def perfil(d, y, sx=None, corte="seis meses", controles=True, extra=(),
                         labels=tramos).astype(str)
     x["est"] = x.estrato.astype(int).astype(str)
     x["coh"] = x.cohorte.astype(int).astype(str)
-    cats = [t for t in tramos if t != "ref"]
+    cats = [solo] if solo else [t for t in tramos if t != "ref"]
     ii = ["I" + t.replace("-", "_") for t in cats]
     for t, i in zip(cats, ii):
         x[i] = (x.tramo == t).astype(float) * x.EQ
