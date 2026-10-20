@@ -186,13 +186,15 @@ unchanged. The profile by age relative to ages 2--3 is in Table A4, panel B.}
 \frametitle{Effect on mental health%
 \boton{\tabla{figphq}{PHQ-4 distribution}\hspace{1mm}\tabla{tabphq}{Table}}}
 \centering
-\includegraphics[width=0.93\textwidth]{figuras/salud_mental.pdf}
+\includegraphics[width=0.88\textwidth]{figuras/salud_mental.pdf}
 
 \nota{PHQ-4 \citanota{(Kroenke et al., 2009)}, four questions answered by the
 adolescent on anxiety and depression. Left, the mean in each zone by age at the
 earthquake; in unaffected municipalities, girls aged 2--3 score unusually high.
 Right, affected minus unaffected for those aged 6--11 months, relative to all other
-ages and to ages 2--3; 95\% CI.}
+ages and to ages 2--3; 95\% CI. For girls, wild bootstrap $p = 0.08$; with peak
+ground acceleration instead of the zone, 0.19 SD in the average affected
+municipality ($p = 0.04$).}
 \end{frame}
 
 % --------------------------------------------------------------- 5. Hogar
@@ -218,12 +220,12 @@ dwelling. Girls aged 6--11 months relative to all other ages; 95\% CI.}
 \boton{\tabla{tablac}{Table}\hspace{1mm}\tabla{figlac}{By age}\hspace{1mm}%
 \tabla{tabdia}{Maternal stress}\hspace{1mm}\tabla{tabmed}{Means}}}
 \centering
-\includegraphics[width=0.95\textwidth]{figuras/diada.pdf}
+\includegraphics[width=0.92\textwidth]{figuras/diada.pdf}
 
 \nota{Breastfed, still breastfed on 27-F (2012 report). Left, affected minus
 unaffected for girls aged 6--11 months, relative to all other ages; the gap between
-breastfed and not breastfed, 0.45 SD (SE 0.23), does not depend on the comparison
-group. Center, the association with maternal stress reported in 2012, which rose by
+breastfed and not breastfed, 0.45 SD (SE 0.23; wild bootstrap $p = 0.07$), does
+not depend on the comparison group. Center, the association with maternal stress reported in 2012, which rose by
 13 points in affected municipalities and accounts for about 0.01 SD of the effect.}
 \end{frame}
 
@@ -338,10 +340,10 @@ shaking; the map shows how shaking varied within and across them.
 \titulotabla{Table A1---Descriptive Statistics}{}{datos}
 \setlength{\anchotabla}{0.8\textwidth}\setlength{\anchonota}{\anchotabla}
 \centering
-{\scriptsize\renewcommand{\arraystretch}{0.8}\input{tablas/desc.tex}\par}
-\notatabla{Adolescents with a PHQ-4 score in 2024 (9,996 of 10,003), weighted
-with ELPI sampling weights. Panel C was reported in 2012; breastfed means still
-breastfed on 27-F.}
+{\scriptsize\renewcommand{\arraystretch}{0.76}\input{tablas/desc.tex}\par}
+\notatabla{Children of the 2010 baseline (15,175) interviewed in 2024 (10,003)
+with a PHQ-4 score (9,996); ELPI sampling weights. Panel C was reported in 2012;
+breastfed means still breastfed on 27-F.}
 \end{frame}
 
 \begin{frame}[label=tabbal]
@@ -349,26 +351,26 @@ breastfed on 27-F.}
 Earthquake}{}{spec}
 \setlength{\anchotabla}{0.9\textwidth}\setlength{\anchonota}{\anchotabla}
 \centering
-{\scriptsize\input{tablas/balance.tex}\par}
+{\fontsize{7}{8.4}\selectfont\renewcommand{\arraystretch}{0.8}\input{tablas/balance.tex}\par}
 \notatabla{Girls. Each column regresses a characteristic fixed before the
-earthquake on the age group $\times$ affected interactions, with
-municipality, birth-year, and age-group fixed effects and no controls.
-Birth weight, length, and gestation are standardized; the mother's education
-and age were reported in 2010. \input{tablas/balance_nota.tex}\errores}
+earthquake on age group $\times$ affected, with municipality, birth-year, and
+age-group fixed effects and no controls; panels as in Table A4. Birth weight,
+length, and gestation are standardized; the mother's education and age were
+reported in 2010. \input{tablas/balance_nota.tex}\errores}
 \end{frame}
 
 \begin{frame}[label=tabatr]
 \titulotabla{Table A3---Attrition between 2010 and 2024}{}{spec}
 \setlength{\anchotabla}{0.9\textwidth}\setlength{\anchonota}{\anchotabla}
 \centering
-{\scriptsize\renewcommand{\arraystretch}{0.92}\input{tablas/atricion.tex}\par}
-\notatabla{Children assessed in the 2010 baseline (14,161 of 15,175). Columns
-1--3: equals one if interviewed in 2024. Columns 4--5: standardized birth
-weight of all girls assessed in 2010 and of those interviewed in 2024. Age
-at the earthquake is the age at the 2010 assessment minus the months from
-27-F to the region's median assessment month, for stayers and leavers alike.
-The 2010 files do not identify the municipality: region fixed effects, no
-weights, and heteroskedasticity-robust standard errors in parentheses.}
+{\fontsize{7}{8.4}\selectfont\renewcommand{\arraystretch}{0.74}\input{tablas/atricion.tex}\par}
+\notatabla{Children with the 2010 developmental assessment, which gives age in
+months (14,161 of 15,175); panels as in Table A4. Columns 1--3 equal one if
+interviewed in 2024; columns 4--5, standardized birth weight of all girls assessed
+in 2010 and of those interviewed in 2024. Age at the earthquake is the age at the
+2010 assessment minus the months from 27-F to the region's median assessment
+month, for stayers and leavers alike. The 2010 files do not identify the
+municipality, so region fixed effects, no weights, and robust standard errors.}
 \end{frame}
 
 \begin{frame}[label=figphq]
@@ -383,16 +385,17 @@ normal, 3--5 as mild, 6--8 as moderate, and 9--12 as severe.}
 
 \begin{frame}[label=tabphq]
 \titulotabla{Table A4---Effect on Mental Health}{}{sm}
-\setlength{\anchotabla}{0.96\textwidth}\setlength{\anchonota}{\anchotabla}
+\setlength{\anchotabla}{\textwidth}\setlength{\anchonota}{\anchotabla}
 \centering
-{\fontsize{7.4}{8.8}\selectfont\renewcommand{\arraystretch}{0.76}\input{tablas/phq4.tex}\par}
-\notatabla{Affected minus unaffected municipalities in the standardized PHQ-4.
-Panel A compares those aged 6--11 months with all other ages; panel B, each age
-group with ages 2--3. Controls: a linear trend in month of birth, sex, the mother's
-age and education, household size, and rural residence (2010), the mother's number
-of children, and family history of mental illness (2012). Column 4 replaces the
-birth-year and age-group fixed effects and the trend with month-of-birth fixed
-effects. ELPI sampling weights. \errores}
+{\fontsize{6.6}{7.9}\selectfont\renewcommand{\arraystretch}{0.63}\input{tablas/phq4.tex}\par}
+\notatabla{Affected minus unaffected municipalities in the standardized PHQ-4;
+panel A compares ages 6--11 months with all other ages, panel B each age group with
+ages 2--3. Controls are a linear trend in month of birth, sex, the mother's age and
+education, household size, rural residence (2010), the mother's number of children,
+and family history of mental illness (2012). Column 4 uses month-of-birth fixed
+effects; column 5, peak ground acceleration per 10 points of percent of $g$ (28 more
+in the average affected municipality). Wild bootstrap with 9,999 Rademacher draws
+under the null. ELPI weights. \errores}
 \end{frame}
 
 \begin{frame}[label=tabent]
@@ -418,7 +421,8 @@ lent or shared dwelling. Panels and specification as in Table A4. \errores}
 standardized PHQ-4 for those aged 6--11 months, relative to all other ages,
 separately for those still breastfed on 27-F (2012 report) and those who were
 not. Column 2 lets breastfeeding and the affected zone vary with the mother's
-education and employment (2010). Controls and weights as in Table A4. \errores}
+education and employment (2010). Controls, weights, and wild bootstrap as in
+Table A4. \errores}
 \end{frame}
 
 \begin{frame}[label=figlac]

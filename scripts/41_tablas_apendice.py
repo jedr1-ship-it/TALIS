@@ -158,16 +158,25 @@ def a1():
             igual(r[0][t][0], ch[(ch.resultado == "z_phq4") & (ch.grupo == g)
                                   & (ch.tramo == t)].b.iloc[0], f"a1 {g} {t}")
     res.append(p33.perfil(d, "z_phq4", 1, "paper", modelo=True, mes=True))
-    res_a = [p33.perfil(d, "z_phq4", sx, "paper", modelo=True, solo="6-11",
-                        **kw) for sx, kw in ((None, {}), (1, {}), (0, {}),
-                                             (1, {"mes": True}))]
+    # columna 5: el PGA (por 10 puntos de % de g) en lugar de la zona
+    pga = d.assign(EQ=d.pga / 10)
+    res.append(p33.perfil(pga, "z_phq4", 1, "paper", modelo=True))
+    res_a = [p33.perfil(datos, "z_phq4", sx, "paper", modelo=True,
+                        solo="6-11", **kw)
+             for datos, sx, kw in ((d, None, {}), (d, 1, {}), (d, 0, {}),
+                                   (d, 1, {"mes": True}), (pga, 1, {}))]
+    grupos = ("todos", "chicas", "chicos", "chicas, mes", "chicas, PGA")
     c = contrastes("phq4").set_index("grupo")
-    for g, r in zip(("todos", "chicas", "chicos", "chicas, mes"), res_a):
+    for g, r in zip(grupos, res_a):
         igual(r[0]["6-11"][0], c.loc[g, "b"], f"a1 contraste {g}")
-    guarda("phq4.tex", tabla(["All", "Girls", "Boys", "Girls"],
-                             paneles(res_a, res),
-                             pie_perfil(res, [False] * 3 + [True]),
-                             [("PHQ-4 (SD)", 4)]))
+    mes = [False] * 3 + [True, False]
+    pie = pie_perfil(res, mes)
+    pie[-1:-1] = [fila("Exposure", ["Zone"] * 4 + ["PGA"])]
+    pie.append(fila("Wild bootstrap $p$-value, panel A",
+                    [f"{c.loc[g, 'p_wild']:.3f}" for g in grupos]))
+    guarda("phq4.tex", tabla(["All", "Girls", "Boys", "Girls", "Girls"],
+                             paneles(res_a, res), pie,
+                             [("PHQ-4 (SD)", 5)]))
 
 
 # ---------------------------------------------- a2: entorno, diapositiva 7
@@ -277,7 +286,10 @@ def lactancia():
         cuerpo += [fila(lab, [coef(b) for b in r.b]),
                    fila("", [ee(se) for se in r.se]), "\\addlinespace[2pt]"]
     n = c[c.resultado == "diferencia"].set_index("grupo").loc[cols].n
-    pie = [fila("Observations", [f"{int(v):,}" for v in n]),
+    pw = c[c.resultado == "diferencia"].set_index("grupo").loc[cols].p_wild
+    pie = [fila("Wild bootstrap $p$-value, difference",
+                [f"{v:.3f}" for v in pw]),
+           fila("Observations", [f"{int(v):,}" for v in n]),
            fila("Municipality FE", ["Yes"] * 3),
            fila("Birth-year FE", ["Yes"] * 3),
            fila("Age-group FE", ["Yes"] * 3),
@@ -401,6 +413,8 @@ def balance():
     ys = ["z_peso", "z_talla", "z_gest", "educ_madre10", "edad_madre10"]
     res = [p33.perfil(d, y, 1, "paper", controles=False, modelo=True)
            for y in ys]
+    res_a = [p33.perfil(d, y, 1, "paper", controles=False, modelo=True,
+                        solo="6-11") for y in ys]
     pie = [fila("Observations", [f"{r[1]:,}" for r in res]),
            fila("Municipality FE", ["Yes"] * 5),
            fila("Birth-year FE", ["Yes"] * 5),
@@ -408,7 +422,7 @@ def balance():
            fila("Controls", ["No"] * 5)]
     guarda("balance.tex", tabla(["Weight", "Length", "Gestation",
                                  "Education", "Age"],
-                                bloque_edades(res), pie,
+                                paneles(res_a, res), pie,
                                 [("At birth (SD)", 3),
                                  ("Mother, 2010 (years)", 2)]))
     # la misma muestra con y sin los controles al nacer: las chicas sin
@@ -432,8 +446,11 @@ def atricion():
     """Responder en 2024 por edad al terremoto y zona, y el peso al nacer de
     las chicas en toda la línea base y en quienes responden."""
     p42 = modulo("p42", "42_balance_atricion.py")
-    res, _ = p42.resultados()
-    pie = [fila("Joint test, $p$-value", [f"{r[2]:.2f}" for r in res]),
+    res, x = p42.resultados()
+    res_a, _ = p42.resultados(x.drop(columns=["tramo", "cohorte", "region"]
+                                     + p42.II), solo=True)
+    pie = [fila("Joint test, panel B, $p$-value",
+                [f"{r[2]:.2f}" for r in res]),
            fila("Mean of dependent variable",
                 [f"{r[3]:.2f}" for r in res[:3]] + ["", ""]),
            fila("Observations", [f"{r[1]:,}" for r in res]),
@@ -443,7 +460,7 @@ def atricion():
     guarda("atricion.tex", tabla(
         ["Girls", "Boys", "All", "\\shortstack{2010\\\\baseline}",
          "\\shortstack{Interviewed\\\\in 2024}"],
-        bloque_edades(res), pie,
+        paneles(res_a, res), pie,
         [("Interviewed in 2024", 3), ("Birth weight, girls (SD)", 2)]))
 
 

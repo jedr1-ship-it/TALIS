@@ -14,6 +14,13 @@ Validación con los 11,871 que tienen fecha exacta: error medio -0.08 meses (zon
 - toda la muestra de 2010: 6-11 meses +0.064 (ee 0.098) | 1 año +0.087 (ee 0.075) | 3-4 años +0.145* (ee 0.076) | conjunta p=0.30 | media -0.115 | N=6,409
 - solo quienes responden en 2024: 6-11 meses +0.120 (ee 0.115) | 1 año +0.073 (ee 0.092) | 3-4 años +0.189** (ee 0.093) | conjunta p=0.24 | media -0.090 | N=4,300
 
+## 6-11 meses frente a todas las demás edades
+- responde en 2024, chicas: 6-11 meses -0.057 (ee 0.038) | conjunta p=0.14 | media 0.673 | N=6,990
+- responde en 2024, chicos: 6-11 meses -0.007 (ee 0.037) | conjunta p=0.85 | media 0.669 | N=7,171
+- responde en 2024, todos: 6-11 meses -0.034 (ee 0.027) | conjunta p=0.20 | media 0.671 | N=14,161
+- peso al nacer de las chicas, toda la muestra de 2010: 6-11 meses -0.015 (ee 0.087) | conjunta p=0.86 | media -0.115 | N=6,409
+- peso al nacer de las chicas, quienes responden en 2024: 6-11 meses +0.031 (ee 0.103) | conjunta p=0.76 | media -0.090 | N=4,300
+
 ## Robustez de la atrición
 - chicas, sin quienes están a un mes de un corte: 6-11 meses -0.054 (ee 0.049) | 1 año -0.013 (ee 0.041) | 3-4 años -0.002 (ee 0.039) | conjunta p=0.68 | media 0.675 | N=5,514
 - chicos, sin quienes están a un mes de un corte: 6-11 meses +0.032 (ee 0.048) | 1 año +0.083** (ee 0.042) | 3-4 años +0.037 (ee 0.039) | conjunta p=0.26 | media 0.663 | N=5,679

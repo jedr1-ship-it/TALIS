@@ -1,29 +1,31 @@
-\begin{tabular*}{\anchotabla}{@{\extracolsep{\fill}}l*{4}{c}@{}}
+\begin{tabular*}{\anchotabla}{@{\extracolsep{\fill}}l*{5}{c}@{}}
 \toprule
- & \multicolumn{4}{c}{PHQ-4 (SD)} \\
-\cmidrule(lr){2-5}
- & (1) & (2) & (3) & (4) \\
- & All & Girls & Boys & Girls \\
+ & \multicolumn{5}{c}{PHQ-4 (SD)} \\
+\cmidrule(lr){2-6}
+ & (1) & (2) & (3) & (4) & (5) \\
+ & All & Girls & Boys & Girls & Girls \\
 \midrule
-\multicolumn{5}{@{}l}{\emph{Panel A. Relative to all other ages}} \\
-6--11 months $\times$ Affected & 0.077 & 0.180 & $-$0.016 & 0.190 \\
- & (0.057) & (0.097) & (0.083) & (0.097) \\
+\multicolumn{6}{@{}l}{\emph{Panel A. Relative to all other ages}} \\
+6--11 months $\times$ Affected & 0.077 & 0.180 & $-$0.016 & 0.190 & 0.066 \\
+ & (0.057) & (0.097) & (0.083) & (0.097) & (0.030) \\
 \addlinespace[3pt]
-\multicolumn{5}{@{}l}{\emph{Panel B. Relative to ages 2--3}} \\
-6--11 months $\times$ Affected & 0.147 & 0.300 & 0.016 & 0.310 \\
- & (0.069) & (0.100) & (0.098) & (0.101) \\
+\multicolumn{6}{@{}l}{\emph{Panel B. Relative to ages 2--3}} \\
+6--11 months $\times$ Affected & 0.147 & 0.300 & 0.016 & 0.310 & 0.096 \\
+ & (0.069) & (0.100) & (0.098) & (0.101) & (0.029) \\
 \addlinespace[2pt]
-1--2 years $\times$ Affected & 0.102 & 0.171 & 0.052 & 0.178 \\
- & (0.070) & (0.098) & (0.085) & (0.099) \\
+1--2 years $\times$ Affected & 0.102 & 0.171 & 0.052 & 0.178 & 0.054 \\
+ & (0.070) & (0.098) & (0.085) & (0.099) & (0.031) \\
 \addlinespace[2pt]
-3--4 years $\times$ Affected & 0.103 & 0.182 & 0.042 & 0.177 \\
- & (0.060) & (0.086) & (0.086) & (0.089) \\
+3--4 years $\times$ Affected & 0.103 & 0.182 & 0.042 & 0.177 & 0.034 \\
+ & (0.060) & (0.086) & (0.086) & (0.089) & (0.028) \\
 \midrule
-Observations & 9,996 & 4,961 & 5,035 & 4,961 \\
-Municipality FE & Yes & Yes & Yes & Yes \\
-Birth-year FE & Yes & Yes & Yes & No \\
-Age-group FE & Yes & Yes & Yes & No \\
-Month-of-birth FE & No & No & No & Yes \\
-Controls & Yes & Yes & Yes & Yes \\
+Observations & 9,996 & 4,961 & 5,035 & 4,961 & 4,961 \\
+Municipality FE & Yes & Yes & Yes & Yes & Yes \\
+Birth-year FE & Yes & Yes & Yes & No & Yes \\
+Age-group FE & Yes & Yes & Yes & No & Yes \\
+Month-of-birth FE & No & No & No & Yes & No \\
+Exposure & Zone & Zone & Zone & Zone & PGA \\
+Controls & Yes & Yes & Yes & Yes & Yes \\
+Wild bootstrap $p$-value, panel A & 0.185 & 0.075 & 0.866 & 0.068 & 0.043 \\
 \bottomrule
 \end{tabular*}

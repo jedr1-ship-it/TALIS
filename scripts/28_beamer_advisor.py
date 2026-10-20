@@ -1358,25 +1358,15 @@ def mapa_pga():
 
 
 def main():
+    """Las figuras de presentacion/advisor.tex. El resto de funciones son de
+    versiones anteriores de la presentación y leen informes que ya no se
+    regeneran."""
     mapa()
-    hallazgos()
-    diseno()
-    trayectoria()
-    variables()
+    datos_elpi()
     salud_mental()
-    resto()
-    lactancia()
-    indices_fig()
-    descomposicion()
-    orden_temporal()
-    ventanas()
-    hogar_2017()
-    estres_madre()
-    anticipo()
     canal_hogar()
     diada()
     chicos()
-    datos_elpi()
     phq4_hist()
     mapa_pga()
 

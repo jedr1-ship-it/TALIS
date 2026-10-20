@@ -135,13 +135,16 @@ def prepara(d, edad="edadq_imp"):
     return x
 
 
-def ajusta(x, y):
+def ajusta(x, y, solo=False):
+    """Perfil frente a 2-3 años o, con solo=True, 6-11 meses frente a todas
+    las demás edades (la comparación principal de la presentación)."""
     x = x.dropna(subset=[y])
-    r = smf.ols(f"{y} ~ {' + '.join(II)} + C(tramo) + C(region) "
+    ii = II[:1] if solo else II
+    r = smf.ols(f"{y} ~ {' + '.join(ii)} + C(tramo) + C(region) "
                 "+ C(cohorte)", data=x).fit(cov_type="HC1")
-    conj = float(r.f_test(", ".join(f"{i} = 0" for i in II)).pvalue)
+    conj = float(r.f_test(", ".join(f"{i} = 0" for i in ii)).pvalue)
     b = {t: (float(r.params[i]), float(r.bse[i]), float(r.pvalues[i]))
-         for t, i in zip(("6-11", "12-23", "36-49"), II)}
+         for t, i in zip(("6-11", "12-23", "36-49"), ii)}
     return b, int(r.nobs), conj, float(x[y].mean())
 
 
@@ -153,15 +156,16 @@ def linea(lab, res):
         f" | N={n:,}")
 
 
-def resultados(d=None):
+def resultados(d=None, solo=False):
     """Lo que usa la tabla del apéndice (scripts/41_tablas_apendice.py):
     responder en 2024 (chicas, chicos, todos) y el peso al nacer de las
     chicas en 2010 y en quienes responden en 2024."""
     x = prepara(carga() if d is None else d)
     res = [ajusta(x[x.mujer == sx] if sx is not None else
-                  x[x.mujer.notna()], "in2024") for _, sx in GRUPOS]
+                  x[x.mujer.notna()], "in2024", solo) for _, sx in GRUPOS]
     ch = x[x.mujer == 1]
-    res += [ajusta(ch, "z_peso"), ajusta(ch[ch.in2024 == 1], "z_peso")]
+    res += [ajusta(ch, "z_peso", solo),
+            ajusta(ch[ch.in2024 == 1], "z_peso", solo)]
     return res, x
 
 
@@ -197,6 +201,14 @@ def main():
     log("\n## Peso al nacer de las chicas (DE)")
     linea("toda la muestra de 2010", res[3])
     linea("solo quienes responden en 2024", res[4])
+    log("\n## 6-11 meses frente a todas las demás edades")
+    sol, _ = resultados(d, solo=True)
+    for lab, r in zip(("responde en 2024, chicas", "responde en 2024, chicos",
+                       "responde en 2024, todos",
+                       "peso al nacer de las chicas, toda la muestra de 2010",
+                       "peso al nacer de las chicas, quienes responden en "
+                       "2024"), sol):
+        linea(lab, r)
     log("\n## Robustez de la atrición")
     for g, sx in GRUPOS:
         s = x[x.mujer == sx] if sx is not None else x[x.mujer.notna()]

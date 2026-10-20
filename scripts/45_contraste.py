@@ -10,8 +10,9 @@ la misma especificación que el perfil (efectos fijos de comuna, año de
 nacimiento y grupo de edad, controles, pesos ELPI, EE por comuna) y una sola
 interacción, 6-11 meses x zona afectada:
 
-  phq4      PHQ-4: todos, chicas, chicos y chicas con efectos fijos de mes
-            de nacimiento (diapositiva 6)
+  phq4      PHQ-4: todos, chicas, chicos, chicas con efectos fijos de mes
+            de nacimiento y chicas con el PGA (por 10 puntos de % de g) en
+            lugar de la zona (diapositiva 6)
   nivel     PHQ-4 medio por edad al terremoto y zona, chicas y chicos
             (diapositiva 6)
   entorno   los seis indicadores del entorno, chicas (diapositiva 7)
@@ -21,6 +22,11 @@ interacción, 6-11 meses x zona afectada:
             (diapositiva 8)
   otros     PHQ-4, consumo, victimización y CBCL, chicas y chicos
             (diapositiva 9)
+
+Con 116 comunas, además del error estándar por comuna se da el p-valor del
+wild cluster bootstrap-t (Rademacher, con la hipótesis nula impuesta;
+Cameron, Gelbach y Miller, 2008) para el PHQ-4 y la diferencia por
+lactancia.
 
 Salida: reports/contraste.csv y reports/contraste.md
 Uso:    python3 scripts/45_contraste.py
@@ -67,18 +73,55 @@ def contraste(d, y, sx, **kw):
     return b["6-11"][:3], n
 
 
-def linea(lab, r, n):
-    log(f"- {lab}: {r[0]:+.3f} (ee {r[1]:.3f}, p={r[2]:.3f}); N={n:,}")
+def wild(r, grupos, termino, B=9999, semilla=27):
+    """p-valor del wild cluster bootstrap-t de un coeficiente de un WLS de
+    statsmodels: pesos de Rademacher por comuna e hipótesis nula impuesta.
+    Por Frisch-Waugh, cada réplica solo proyecta sobre el resto de
+    regresores (una QR calculada una vez)."""
+    X, y = np.asarray(r.model.exog), np.asarray(r.model.endog)
+    raiz = np.sqrt(np.asarray(r.model.weights))
+    j = list(r.model.exog_names).index(termino)
+    Xw, yw = X * raiz[:, None], y * raiz
+    Q, _ = np.linalg.qr(np.delete(Xw, j, axis=1))
+
+    def proy(z):
+        return z - Q @ (Q.T @ z)
+    dd = proy(Xw[:, j])
+    den = dd @ dd
+    g = pd.factorize(np.asarray(grupos))[0]
+    G = g.max() + 1
+
+    def t_de(yres):
+        b = dd @ yres / den
+        sg = np.bincount(g, weights=dd * (yres - dd * b), minlength=G)
+        return b / np.sqrt((sg ** 2).sum() / den ** 2)
+    yr = proy(yw)
+    t0 = t_de(yr)
+    rng = np.random.default_rng(semilla)
+    ts = np.array([t_de(proy(rng.choice([-1.0, 1.0], size=G)[g] * yr))
+                   for _ in range(B)])
+    return float((np.abs(ts) >= abs(t0)).mean())
+
+
+def linea(lab, r, n, pw=None):
+    extra = "" if pw is None else f", wild bootstrap p={pw:.3f}"
+    log(f"- {lab}: {r[0]:+.3f} (ee {r[1]:.3f}, p={r[2]:.3f}{extra}); "
+        f"N={n:,}")
 
 
 def phq4():
     d, _, _ = p15.load_data()
+    d["pga10"] = d.pga / 10
     log("\n## PHQ-4")
-    for g, sx, kw in (("todos", None, {}), ("chicas", 1, {}),
-                      ("chicos", 0, {}), ("chicas, mes", 1, {"mes": True})):
-        r, n = contraste(d, "z_phq4", sx, **kw)
-        linea(g, r, n)
-        guarda("phq4", "z_phq4", g, *r, n)
+    for g, sx, kw, datos in (("todos", None, {}, d), ("chicas", 1, {}, d),
+                             ("chicos", 0, {}, d),
+                             ("chicas, mes", 1, {"mes": True}, d),
+                             ("chicas, PGA", 1, {}, d.assign(EQ=d.pga10))):
+        b, n, r, x = p33.perfil(datos, "z_phq4", sx, "paper", solo="6-11",
+                                modelo=True, **kw)
+        pw = wild(r, x.est, "I6_11")
+        linea(g, b["6-11"][:3], n, pw)
+        guarda("phq4", "z_phq4", g, *b["6-11"][:3], n, p_wild=pw)
     p44 = modulo("p44", "44_pga_niveles.py")
     x = p44.carga()
     for g, sx in SEXOS:
@@ -132,10 +175,14 @@ def pecho():
         x["S_bf"] = x.A6_11 * x.pecho
         x["S_no"] = x.A6_11 * (1 - x.pecho)
         ctr = p34.xt(x, p15.X_PRE) + p34.xt(x, p15.X_POST)
-        rhs = (["S_bf", "S_no", "C(tramo)", "C(tramo):pecho", "pecho",
-                "C(est)", "C(coh)"] + ctr + extra)
-        r = smf.wls("z_phq4 ~ " + " + ".join(rhs), data=x, weights=x.w).fit(
-            cov_type="cluster", cov_kwds={"groups": x.est})
+        fe = (["C(tramo)", "C(tramo):pecho", "pecho", "C(est)", "C(coh)"]
+              + ctr + extra)
+
+        def fit(rhs):
+            return smf.wls("z_phq4 ~ " + " + ".join(rhs + fe), data=x,
+                           weights=x.w).fit(cov_type="cluster",
+                                            cov_kwds={"groups": x.est})
+        r = fit(["S_bf", "S_no"])
         t = r.t_test("S_bf - S_no")
         dif = (float(np.ravel(t.effect)[0]), float(np.ravel(t.sd)[0]),
                float(np.ravel(t.pvalue)[0]))
@@ -144,8 +191,11 @@ def pecho():
             res = (float(r.params[k]), float(r.bse[k]), float(r.pvalues[k]))
             linea(f"{g}, {lab}", res, n)
             guarda("pecho", lab, g, *res, n)
-        linea(f"{g}, diferencia", dif, n)
-        guarda("pecho", "diferencia", g, *dif, n)
+        # la diferencia como un solo coeficiente: con A6_11 (= S_bf + S_no),
+        # el de S_bf es la diferencia entre con y sin pecho
+        pw = wild(fit(["S_bf", "A6_11"]), x.est, "S_bf")
+        linea(f"{g}, diferencia", dif, n, pw)
+        guarda("pecho", "diferencia", g, *dif, n, p_wild=pw)
 
 
 def main():
