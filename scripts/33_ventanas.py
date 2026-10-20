@@ -41,7 +41,18 @@ CORTES = {"seis meses": ([6, 12, 18, 24, 36, 42, 50],
                        ["6-17", "ref", "36-41", "42-49"]),
           # los grupos del paper, frente a 2 años; los usan scripts/34-36
           "paper": ([6, 12, 24, 36, 50],
-                    ["6-11", "12-23", "ref", "36-49"])}
+                    ["6-11", "12-23", "ref", "36-49"]),
+          # tramos de seis meses sin referencia: el perfil completo
+          # (scripts/47) y la ventana de los primeros 18 meses
+          "seis": ([6, 12, 18, 24, 30, 36, 42, 50],
+                   ["6-11", "12-17", "18-23", "24-29", "30-35", "36-41",
+                    "42-49"])}
+CORTES["seis_ref"] = (CORTES["seis"][0],
+                      ["6-11", "12-17", "18-23", "ref", "30-35", "36-41",
+                       "42-49"])          # para la prueba de perfil plano
+# la comparación resumen de la presentación, elegida después de ver el
+# perfil completo (exploratoria): los primeros 18 meses frente al resto
+VENTANA = ["6-11", "12-17"]
 NACER = ["z_peso", "z_talla", "z_gest"]
 GRUPOS = (("todos", None), ("chicas", 1), ("chicos", 0))
 OUT = []
@@ -78,10 +89,17 @@ def perfil(d, y, sx=None, corte="seis meses", controles=True, extra=(),
                         labels=tramos).astype(str)
     x["est"] = x.estrato.astype(int).astype(str)
     x["coh"] = x.cohorte.astype(int).astype(str)
-    cats = [solo] if solo else [t for t in tramos if t != "ref"]
-    ii = ["I" + t.replace("-", "_") for t in cats]
-    for t, i in zip(cats, ii):
-        x[i] = (x.tramo == t).astype(float) * x.EQ
+    if isinstance(solo, (list, tuple)):        # varios tramos juntos
+        cats = [f"{solo[0].split('-')[0]}-{solo[-1].split('-')[1]}"]
+        ii = ["I_v"]
+        x["I_v"] = x.tramo.isin(solo).astype(float) * x.EQ
+        miembro = {cats[0]: x.tramo.isin(solo)}
+    else:
+        cats = [solo] if solo else [t for t in tramos if t != "ref"]
+        ii = ["I" + t.replace("-", "_") for t in cats]
+        for t, i in zip(cats, ii):
+            x[i] = (x.tramo == t).astype(float) * x.EQ
+        miembro = {t: x.tramo == t for t in cats}
     rhs = ii + ["C(tramo)", "C(est)", "C(coh)"]
     pre = p15.X_PRE
     if mes:
@@ -94,7 +112,7 @@ def perfil(d, y, sx=None, corte="seis meses", controles=True, extra=(),
     r = smf.wls(f"{y} ~ {' + '.join(rhs)}", data=x, weights=x.w).fit(
         cov_type="cluster", cov_kwds={"groups": x.est})
     b = {t: (float(r.params[i]), float(r.bse[i]), float(r.pvalues[i]),
-             int((x.tramo == t).sum())) for t, i in zip(cats, ii)}
+             int(miembro[t].sum())) for t, i in zip(cats, ii)}
     if modelo:
         return b, int(r.nobs), r, x
     return b, int(r.nobs)

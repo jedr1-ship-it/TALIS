@@ -1,10 +1,13 @@
 \RequirePackage{fix-cm}
 % Presentación para el advisor, en inglés: el terremoto, los mecanismos
-% posibles, el diseño, la salud mental, el entorno socioeconómico y familiar,
-% el estrés de la madre y la lactancia,
-% los varones y lo que queda abierto. Los mismos grupos de edad en todo:
-% 6-11 meses, 1 año, 2 años (referencia) y 3-4 años.
+% posibles, el diseño, el perfil de la salud mental por edad al terremoto en
+% tramos de seis meses (el resultado principal), la misma comparación en
+% tres rondas, el entorno socioeconómico y familiar, la lactancia y el
+% estrés de la madre, y lo que queda abierto. La comparación resumen, los
+% primeros 18 meses (6-17) frente a todas las demás edades, se eligió
+% después de ver el perfil: es exploratoria.
 % Figuras: python3 scripts/28_beamer_advisor.py
+% Tablas: python3 scripts/41_tablas_apendice.py
 % Compilar desde presentacion/: xelatex advisor.tex (dos veces)
 \documentclass[aspectratio=169,11pt]{beamer}
 \usepackage[english]{babel}
@@ -86,7 +89,7 @@
 \textbf{Exposed} & Children aged 6 months to 4 years \\
 \end{tabular}
 
-\vspace{4mm}
+\vspace{3mm}
 {\small\bfseries Effects of early-childhood shocks\par}
 \vspace{1.5mm}
 {\small\raggedright
@@ -95,10 +98,12 @@ Cognitive and non-cognitive development \cita{(Gillmore, 2026)}\par\vspace{1mm}
 Height and learning \cita{(Andrabi, Daniels, and Das, 2023)}\par\vspace{1mm}
 Adult mental health \cita{(Persson and Rossin-Slater, 2018)}\par}
 
-\vspace{4mm}
+\vspace{3mm}
 {\small\bfseries This paper\par}
 \vspace{1.5mm}
-{\small Mental health in adolescence, ages 14--18\par}
+{\small\raggedright Mental health at ages 14--18 by age at the earthquake,\\ from 6 to 49 months\par
+\vspace{0.6mm}{\footnotesize\color{muted}The 2024 round follows the 2010 cohort, born by August 2009:
+exposure in utero or before 6 months is not observed\par}}
 \end{columns}
 \end{frame}
 
@@ -158,51 +163,71 @@ organization and function.”}
 \begin{frame}[label=spec]
 \frametitle{Econometric specification%
 \boton{\tabla{tabbal}{Balance}\hspace{1mm}\tabla{tabatr}{Attrition}}}
-\vspace{3mm}
+\vspace{0mm}
 \begin{equation*}
-Y_{imc} = \beta \,(\mathrm{Age}^{6\text{--}11}_{i} \times \mathrm{Affected}_m)
+Y_{imc} = \sum_{a} \beta_a\,(\mathrm{Age}_{ai} \times \mathrm{Affected}_m)
  + \sum_{a} \gamma_a\, \mathrm{Age}_{ai} + \psi_m + \theta_c + X_i'\delta + \varepsilon_{imc}
 \end{equation*}
-\vspace{1mm}
+\vspace{-1mm}
 {\small
-\renewcommand{\arraystretch}{1.25}
+\renewcommand{\arraystretch}{1.15}
 \begin{tabular}{@{}l l@{}}
 {\color{muted}$Y_{imc}$} & Mental health at ages 14--18, PHQ-4 \\
-{\color{muted}$\mathrm{Age}^{6\text{--}11}_{i}$} & Aged 6--11 months at the earthquake; comparison, all other ages \\
-{\color{muted}$\mathrm{Age}_{ai}$} & Age groups: 6--11 months, 1--2, 2--3, and 3--4 years \\
+{\color{muted}$\mathrm{Age}_{ai}$} & Six-month age groups at the earthquake: 6--11, 12--17, \ldots, 42--49 months \\
 {\color{muted}$\mathrm{Affected}_m$} & Municipality in the zone of destructive damage \\
 {\color{muted}$\psi_m$, $\theta_c$} & Municipality and birth-year fixed effects \\
 {\color{muted}$X_i$} & Linear trend in month of birth; child and household controls \\
+\end{tabular}
+
+\vspace{2mm}
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{22mm}>{\raggedright\arraybackslash}p{116mm}@{}}
+\textbf{Profile} & $\beta_a$ normalized to average zero; joint test of a flat profile \\
+\textbf{Summary} & First 18 months relative to all other ages, chosen after inspecting the profile \\
 \end{tabular}}
 
-\nota{Age groups in months: 6--11, 12--23, 24--35, and 36--49. The earthquake date is the
-same for everyone, so age at the earthquake is a function of the month of birth. Replacing
-$\gamma_a$, $\theta_c$, and the trend with month-of-birth fixed effects leaves the estimates
-unchanged. The profile by age relative to ages 2--3 is in Table A4, panel B.}
+\nota{$\mathrm{Affected}_m$ does not vary within municipality, so $\psi_m$ absorbs the average
+effect of the earthquake: the design identifies how the effect varies with age at exposure,
+not its level. Replacing $\gamma_a$, $\theta_c$, and the trend with month-of-birth fixed
+effects leaves the estimates unchanged.}
 \end{frame}
 
-% ---------------------------------------------------------- 4. Salud mental
+% ----------------------------------------------------- 5. Perfil por edad
 \begin{frame}[label=sm]
-\frametitle{Effect on mental health%
-\boton{\tabla{figphq}{PHQ-4 distribution}\hspace{1mm}\tabla{tabphq}{Table}}}
+\frametitle{Age at exposure matters for girls, not for boys%
+\boton{\tabla{figphq}{Distribution}\hspace{1mm}\tabla{figniv}{Levels}\hspace{1mm}%
+\tabla{tabphq}{Table}\hspace{1mm}\tabla{tabgir}{Other outcomes}}}
 \centering
-\includegraphics[width=0.88\textwidth]{figuras/salud_mental.pdf}
+\includegraphics[width=0.84\textwidth]{figuras/perfil.pdf}
 
-\nota{PHQ-4 \citanota{(Kroenke et al., 2009)}, four questions answered by the
-adolescent on anxiety and depression. Left, the mean in each zone by age at the
-earthquake; in unaffected municipalities, girls aged 2--3 score unusually high.
-Right, affected minus unaffected for those aged 6--11 months, relative to all other
-ages and to ages 2--3; 95\% CI. For girls, wild bootstrap $p = 0.08$; with peak
-ground acceleration instead of the zone, 0.19 SD in the average affected
-municipality ($p = 0.04$).}
+\nota{PHQ-4 \citanota{(Kroenke et al., 2009)}, four questions answered by the adolescent on
+anxiety and depression. Affected minus unaffected in each six-month age group, normalized to
+average zero; the curve is a B-spline in age in months; 95\% CI. Summary comparison, chosen
+after inspecting the profile: the first 18 months relative to all other ages, 0.21 SD for girls
+(SE 0.08; wild bootstrap $p = 0.01$; randomization across regions $p = 0.06$) and 0.00 for
+boys; girls minus boys, 0.21 (SE 0.10).}
 \end{frame}
 
-% --------------------------------------------------------------- 5. Hogar
+% ------------------------------------------------------ 6. Tres rondas
+\begin{frame}[label=olas]
+\frametitle{Girls report the gap; their caregivers do not%
+\boton{\tabla{tabola}{Table}\hspace{1mm}\tabla{figola}{Profiles}}}
+\centering
+\includegraphics[width=0.84\textwidth]{figuras/tres_olas.pdf}
+
+\nota{The same adolescents in each round, with the specification of the previous slide; 95\% CI.
+Caregiver report, CBCL internalizing scale. Own report: in 2017, an index of low self-esteem,
+not feeling happy, and feeling lonely in class; in 2024, the PHQ-4. Flat profile for girls:
+$p = 0.03$ for the 2024 PHQ-4 and above 0.2 for the other four measures. Different
+informants' reports of internalizing symptoms correlate at 0.25 on average \citanota{(De Los
+Reyes et al., 2015)}.}
+\end{frame}
+
+% --------------------------------------------------------------- 7. Hogar
 \begin{frame}[label=entorno]
 \frametitle{Socioeconomic and family environment does not explain the gap%
 \boton{\tabla{tabent}{Table}}}
 {\small\raggedright The earthquake worsened the environment \cita{(Gillmore, 2026)},
-but not more at 6--11 months\par}
+but not more for those exposed in the first 18 months\par}
 \centering
 \includegraphics[scale=0.9]{figuras/canal_hogar.pdf}
 
@@ -211,64 +236,60 @@ damage, reported in 2012. In blue, the mechanisms in \citanota{Gillmore (2026)}.
 destroyed or with major damage; conflict at home, the mother shouting, being
 hostile, or hitting during the visit; overcrowded housing, persons per bedroom;
 precarious housing, an emergency shack (\emph{mediagua}) or a lent or shared
-dwelling. Girls aged 6--11 months relative to all other ages; 95\% CI.}
+dwelling. Girls exposed at 6--17 months relative to all other ages; 95\% CI. The two
+estimates that differ from zero point to a better environment, not a worse one.}
 \end{frame}
 
-% ------------------------------------------------------------- 6. La madre
+% ------------------------------------------------------------- 8. La madre
 \begin{frame}[label=diada]
-\frametitle{The effect at 6--11 months is concentrated among breastfed girls%
+\frametitle{The effect is larger among breastfed girls, but imprecise%
 \boton{\tabla{tablac}{Table}\hspace{1mm}\tabla{figlac}{By age}\hspace{1mm}%
 \tabla{tabdia}{Maternal stress}\hspace{1mm}\tabla{tabmed}{Means}}}
 \centering
 \includegraphics[width=0.92\textwidth]{figuras/diada.pdf}
 
-\nota{Breastfed, still breastfed on 27-F (2012 report). Left, affected minus
-unaffected for girls aged 6--11 months, relative to all other ages; the gap between
-breastfed and not breastfed, 0.45 SD (SE 0.23; wild bootstrap $p = 0.07$), does
-not depend on the comparison group. Center, the association with maternal stress reported in 2012, which rose by
-13 points in affected municipalities and accounts for about 0.01 SD of the effect.}
+\nota{Breastfed, still breastfed on 27-F (2012 report): 53\% of girls exposed at 6--17
+months. Left, with six-month age group $\times$ breastfed fixed effects; the difference
+between breastfed and not breastfed is 0.23 SD (SE 0.17; wild bootstrap $p = 0.20$). Right,
+the share of mothers who reported stress, distress, or anxiety after the earthquake, unweighted;
+95\% CI. It did not rise more for the mothers of the youngest: for girls exposed at 6--17
+months relative to all other ages, $-3.3$ points (SE 1.8).}
 \end{frame}
 
-% ------------------------------------------------------------- 7. Varones
-\begin{frame}[label=chicos]
-\frametitle{Among boys, no effect on symptoms but more substance use%
-\boton{\tabla{tabgir}{Table, girls}\hspace{1mm}\tabla{tabboy}{Table, boys}}}
-\centering
-\includegraphics[width=\textwidth]{figuras/chicos.pdf}
-
-\end{frame}
-
-% ------------------------------------------------------------ 8. Hallazgos
+% ------------------------------------------------------------ 9. Hallazgos
 \begin{frame}
 \frametitle{Findings}
 \vspace{4mm}
 \begin{itemize}\setlength{\itemsep}{4mm}
-\item Girls exposed at 6--11 months have worse mental health than those
-      exposed at older ages, by 0.18 SD on the PHQ-4; boys show no difference.
-\item The socioeconomic and family environment did not worsen more for those
-      aged 6--11 months and does not explain this difference.
-\item The effect at 6--11 months is concentrated among girls who were
-      breastfed on 27-F, 62\% of that age group.
-\item Maternal stress reported in 2012 is associated with worse mental health
-      only among breastfed daughters, but accounts for about 0.01 SD of the effect.
+\item Among girls, the effect of the earthquake on mental health at ages 14--18 varies with
+      age at exposure (flat profile rejected, $p = 0.03$); among boys, it does not ($p = 0.90$).
+\item Girls exposed in the first 18 months report more symptoms than those exposed later,
+      by 0.21 SD, a comparison chosen after inspecting the profile.
+\item The gap is in the girls' own reports, significant in 2024 and of the same sign in 2017;
+      their caregivers report no difference in 2012, 2017, or 2024.
+\item The socioeconomic and family environment did not worsen more for the youngest, and
+      the stress their mothers reported in 2012 did not rise more.
 \end{itemize}
 \end{frame}
 
-% ------------------------------------------------- 9. Lo que queda abierto
+% ------------------------------------------------ 10. Lo que queda abierto
 \begin{frame}
 \frametitle{Open questions}
-\vspace{4mm}
-\begin{itemize}\setlength{\itemsep}{4mm}
-\item Why do symptoms appear only among girls?\\[3mm]
-      \textbf{Hypothesis:} early stress leaves a latent vulnerability that
-      surfaces in adolescence, when the gender gap in depression opens
-      \cita{(McCrory and Viding, 2015; Salk, Hyde, and Abramson, 2017)}.
-\item What does breastfeeding transmit, if the stress the mother reports
-      accounts for little of the effect?\\[3mm]
-      \textbf{Hypothesis:} the mother's acute stress response in the months
-      after the earthquake, which a report two years later captures only in
-      part.
-\end{itemize}
+\vspace{1mm}
+{\small
+\begin{itemize}\setlength{\itemsep}{3mm}
+\item Why only girls, and only in their own reports?\\[1.5mm]
+      \textbf{Hypothesis:} early stress leaves a latent vulnerability that surfaces in
+      adolescence, when the gender gap in depression opens \cita{(McCrory and Viding, 2015;
+      Salk, Hyde, and Abramson, 2017)}, as internalizing symptoms that caregivers seldom see.
+\item What happens with exposure before 6 months?\\[1.5mm]
+      Observed only in 2017, 209 girls: those exposed at 0--5 months score 0.30 SD higher on the
+      caregiver report (SE 0.15) and 0.19 SD on their own (SE 0.12), relative to those
+      exposed at ages 1--4.
+\item What does breastfeeding transmit, if the stress mothers reported did not rise more?\\[1.5mm]
+      \textbf{Hypothesis:} the mother's acute stress response in the months after the
+      earthquake, which a report two years later captures only in part.
+\end{itemize}}
 \end{frame}
 
 % ------------------------------------------------------------ Referencias
@@ -285,6 +306,10 @@ Accumulation and Disasters: Evidence from the Pakistan Earthquake of 2005.”
 Conger, Rand D., and M. Brent Donnellan. 2007. “An Interactionist Perspective
 on the Socioeconomic Context of Human Development.” \revista{10.1146/annurev.psych.58.110405.085551}{Annual Review of
 Psychology} 58: 175--199.\par
+De Los Reyes, Andres, Tara M. Augenstein, Mo Wang, Sarah A. Thomas, Deborah A. G.
+Drabick, Darcy E. Burgers, and Jill Rabinowitz. 2015. “The Validity of the
+Multi-Informant Approach to Assessing Child and Adolescent Mental Health.”
+\revista{10.1037/a0038498}{Psychological Bulletin} 141 (4): 858--900.\par
 Gee, Dylan G., and B. J. Casey. 2015. “The Impact of Developmental Timing for
 Stress and Recovery.” \revista{10.1016/j.ynstr.2015.02.001}{Neurobiology of Stress} 1: 184--194.\par
 Gillmore, Roberto. 2026. “Natural Disasters and Early Child Development:
@@ -351,26 +376,27 @@ breastfed means still breastfed on 27-F.}
 Earthquake}{}{spec}
 \setlength{\anchotabla}{0.9\textwidth}\setlength{\anchonota}{\anchotabla}
 \centering
-{\fontsize{7}{8.4}\selectfont\renewcommand{\arraystretch}{0.8}\input{tablas/balance.tex}\par}
+{\fontsize{7.5}{9}\selectfont\renewcommand{\arraystretch}{0.9}\input{tablas/balance.tex}\par}
 \notatabla{Girls. Each column regresses a characteristic fixed before the
-earthquake on age group $\times$ affected, with municipality, birth-year, and
-age-group fixed effects and no controls; panels as in Table A4. Birth weight,
-length, and gestation are standardized; the mother's education and age were
-reported in 2010. \input{tablas/balance_nota.tex}\errores}
+earthquake on ages 6--17 months $\times$ affected, with municipality, birth-year, and
+six-month age-group fixed effects and no controls; the joint test is of a flat profile
+across the seven six-month age groups. Birth weight, length, and gestation are
+standardized; the mother's education and age were reported in 2010.
+\input{tablas/balance_nota.tex}\errores}
 \end{frame}
 
 \begin{frame}[label=tabatr]
 \titulotabla{Table A3---Attrition between 2010 and 2024}{}{spec}
 \setlength{\anchotabla}{0.9\textwidth}\setlength{\anchonota}{\anchotabla}
 \centering
-{\fontsize{7}{8.4}\selectfont\renewcommand{\arraystretch}{0.74}\input{tablas/atricion.tex}\par}
+{\fontsize{7.5}{9}\selectfont\renewcommand{\arraystretch}{0.9}\input{tablas/atricion.tex}\par}
 \notatabla{Children with the 2010 developmental assessment, which gives age in
-months (14,161 of 15,175); panels as in Table A4. Columns 1--3 equal one if
-interviewed in 2024; columns 4--5, standardized birth weight of all girls assessed
-in 2010 and of those interviewed in 2024. Age at the earthquake is the age at the
-2010 assessment minus the months from 27-F to the region's median assessment
-month, for stayers and leavers alike. The 2010 files do not identify the
-municipality, so region fixed effects, no weights, and robust standard errors.}
+months (14,161 of 15,175). Columns 1--3 equal one if interviewed in 2024; columns 4--5,
+standardized birth weight of all girls assessed in 2010 and of those interviewed in 2024.
+Age at the earthquake is the age at the 2010 assessment minus the months from 27-F to the
+region's median assessment month, for stayers and leavers alike. Joint test as in
+Table A2. The 2010 files do not identify the municipality, so region fixed effects, no
+weights, and robust standard errors.}
 \end{frame}
 
 \begin{frame}[label=figphq]
@@ -383,23 +409,90 @@ adds four items scored 0 to 3; Kroenke et al.\ (2009) classify 0--2 as
 normal, 3--5 as mild, 6--8 as moderate, and 9--12 as severe.}
 \end{frame}
 
+\begin{frame}[label=figniv]
+\titulotabla{Figure A3---PHQ-4 by Age at the Earthquake and Zone}{}{sm}
+\setlength{\anchonota}{0.92\textwidth}
+\centering
+\includegraphics[width=0.92\textwidth]{figuras/niveles.pdf}
+\notatabla{Weighted mean of the standardized PHQ-4 in 2024 by six-month age group and
+zone; 95\% CI clustered by municipality of selection. Among girls, the affected zone is
+nearly flat except at 6--11 months; much of the profile comes from the unaffected zone,
+where girls exposed at 6--17 months score low and those exposed at 18--35 months score
+high. Relative to ages 36--49 months only, the gap at 6--17 months is 0.10 SD (SE 0.09).}
+\end{frame}
+
 \begin{frame}[label=tabphq]
-\titulotabla{Table A4---Effect on Mental Health}{}{sm}
+\titulotabla{Table A4---Effect on Mental Health by Age at the Earthquake}{}{sm}
+\setlength{\anchotabla}{0.9\textwidth}\setlength{\anchonota}{\anchotabla}
+\centering
+{\fontsize{6.6}{7.9}\selectfont\renewcommand{\arraystretch}{0.72}\input{tablas/perfil.tex}\par}
+\notatabla{Affected minus unaffected municipalities in the standardized PHQ-4 in each
+six-month age group, normalized to average zero; the joint test is of equal effects at all
+ages. Controls and weights as in Table A5. For girls, the joint test gives $p = 0.03$ with
+month-of-birth fixed effects and $p = 0.04$ with peak ground acceleration instead of the
+zone. \errores}
+\end{frame}
+
+\begin{frame}[label=tabsum]
+\titulotabla{Table A5---The First 18 Months Relative to All Other Ages}{}{sm}
 \setlength{\anchotabla}{\textwidth}\setlength{\anchonota}{\anchotabla}
 \centering
-{\fontsize{6.6}{7.9}\selectfont\renewcommand{\arraystretch}{0.63}\input{tablas/phq4.tex}\par}
-\notatabla{Affected minus unaffected municipalities in the standardized PHQ-4;
-panel A compares ages 6--11 months with all other ages, panel B each age group with
-ages 2--3. Controls are a linear trend in month of birth, sex, the mother's age and
-education, household size, rural residence (2010), the mother's number of children,
-and family history of mental illness (2012). Column 4 uses month-of-birth fixed
-effects; column 5, peak ground acceleration per 10 points of percent of $g$ (28 more
-in the average affected municipality). Wild bootstrap with 9,999 Rademacher draws
-under the null. ELPI weights. \errores}
+{\fontsize{7.5}{9}\selectfont\renewcommand{\arraystretch}{0.9}\input{tablas/phq4.tex}\par}
+\notatabla{Affected minus unaffected municipalities in the standardized PHQ-4 at ages 6--17
+months relative to all other ages, a comparison chosen after inspecting Table A4. Controls
+are a linear trend in month of birth, sex, the mother's age and education, household size,
+rural residence (2010), the mother's number of children, and family history of mental
+illness (2012). Column 4 uses month-of-birth fixed effects; column 5, peak ground
+acceleration per 10 points of percent of $g$ (28 more in the average affected municipality).
+Wild bootstrap with 9,999 Rademacher draws under the null. For girls, randomization
+inference over the 5,005 ways of choosing six of the 15 regions as affected gives
+$p = 0.06$; with standard errors clustered by region, $p = 0.02$. Girls minus boys, 0.205
+(0.099), from a model with every term interacted with sex. ELPI weights. \errores}
+\end{frame}
+
+\begin{frame}[label=tabgir]
+\titulotabla{Table A6---Other Outcomes, Girls}{}{sm}
+\setlength{\anchotabla}{1.1\textwidth}\setlength{\anchonota}{\textwidth}
+\centering
+{\scriptsize\renewcommand{\arraystretch}{0.85}\resizebox{\textwidth}{!}{\input{tablas/chicas.tex}}\par}
+\notatabla{Girls. Each column is a separate regression with the specification of
+Table A5. The adolescent reports the PHQ-4, substance use (any alcohol, tobacco,
+cannabis, or other drug in the last 12 months), and peer victimization; the caregiver
+reports internalizing and externalizing problems (CBCL). All measured in 2024 and
+standardized; higher is worse. Boys in Table A7. \errores}
+\end{frame}
+
+\begin{frame}[label=tabboy]
+\titulotabla{Table A7---Other Outcomes, Boys}{}{sm}
+\setlength{\anchotabla}{1.1\textwidth}\setlength{\anchonota}{\textwidth}
+\centering
+{\scriptsize\renewcommand{\arraystretch}{0.85}\resizebox{\textwidth}{!}{\input{tablas/chicos.tex}}\par}
+\notatabla{Boys. Outcomes and specification as in Table A6. \errores}
+\end{frame}
+
+\begin{frame}[label=tabola]
+\titulotabla{Table A8---Mental Health in Three Rounds}{}{olas}
+\setlength{\anchotabla}{\textwidth}\setlength{\anchonota}{\anchotabla}
+\centering
+{\fontsize{7}{8.4}\selectfont\renewcommand{\arraystretch}{0.8}\input{tablas/olas.tex}\par}
+\notatabla{The adolescents interviewed in 2024, in each round in which they have the
+measure; specification of Table A5, with 2024 weights. Caregiver: CBCL
+internalizing scale, standardized. Own report: in 2017, the mean of three standardized
+items (low self-esteem, not feeling happy, feeling lonely in class); in 2024, the PHQ-4.
+Higher is worse. \errores}
+\end{frame}
+
+\begin{frame}[label=figola]
+\titulotabla{Figure A4---The Age Profile in Three Rounds}{}{olas}
+\setlength{\anchonota}{0.88\textwidth}
+\centering
+\includegraphics[width=0.88\textwidth]{figuras/olas_perfiles.pdf}
+\notatabla{For each measure of Table A8, affected minus unaffected in each six-month age
+group, normalized to average zero; 95\% CI. $p$, joint test of a flat profile.}
 \end{frame}
 
 \begin{frame}[label=tabent]
-\titulotabla{Table A5---The Socioeconomic and Family Environment}{}{entorno}
+\titulotabla{Table A9---The Socioeconomic and Family Environment}{}{entorno}
 \setlength{\anchotabla}{1.1\textwidth}\setlength{\anchonota}{\textwidth}
 \centering
 {\scriptsize\renewcommand{\arraystretch}{0.82}\resizebox{\textwidth}{!}{\input{tablas/entorno.tex}}\par}
@@ -409,24 +502,24 @@ earthquake, except housing damage, reported in 2012. Lower income, per
 capita; damaged housing, destroyed or with major damage; conflict at home,
 the mother shouting, being hostile, or hitting during the visit; overcrowded
 housing, persons per bedroom; precarious housing, an emergency shack or a
-lent or shared dwelling. Panels and specification as in Table A4. \errores}
+lent or shared dwelling. Specification of Table A5. \errores}
 \end{frame}
 
 \begin{frame}[label=tablac]
-\titulotabla{Table A6---Breastfeeding and the Effect at 6--11 Months}{}{diada}
+\titulotabla{Table A10---Breastfeeding and the Effect in the First 18 Months}{}{diada}
 \setlength{\anchotabla}{0.9\textwidth}\setlength{\anchonota}{\anchotabla}
 \centering
-{\scriptsize\renewcommand{\arraystretch}{0.88}\input{tablas/lactancia.tex}\par}
+{\scriptsize\renewcommand{\arraystretch}{0.76}\input{tablas/lactancia.tex}\par}
 \notatabla{Difference between affected and unaffected municipalities in the
-standardized PHQ-4 for those aged 6--11 months, relative to all other ages,
+standardized PHQ-4 for those aged 6--17 months, relative to all other ages,
 separately for those still breastfed on 27-F (2012 report) and those who were
 not. Column 2 lets breastfeeding and the affected zone vary with the mother's
 education and employment (2010). Controls, weights, and wild bootstrap as in
-Table A4. \errores}
+Table A5. \errores}
 \end{frame}
 
 \begin{frame}[label=figlac]
-\titulotabla{Figure A3---Breastfeeding and the Effect of the Earthquake by
+\titulotabla{Figure A5---Breastfeeding and the Effect of the Earthquake by
 Age}{}{diada}
 \setlength{\anchonota}{0.9\textwidth}
 \centering
@@ -434,58 +527,37 @@ Age}{}{diada}
 \notatabla{For each age at the earthquake, the difference between affected and
 unaffected municipalities among those breastfed on 27-F minus the same
 difference among those who were not, with fixed effects for age group
-$\times$ breastfed, municipality, and birth year, and the controls of Table A4.
+$\times$ breastfed, municipality, and birth year, and the controls of Table A5.
 The dotted line is the value implied by maternal stress reported in 2012
 (0.29 $\times$ 0.13). 95\% CI.}
 \end{frame}
 
 \begin{frame}[label=tabdia]
-\titulotabla{Table A7---Maternal Stress, Breastfeeding, and Daughters'
+\titulotabla{Table A11---Maternal Stress, Breastfeeding, and Daughters'
 Mental Health}{}{diada}
 \setlength{\anchotabla}{\textwidth}\setlength{\anchonota}{\textwidth}
 \centering
 {\scriptsize\renewcommand{\arraystretch}{0.84}\input{tablas/diada.tex}\par}
-\notatabla{Girls. Maternal stress equals one if the mother reported stress,
+\notatabla{Girls, all ages. Maternal stress equals one if the mother reported stress,
 distress, or anxiety after the earthquake (2012); breastfed equals one if
-the child was still breastfed on 27-F (2012 report). Column 1 is the
-estimate in the figure; column 2 lets stress and breastfeeding vary with
-the mother's education and employment (2010); column 3 also lets stress vary
-at 6--11 months. Controls and weights as in Table A4. \errores}
+the child was still breastfed on 27-F (2012 report). Column 2 lets stress and
+breastfeeding vary with the mother's education and employment (2010); column 3
+also lets stress vary at 6--17 months. Controls and weights as in Table A5.
+\errores}
 \end{frame}
 
 \begin{frame}[label=tabmed]
-\titulotabla{Table A8---Maternal Stress and Breastfeeding by Age at the
+\titulotabla{Table A12---Maternal Stress and Breastfeeding by Age at the
 Earthquake}{}{diada}
 \setlength{\anchotabla}{0.7\textwidth}\setlength{\anchonota}{\anchotabla}
 \centering
-{\footnotesize\input{tablas/medias.tex}\par}
+{\fontsize{7}{8.4}\selectfont\renewcommand{\arraystretch}{0.78}\input{tablas/medias.tex}\par}
 \notatabla{Unweighted means, with standard errors in parentheses, by the
 child's age at the earthquake, among the adolescents of Table A1 whose
 mother answered each question in 2012. Columns 1 and 2 report the share of
 mothers who reported stress, distress, or anxiety after the earthquake, in
 affected and unaffected municipalities; column 3, the share of children
 still breastfed on 27-F.}
-\end{frame}
-
-\begin{frame}[label=tabgir]
-\titulotabla{Table A9---Other Outcomes, Girls}{}{chicos}
-\setlength{\anchotabla}{1.1\textwidth}\setlength{\anchonota}{\textwidth}
-\centering
-{\scriptsize\renewcommand{\arraystretch}{0.85}\resizebox{\textwidth}{!}{\input{tablas/chicas.tex}}\par}
-\notatabla{Girls. Each column is a separate regression with the
-specification and panels of Table A4. The adolescent reports the PHQ-4, substance use
-(any alcohol, tobacco, cannabis, or other drug in the last 12 months), and
-peer victimization and class climate; the caregiver reports internalizing
-and externalizing problems (CBCL). All measured in 2024 and standardized;
-higher is worse. \errores}
-\end{frame}
-
-\begin{frame}[label=tabboy]
-\titulotabla{Table A10---Other Outcomes, Boys}{}{chicos}
-\setlength{\anchotabla}{1.1\textwidth}\setlength{\anchonota}{\textwidth}
-\centering
-{\scriptsize\renewcommand{\arraystretch}{0.85}\resizebox{\textwidth}{!}{\input{tablas/chicos.tex}}\par}
-\notatabla{Boys. Outcomes and specification as in Table A9. \errores}
 \end{frame}
 
 \end{document}

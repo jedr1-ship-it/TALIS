@@ -46,7 +46,8 @@ spec.loader.exec_module(sm27)
 INT = Path("data/interim")
 QUAKE_YM = sm27.QUAKE_YM
 TRAMOS = ([6, 12, 24, 36, 50], ["6-11", "12-23", "ref", "36-49"])
-NOMBRE = {"6-11": "6-11 meses", "12-23": "1 año", "36-49": "3-4 años"}
+NOMBRE = {"6-11": "6-11 meses", "12-23": "1 año", "36-49": "3-4 años",
+          "6-17": "primeros 18 meses"}
 II = ["I6_11", "I12_23", "I36_49"]
 GRUPOS = (("chicas", 1), ("chicos", 0), ("todos", None))
 OUT = []
@@ -130,15 +131,33 @@ def prepara(d, edad="edadq_imp"):
     x = d.dropna(subset=[edad, "reg"]).copy()
     x = x[x[edad].between(6, 49)]
     x = tramos(x, x[edad])
+    x["t6"] = pd.cut(x[edad], [6, 12, 18, 24, 30, 36, 42, 50], right=False,
+                     labels=["6-11", "12-17", "18-23", "24-29", "30-35",
+                             "36-41", "42-49"]).astype(str)
+    x["V"] = (x[edad] < 18).astype(float) * x.EQ
+    for t in ("6-11", "12-17", "18-23", "30-35", "36-41", "42-49"):
+        x["T" + t.replace("-", "_")] = (x.t6 == t) * x.EQ
     x["cohorte"] = ((QUAKE_YM - x[edad]) // 12).astype(int).astype(str)
     x["region"] = x.reg.astype(int).astype(str)
     return x
 
 
-def ajusta(x, y, solo=False):
-    """Perfil frente a 2-3 años o, con solo=True, 6-11 meses frente a todas
-    las demás edades (la comparación principal de la presentación)."""
+def ajusta(x, y, solo=False, ventana=False):
+    """Perfil frente a 2-3 años; con solo=True, 6-11 meses frente a todas
+    las demás edades; con ventana=True, los primeros 18 meses frente al
+    resto, con efectos fijos de tramo de seis meses, y en "conjunta" el
+    p-valor de la prueba de perfil plano en tramos de seis meses."""
     x = x.dropna(subset=[y])
+    if ventana:
+        f = " + C(t6) + C(region) + C(cohorte)"
+        r = smf.ols(f"{y} ~ V{f}", data=x).fit(cov_type="HC1")
+        tt = [c for c in x.columns if c.startswith("T") and c[1:2].isdigit()]
+        rp = smf.ols(f"{y} ~ {' + '.join(tt)}{f}", data=x).fit(
+            cov_type="HC1")
+        conj = float(rp.f_test(", ".join(f"{t} = 0" for t in tt)).pvalue)
+        b = {"6-17": (float(r.params["V"]), float(r.bse["V"]),
+                      float(r.pvalues["V"]))}
+        return b, int(r.nobs), conj, float(x[y].mean())
     ii = II[:1] if solo else II
     r = smf.ols(f"{y} ~ {' + '.join(ii)} + C(tramo) + C(region) "
                 "+ C(cohorte)", data=x).fit(cov_type="HC1")
@@ -156,16 +175,17 @@ def linea(lab, res):
         f" | N={n:,}")
 
 
-def resultados(d=None, solo=False):
+def resultados(d=None, solo=False, ventana=False):
     """Lo que usa la tabla del apéndice (scripts/41_tablas_apendice.py):
     responder en 2024 (chicas, chicos, todos) y el peso al nacer de las
     chicas en 2010 y en quienes responden en 2024."""
     x = prepara(carga() if d is None else d)
     res = [ajusta(x[x.mujer == sx] if sx is not None else
-                  x[x.mujer.notna()], "in2024", solo) for _, sx in GRUPOS]
+                  x[x.mujer.notna()], "in2024", solo, ventana)
+           for _, sx in GRUPOS]
     ch = x[x.mujer == 1]
-    res += [ajusta(ch, "z_peso", solo),
-            ajusta(ch[ch.in2024 == 1], "z_peso", solo)]
+    res += [ajusta(ch, "z_peso", solo, ventana),
+            ajusta(ch[ch.in2024 == 1], "z_peso", solo, ventana)]
     return res, x
 
 
@@ -201,8 +221,9 @@ def main():
     log("\n## Peso al nacer de las chicas (DE)")
     linea("toda la muestra de 2010", res[3])
     linea("solo quienes responden en 2024", res[4])
-    log("\n## 6-11 meses frente a todas las demás edades")
-    sol, _ = resultados(d, solo=True)
+    log("\n## Los primeros 18 meses frente al resto (conjunta: perfil plano"
+        " en tramos de seis meses)")
+    sol, _ = resultados(d, ventana=True)
     for lab, r in zip(("responde en 2024, chicas", "responde en 2024, chicos",
                        "responde en 2024, todos",
                        "peso al nacer de las chicas, toda la muestra de 2010",

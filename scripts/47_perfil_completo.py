@@ -21,8 +21,8 @@ chicos de 2024:
   7. Sin los controles de 2012 (posteriores al terremoto) y solo con
      efectos fijos.
 
-Salida: reports/perfil_completo.md, reports/perfil_completo.csv y
-        reports/perfil_completo.png
+Salida: reports/perfil_completo.md, reports/perfil_completo.csv,
+        reports/perfil_curva.csv y reports/perfil_completo.png
 Uso:    python3 scripts/47_perfil_completo.py
 """
 import importlib.util
@@ -155,13 +155,16 @@ def curva(x, df=5):
 
 # --------------------------------------------------------- 4. inferencia
 
-def aleatorizacion(x):
-    """Coeficiente de 6-11 meses x zona para cada forma de elegir 6 de las
-    15 regiones como zona afectada (Frisch-Waugh: una QR, luego cada
-    permutación es una proyección)."""
+def aleatorizacion(x, ventana=False):
+    """Coeficiente de 6-11 meses x zona (con ventana=True, de los primeros
+    18 meses, con efectos fijos de tramo de seis meses) para cada forma de
+    elegir 6 de las 15 regiones como zona afectada (Frisch-Waugh: una QR,
+    luego cada permutación es una proyección)."""
     x = x.copy()
-    x["D"] = (x.b4 == "6-11") * x.EQ
-    r = wls(x, ["D", "C(b4)", "C(est)", "C(coh)"] + controles(x))
+    tramo = "b6" if ventana else "b4"
+    bebe = ((x.edadq_m < 18) if ventana else (x.b4 == "6-11")).values
+    x["D"] = bebe * x.EQ
+    r = wls(x, ["D", f"C({tramo})", "C(est)", "C(coh)"] + controles(x))
     nombres = list(r.model.exog_names)
     j = nombres.index("D")
     X = np.asarray(r.model.exog)
@@ -170,7 +173,7 @@ def aleatorizacion(x):
     Q, _ = np.linalg.qr(W)
     y = np.asarray(r.model.endog) * raiz
     yr = y - Q @ (Q.T @ y)
-    bebe = (x.b4.values == "6-11").astype(float)
+    bebe = bebe.astype(float)
     regiones = sorted(x.reg.unique())
     reg = x.reg.values
 
@@ -182,7 +185,7 @@ def aleatorizacion(x):
     bs = np.array([beta(list(c)) for c in
                    itertools.combinations(regiones, 6)])
     p = float((np.abs(bs) >= abs(b0) - 1e-12).mean())
-    rr = wls(x, ["D", "C(b4)", "C(est)", "C(coh)"] + controles(x),
+    rr = wls(x, ["D", f"C({tramo})", "C(est)", "C(coh)"] + controles(x),
              grupos="reg")
     return b0, p, len(bs), float((bs >= b0 - 1e-12).mean()), \
         (float(rr.params["D"]), float(rr.bse["D"]), float(rr.pvalues["D"]))
@@ -267,6 +270,7 @@ def main():
         for t, v in res.items():
             FILAS.append({"parte": "seis", "grupo": g, "tramo": t, "b": v[0],
                           "se": v[1], "p": v[2]})
+        FILAS.append({"parte": "conjunta", "grupo": g, "p": conj})
         x4 = x.copy()
         for t in ("6-11", "24-35", "36-49"):
             x4["V" + t.replace("-", "_")] = (x4.b4 == t) * x4.EQ
@@ -274,6 +278,11 @@ def main():
                      "C(coh)"] + controles(x4))
         log(f"  6-11 frente a 12-23: {fmt(*prueba(r, 'V6_11 = 0'))}")
     figura(perfiles, curvas)
+    pd.DataFrame([{"grupo": g, "edad": int(a), "f": float(f_),
+                   "se": float(e_)}
+                  for g, (m, fc, se) in curvas.items()
+                  for a, f_, e_ in zip(m, fc, se)]).to_csv(
+        "reports/perfil_curva.csv", index=False)
 
     log("\n## 2. 6-11 meses frente al resto, sin el tramo de 2-3 años")
     for g, sx in SEXOS:

@@ -117,6 +117,26 @@ def carga():
     return d
 
 
+def medias_seis(d):
+    """Medias sin ponderar por tramo de seis meses de edad al terremoto:
+    madres que reportan estrés en 2012, por zona, y niños que tomaban pecho
+    el 27-F (la tabla del apéndice y la diapositiva de la lactancia,
+    scripts/41 y scripts/28)."""
+    bordes, et = p33.CORTES["seis"]
+    b6 = pd.cut(d.edadq_m, bordes, right=False, labels=et).astype(str)
+    filas = []
+    for t in et:
+        g = d[b6 == t]
+        for que, zona, s in (("estres", "afectada", g[g.EQ == 1].estres12),
+                             ("estres", "no afectada", g[g.EQ == 0].estres12),
+                             ("pecho", "", g.pecho)):
+            s = s.dropna()
+            filas.append({"tramo": t, "que": que, "zona": zona,
+                          "b": s.mean(), "se": s.std() / np.sqrt(len(s)),
+                          "n": len(s)})
+    return pd.DataFrame(filas)
+
+
 def pendientes(d, y, dosis, sx=None):
     """Una pendiente del PHQ-4 en la dosis para cada tramo de edad del
     hijo, con efectos fijos de comuna y cohorte y los controles."""

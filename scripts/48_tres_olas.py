@@ -10,9 +10,9 @@ controles; pesos ELPI de 2024; EE por comuna), cinco medidas de salud
 mental internalizante en tres edades:
 
   2012  CBCL internalizante, cuidador (2-6 años)
-  2017  CBCL internalizante, cuidador (8-11 años)
+  2017  CBCL internalizante, cuidador (8-12 años)
   2017  índice que reporta el niño: baja autoestima (TAE), no se considera
-        feliz, se siente solo en el curso (8-11 años)
+        feliz, se siente solo en el curso (8-12 años)
   2024  CBCL internalizante, cuidador (14-18 años)
   2024  PHQ-4, autorreporte (14-18 años)
 
@@ -57,9 +57,9 @@ p40 = modulo("p40", "40_salud_mental_antes.py")
 p28 = p47.p28
 MEDIDAS = [("z_int12", "2012, CBCL internalizing, caregiver (ages 2-6)",
             "2012\nCBCL, caregiver"),
-           ("z_int17", "2017, CBCL internalizing, caregiver (ages 8-11)",
+           ("z_int17", "2017, CBCL internalizing, caregiver (ages 8-12)",
             "2017\nCBCL, caregiver"),
-           ("malestar17", "2017, child's own report (ages 8-11)",
+           ("malestar17", "2017, child's own report (ages 8-12)",
             "2017\nchild's report"),
            ("z_cbcl", "2024, CBCL internalizing, caregiver (ages 14-18)",
             "2024\nCBCL, caregiver"),
@@ -91,6 +91,17 @@ def carga():
     return d
 
 
+def ventana(x, y):
+    """Los primeros 18 meses (6-17) frente al resto, EF de tramo de seis
+    meses."""
+    x = x.dropna(subset=[y]).copy()
+    x["D"] = (x.edadq_m < 18).astype(float) * x.EQ
+    r = p47.wls(x, ["D", "C(b6)", "C(est)", "C(coh)"] + p47.controles(x),
+                y=y)
+    return (float(r.params["D"]), float(r.bse["D"]),
+            float(r.pvalues["D"])), int(r.nobs)
+
+
 def ventana18(d):
     """6-17 meses x zona, con efectos fijos de tramo de seis meses."""
     def est(x, y, muestra=None, grupos="est"):
@@ -120,6 +131,18 @@ def ventana18(d):
         + " | ".join(
             f"{r_}: {est(ch, 'z_phq4', muestra=lambda x, r_=r_: x.reg != r_)[0][0]:+.3f}"
             for r_ in sorted(ch[ch.EQ == 0].reg.unique())))
+    b0, p, k, p1, rr = p47.aleatorizacion(ch, ventana=True)
+    log(f"- 2024, PHQ-4, aleatorización por región: coeficiente {b0:+.3f}; "
+        f"p bilateral={p:.3f}, unilateral={p1:.3f} ({k:,} asignaciones)")
+    # chicas menos chicos: todo interactuado con el sexo
+    x = d.dropna(subset=["z_phq4"]).copy()
+    x["D"] = (x.edadq_m < 18).astype(float) * x.EQ
+    base = ["D", "C(b6)", "C(est)", "C(coh)"] + [
+        c for c in p47.controles(x) if c != "mujer"]
+    r = p47.wls(x, base + [f"{v}:mujer" for v in base] + ["mujer"])
+    log(f"- 2024, PHQ-4, chicas menos chicos (modelo interactuado): "
+        f"{p47.fmt(r.params['D:mujer'], r.bse['D:mujer'], r.pvalues['D:mujer'])}"
+        f"; chicos {p47.fmt(r.params['D'], r.bse['D'], r.pvalues['D'])}")
 
 
 def figura(perf):
@@ -181,10 +204,14 @@ def main():
                 f"{t} {v[0]:+.2f}" for t, v in res.items())
                 + f" | perfil plano p={conj:.3f}; 6-11 menos 12-17 "
                 f"{vec[0]:+.2f} (ee {vec[1]:.2f})")
+            rv, nv = ventana(x, y)
+            log(f"  primeros 18 meses frente al resto: {p47.fmt(*rv)}")
             FILAS.append({"medida": y, "grupo": g, "b": r[0], "se": r[1],
                           "p": r[2], "n": n, "b_bal": rb[0], "se_bal": rb[1],
-                          "p_conjunta": conj,
-                          **{f"t{t}": v[0] for t, v in res.items()}})
+                          "p_conjunta": conj, "b_v": rv[0], "se_v": rv[1],
+                          "p_v": rv[2],
+                          **{f"t{t}": v[0] for t, v in res.items()},
+                          **{f"se{t}": v[1] for t, v in res.items()}})
     log("\n## ¿Se parecen los perfiles entre rondas? Correlación de los "
         "siete tramos centrados con el del PHQ-4 de 2024")
     for g, _ in p47.SEXOS:

@@ -532,72 +532,96 @@ def frente_a_dos(v, k):
     return (float(r.b), float(r.se), float(r.p))
 
 
-def salud_mental():
-    """PHQ-4 en niveles por edad al terremoto y zona, chicas y chicos, y el
-    efecto de 6-11 meses frente a todas las demás edades y frente a 2-3
-    años (reports/contraste.csv, reports/chicos.csv)."""
+SEIS = ["6-11", "12-17", "18-23", "24-29", "30-35", "36-41", "42-49"]
+CENTROS = [8.5, 14.5, 20.5, 26.5, 32.5, 38.5, 45.5]
+
+
+def perfil():
+    """El resultado principal: PHQ-4, zona afectada menos no afectada en
+    cada tramo de seis meses de edad al terremoto, centrado (suma cero), y
+    la curva suave (B-spline) con su IC; chicas y chicos
+    (reports/perfil_completo.csv y reports/perfil_curva.csv, que calcula
+    scripts/47_perfil_completo.py)."""
+    c = pd.read_csv("reports/perfil_completo.csv")
+    tr = c[c.parte == "seis"].set_index(["grupo", "tramo"])
+    conj = c[c.parte == "conjunta"].set_index("grupo").p
+    cu = pd.read_csv("reports/perfil_curva.csv")
+    with plt.rc_context(PAPER):
+        f = plt.figure(figsize=(144 * MM, 60 * MM))
+        for i, (g, nombre, n, col, marca, hueco) in enumerate((
+                ("chicas", "Girls", 4961, OCRE, "^", False),
+                ("chicos", "Boys", 5035, GRISR, "o", True))):
+            a = f.add_axes([0.13 + i * 0.45, 0.19, 0.39, 0.66])
+            ejes_paper(a)
+            a.axvspan(6, 18, color="#EEF4F0", lw=0, zorder=0)
+            k = cu[cu.grupo == g]
+            a.fill_between(k.edad, k.f - 1.96 * k.se, k.f + 1.96 * k.se,
+                           color=col, alpha=0.11, lw=0, zorder=1)
+            a.plot(k.edad, k.f, color=col, lw=1.1, zorder=2)
+            for x, t in zip(CENTROS, SEIS):
+                barra(a, x, tuple(tr.loc[(g, t), ["b", "se"]]), col, marca,
+                      hueco)
+            a.set_xlim(5, 50)
+            a.set_ylim(-0.6, 0.8)
+            formato_eje(a, 0.2)
+            a.set_xticks([6, 12, 18, 24, 30, 36, 42, 49])
+            a.tick_params(axis="x", length=3, labelsize=7.5)
+            a.set_title(f"{nombre} (n = {miles(n)})", fontsize=9, pad=4)
+            a.text(0.97, 0.95, f"Flat profile: $p$ = {conj[g]:.2f}",
+                   transform=a.transAxes, ha="right", va="top",
+                   fontsize=7.5)
+            if i == 0:
+                a.set_ylabel("Affected minus unaffected,\n"
+                             "centered (SD)", fontsize=8)
+                a.text(12, -0.56, "First 18 months", ha="center",
+                       va="bottom", fontsize=7, color=MUTED)
+            else:
+                a.set_yticklabels([])
+        f.text(0.545, 0.01, "Age at the earthquake (months)", ha="center",
+               va="bottom", fontsize=8.5)
+        guarda(f, "perfil.pdf")
+
+
+def niveles():
+    """Respaldo: PHQ-4 medio por tramo de seis meses y zona, chicas y
+    chicos (reports/contraste.csv)."""
     c = pd.read_csv("reports/contraste.csv")
     niv = c[c.tipo == "nivel"].set_index(["grupo", "tramo", "zona"])
-    con = c[c.tipo == "phq4"].set_index("grupo")
-    dos = pd.read_csv("reports/chicos.csv")
-    dos = dos[(dos.resultado == "z_phq4") & (dos.tramo == "6-11")].set_index(
-        "grupo")
-    tramos = ["6-11", "12-23", "24-35", "36-49"]
-    etiq = ["6–11\nmonths", "1–2\nyears", "2–3\nyears", "3–4\nyears"]
     with plt.rc_context(PAPER):
-        f = plt.figure(figsize=(144 * MM, 58 * MM))
+        f = plt.figure(figsize=(144 * MM, 62 * MM))
         hs = []
-        for i, (g, nombre) in enumerate((("chicas", f"Girls (n = {miles(4961)})"),
-                                         ("chicos", f"Boys (n = {miles(5035)})"))):
-            a = f.add_axes([0.1 + i * 0.28, 0.25, 0.25, 0.53])
+        for i, (g, nombre) in enumerate((("chicas", "Girls"),
+                                         ("chicos", "Boys"))):
+            a = f.add_axes([0.1 + i * 0.46, 0.2, 0.41, 0.62])
             for lado in ("top", "right"):
                 a.spines[lado].set_visible(False)
             hs = []
-            for zona, col, marca, hueco, dx in ((1, OCRE, "^", False, -0.08),
-                                                (0, GRISR, "o", True, 0.08)):
-                ys = [niv.loc[(g, t, zona), "b"] for t in tramos]
-                a.plot(np.arange(4) + dx, ys, color=col, lw=0.8, zorder=2)
-                for x, t in enumerate(tramos):
+            for zona, col, marca, hueco, dx in ((1, OCRE, "^", False, -0.6),
+                                                (0, GRISR, "o", True, 0.6)):
+                ys = [niv.loc[(g, t, zona), "b"] for t in SEIS]
+                a.plot(np.array(CENTROS) + dx, ys, color=col, lw=0.8,
+                       zorder=2)
+                for x, t in zip(CENTROS, SEIS):
                     h = barra(a, x + dx, tuple(niv.loc[(g, t, zona),
                                                        ["b", "se"]]),
                               col, marca, hueco)
                 hs.append(h)
-            a.set_xticks(range(4))
-            a.set_xticklabels(etiq, fontsize=7.5)
-            a.set_xlim(-0.45, 3.45)
-            a.set_ylim(-0.5, 0.6)
+            a.set_xlim(5, 50)
+            a.set_ylim(-0.6, 0.6)
             formato_eje(a, 0.2)
+            a.set_xticks([6, 12, 18, 24, 30, 36, 42, 49])
+            a.tick_params(axis="x", length=3, labelsize=7.5)
+            a.set_title(nombre, fontsize=9, pad=4)
             if i == 0:
                 a.set_ylabel("PHQ-4 in 2024 (SD)", fontsize=8.5)
             else:
                 a.set_yticklabels([])
-            a.set_title(nombre, fontsize=9, pad=4)
-        f.text(0.1 + 0.265, 0.0, "Age at the earthquake", ha="center",
+        f.text(0.5, 0.01, "Age at the earthquake (months)", ha="center",
                va="bottom", fontsize=8.5)
         f.legend(hs, ["Affected zone", "Unaffected"], loc="upper center",
-                 bbox_to_anchor=(0.365, 1.0), ncol=2, frameon=False,
+                 bbox_to_anchor=(0.5, 1.0), ncol=2, frameon=False,
                  fontsize=7.5, handletextpad=0.3, columnspacing=1.2)
-        b = f.add_axes([0.785, 0.25, 0.175, 0.53])
-        ejes_paper(b)
-        for x, g in enumerate(("chicas", "chicos")):
-            barra(b, x - 0.13, tuple(con.loc[g, ["b", "se"]]), VERDE, "o")
-            barra(b, x + 0.13, tuple(dos.loc[g, ["b", "se"]]), VERDE, "o",
-                  hueco=True)
-        b.set_xticks([0, 1])
-        b.set_xticklabels(["Girls", "Boys"], fontsize=7.5)
-        b.set_xlim(-0.5, 1.5)
-        b.set_ylim(-0.3, 0.6)
-        formato_eje(b, 0.2)
-        b.set_ylabel("Affected minus\nunaffected (SD)", fontsize=8)
-        b.set_title("Effect at 6–11 months", fontsize=9, pad=4)
-        claves = [Line2D([], [], marker="o", ls="", color=VERDE, ms=5),
-                  Line2D([], [], marker="o", ls="", color=VERDE, mfc="white",
-                         ms=5)]
-        b.legend(claves, ["vs. all other ages", "vs. ages 2–3"],
-                 loc="upper center", bbox_to_anchor=(0.5, -0.16), ncol=1,
-                 frameon=False, fontsize=7, handletextpad=0.2,
-                 borderaxespad=0.0)
-        guarda(f, "salud_mental.pdf")
+        guarda(f, "niveles.pdf")
 
 
 FUERA = {"chatarra", "fruta"}
@@ -1086,8 +1110,8 @@ def anticipo():
 def canal_hogar():
     """Los seis indicadores del entorno medidos justo después del terremoto
     (2010; el daño de la vivienda en el 27-F se pregunta en 2012), chicas:
-    6-11 meses frente a todas las demás edades; en azul, los mecanismos de
-    Gillmore (2026) (reports/contraste.csv)."""
+    los primeros 18 meses frente a todas las demás edades; en azul, los
+    mecanismos de Gillmore (2026) (reports/contraste.csv)."""
     c = pd.read_csv("reports/contraste.csv")
     c = c[c.tipo == "entorno"].set_index("resultado")
     indices = [("ingreso", "Lower\nincome\n(2010)", True),
@@ -1111,114 +1135,148 @@ def canal_hogar():
         a.tick_params(axis="x", length=0)
         a.set_ylim(-0.4, 0.4)
         formato_eje(a, 0.2)
-        a.set_ylabel("6–11 months relative to\nall other ages (SD)",
+        a.set_ylabel("6–17 months relative to\nall other ages (SD)",
                      fontsize=8)
         guarda(f, "canal_hogar.pdf")
 
 
 def diada():
-    """(a) Efecto de 6-11 meses frente a todas las demás edades en las
+    """(a) Los primeros 18 meses frente a todas las demás edades en las
     chicas que tomaban pecho el 27-F y en las que no (reports/contraste.csv);
-    (b) cuánto pesa el estrés de la madre en los síntomas de la hija según
-    tomara pecho o no, todas las edades juntas; (c) quiénes tomaban pecho
-    (reports/estres_madre.csv)."""
-    c = pd.read_csv("reports/estres_madre.csv")
-    tramos = ["6-11", "12-23", "24-35", "36-49"]
-    etiquetas = ["6–11\nmonths", "1–2\nyears", "2–3\nyears", "3–4\nyears"]
-    lac = c[(c.panel == "lactancia") & (c.grupo == "chicas")].set_index(
-        "tramo")
-    pec = c[c.panel == "pecho"].set_index("tramo")
+    (b) cuánto más estrés reportan en 2012 las madres de la zona afectada,
+    por tramo de seis meses de edad del hijo (medias sin ponderar,
+    scripts/34_estres_madre.py)."""
     k = pd.read_csv("reports/contraste.csv")
     k = k[(k.tipo == "pecho") & (k.grupo == "chicas")].set_index("resultado")
+    p34 = _modulo("p34", "34_estres_madre.py")
+    m = p34.medias_seis(p34.carga())
+    e = m[m.que == "estres"].set_index(["tramo", "zona"])
     with plt.rc_context(PAPER):
         f = plt.figure(figsize=(144 * MM, 55 * MM))
-        a = f.add_axes([0.125, 0.27, 0.18, 0.5])
-        b = f.add_axes([0.445, 0.27, 0.175, 0.5])
-        cc = f.add_axes([0.765, 0.27, 0.22, 0.5])
-        for ax in (a, b, cc):
+        a = f.add_axes([0.12, 0.27, 0.22, 0.55])
+        b = f.add_axes([0.53, 0.27, 0.44, 0.55])
+        for ax in (a, b):
             ejes_paper(ax)
         for x, (clave, hueco) in enumerate((("sin pecho", True),
                                             ("con pecho", False))):
             barra(a, x, tuple(k.loc[clave, ["b", "se"]]), OCRE, "^", hueco)
         a.set_xticks([0, 1])
-        a.set_xticklabels(["Not\nbreastfed", "Breastfed"], fontsize=7)
-        a.set_xlim(-0.75, 1.75)
-        a.set_ylim(-0.6, 0.8)
-        formato_eje(a, 0.4)
-        a.set_ylabel("Affected minus\nunaffected (SD)", fontsize=8)
-        a.set_title("Girls aged 6–11 months", fontsize=9, pad=20)
-        for x, (clave, hueco) in enumerate((("sin pecho", True),
-                                            ("con pecho", False))):
-            barra(b, x, tuple(lac.loc[clave, ["b", "se", "p"]]), OCRE, "^",
-                  hueco)
-        b.set_xticks([0, 1])
-        b.set_xticklabels(["Not\nbreastfed", "Breastfed"], fontsize=7)
-        b.set_xlim(-0.75, 1.75)
-        b.set_ylim(-0.3, 0.6)
-        formato_eje(b, 0.2)
-        b.set_ylabel("Association with\nmaternal stress (SD)", fontsize=8)
-        b.set_title("Daughters, all ages", fontsize=9, pad=20)
-        cc.bar(range(4), [100 * pec.loc[t, "b"] for t in tramos], 0.55,
-               color=OCRE, lw=0, zorder=2)
-        for x, t in enumerate(tramos):
-            cc.text(x, 100 * pec.loc[t, "b"] + 1.5,
-                    f"{100 * pec.loc[t, 'b']:.0f}%", ha="center",
-                    va="bottom", fontsize=7.5)
-        cc.set_xticks(range(4))
-        cc.set_xticklabels(etiquetas, fontsize=7)
-        cc.set_xlim(-0.5, 3.5)
-        cc.set_ylim(0, 65)
-        formato_eje(cc, 20, 0)
-        cc.set_xlabel("Age at the earthquake", fontsize=8)
-        cc.set_ylabel("Breastfed (%)", fontsize=8)
-        cc.set_title("Breastfed on 27-F", fontsize=9, pad=20)
+        a.set_xticklabels(["Not\nbreastfed", "Breastfed"], fontsize=7.5)
+        a.set_xlim(-0.6, 1.6)
+        a.set_ylim(-0.4, 0.6)
+        formato_eje(a, 0.2)
+        a.set_ylabel("First 18 months relative to\nall other ages (SD)",
+                     fontsize=8)
+        a.set_title("Girls, PHQ-4", fontsize=9, pad=6)
+        for x, t in zip(CENTROS, SEIS):
+            af, nf = e.loc[(t, "afectada")], e.loc[(t, "no afectada")]
+            dif = (100 * (af.b - nf.b), 100 * np.hypot(af.se, nf.se))
+            barra(b, x, dif, OCRE if x < 18 else GRISR,
+                  "^" if x < 18 else "o", hueco=x >= 18)
+        b.set_xlim(5, 50)
+        b.set_ylim(0, 25)
+        formato_eje(b, 5, 0)
+        b.set_xticks([6, 12, 18, 24, 30, 36, 42, 49])
+        b.tick_params(axis="x", length=3, labelsize=7.5)
+        b.set_xlabel("Age of the child at the earthquake (months)",
+                     fontsize=8)
+        b.set_ylabel("Affected minus\nunaffected (pp)", fontsize=8)
+        b.set_title("Mothers reporting stress after the earthquake (2012)",
+                    fontsize=9, pad=6)
         guarda(f, "diada.pdf")
 
 
-def chicos():
-    """Expuestos con 6-11 meses frente a todas las demás edades, chicas y
-    chicos: síntomas que reporta el adolescente, lo que ve el cuidador, el
-    consumo y la victimización (reports/contraste.csv)."""
-    c = pd.read_csv("reports/contraste.csv")
-    c = c[c.tipo == "otros"].set_index(["resultado", "grupo"])
-    filas = [("z_phq4", "PHQ-4 symptoms, self-report"),
-             ("cbcl_int", "CBCL internalizing, caregiver"),
-             ("cbcl_ext", "CBCL externalizing, caregiver"),
-             ("z_consumo", "Alcohol or drug use"),
-             ("z_bull", "Victimization at school")]
+OLAS = [("z_int12", "2012\nages 2–6"), ("z_int17", "2017\nages 8–12"),
+        ("z_cbcl", "2024\nages 14–18"), ("malestar17", "2017\nages 8–12"),
+        ("z_phq4", "2024\nages 14–18")]
+
+
+def tres_olas():
+    """Los mismos adolescentes en tres rondas: los primeros 18 meses frente
+    a todas las demás edades en lo que reporta el cuidador (CBCL
+    internalizante, 2012, 2017 y 2024) y en lo que reporta el propio niño
+    (2017 y 2024), chicas y chicos (reports/tres_olas.csv, que calcula
+    scripts/48_tres_olas.py)."""
+    c = pd.read_csv("reports/tres_olas.csv").set_index(["medida", "grupo"])
     with plt.rc_context(PAPER):
-        f = plt.figure(figsize=(144 * MM, 54 * MM))
-        ax = f.add_axes([0.33, 0.17, 0.63, 0.68])
-        for lado in ("top", "right"):
-            ax.spines[lado].set_visible(False)
-        ax.axvline(0, color="#9A9A9A", lw=0.7, ls="--", zorder=1)
+        f = plt.figure(figsize=(144 * MM, 60 * MM))
+        ancho = 0.8 / 5.6
         hs = []
-        for g, col, marca, hueco, dy in (("chicas", OCRE, "^", False, -0.14),
-                                         ("chicos", GRISR, "o", True, 0.14)):
-            for y, (k, _) in enumerate(filas):
-                r = c.loc[(k, g)]
-                h = ax.errorbar(r.b, y + dy, xerr=1.96 * r.se, fmt=marca,
-                                color=col, mfc="white" if hueco else col,
-                                mec=col, mew=1.0, ms=5.5, capsize=2.6,
-                                elinewidth=1.0, capthick=1.0, zorder=3)
-            hs.append(h)
-        ax.set_yticks(range(len(filas)))
-        ax.set_yticklabels([lab for _, lab in filas], fontsize=8)
-        ax.invert_yaxis()
-        ax.set_ylim(len(filas) - 0.5, -0.5)
-        ax.tick_params(axis="y", length=0)
-        ax.set_xlim(-0.6, 1.0)
-        ax.xaxis.set_major_locator(matplotlib.ticker.MultipleLocator(0.2))
-        ax.xaxis.set_major_formatter(matplotlib.ticker.FuncFormatter(
-            lambda v, _: cifra(v, 1, False) if v >= 0 else cifra(v, 1)))
-        ax.tick_params(axis="x", length=3)
-        ax.set_xlabel("Exposed at 6–11 months relative to all other ages (SD)",
-                      fontsize=8)
-        ax.legend(hs, ["Girls", "Boys"], loc="lower center",
-                  bbox_to_anchor=(0.5, 1.0), ncol=2, frameon=False,
-                  fontsize=7.5, handletextpad=0.3, columnspacing=1.2,
-                  borderaxespad=0.1)
-        guarda(f, "chicos.pdf")
+        for j, (titulo_, medidas, x0) in enumerate((
+                ("Caregiver report, CBCL internalizing", OLAS[:3], 0.12),
+                ("Own report", OLAS[3:], 0.12 + 3.6 * ancho))):
+            a = f.add_axes([x0, 0.24, ancho * len(medidas), 0.58])
+            ejes_paper(a)
+            hs = []
+            for g, col, marca, hueco, dx in (("chicas", OCRE, "^", False,
+                                              -0.12),
+                                             ("chicos", GRISR, "o", True,
+                                              0.12)):
+                for x, (m, _) in enumerate(medidas):
+                    h = barra(a, x + dx, tuple(c.loc[(m, g),
+                                                     ["b_v", "se_v"]]),
+                              col, marca, hueco)
+                hs.append(h)
+            a.set_xticks(range(len(medidas)))
+            a.set_xticklabels([lab for _, lab in medidas], fontsize=7.5)
+            a.tick_params(axis="x", length=0)
+            a.set_xlim(-0.5, len(medidas) - 0.5)
+            a.set_ylim(-0.4, 0.6)
+            formato_eje(a, 0.2)
+            a.set_title(titulo_, fontsize=9, pad=4)
+            if j == 0:
+                a.set_ylabel("First 18 months relative to\n"
+                             "all other ages (SD)", fontsize=8)
+            else:
+                a.set_yticklabels([])
+        f.legend(hs, ["Girls", "Boys"], loc="upper center",
+                 bbox_to_anchor=(0.55, 1.0), ncol=2, frameon=False,
+                 fontsize=7.5, handletextpad=0.3, columnspacing=1.2)
+        guarda(f, "tres_olas.pdf")
+
+
+def olas_perfiles():
+    """Respaldo: el perfil centrado en tramos de seis meses en cada una de
+    las cinco medidas, chicas y chicos (reports/tres_olas.csv)."""
+    c = pd.read_csv("reports/tres_olas.csv").set_index(["medida", "grupo"])
+    nombres = ["CBCL, caregiver", "CBCL, caregiver", "CBCL, caregiver",
+               "Own report", "PHQ-4, own report"]
+    with plt.rc_context(PAPER):
+        f = plt.figure(figsize=(144 * MM, 74 * MM))
+        for fila_, (g, nombre, col, marca, hueco) in enumerate((
+                ("chicas", "Girls", OCRE, "^", False),
+                ("chicos", "Boys", GRISR, "o", True))):
+            for j, ((m, lab), nom) in enumerate(zip(OLAS, nombres)):
+                a = f.add_axes([0.1 + j * 0.177, 0.55 - fila_ * 0.41,
+                                0.15, 0.31])
+                ejes_paper(a)
+                r = c.loc[(m, g)]
+                for x, t in zip(CENTROS, SEIS):
+                    b_, se_ = r[f"t{t}"], r[f"se{t}"]
+                    a.errorbar(x, b_, yerr=1.96 * se_, fmt=marca, color=col,
+                               mfc="white" if hueco else col, mec=col,
+                               mew=0.8, ms=3.2, capsize=1.4, elinewidth=0.7,
+                               capthick=0.7, zorder=3)
+                a.set_xlim(4, 51)
+                a.set_ylim(-0.8, 0.8)
+                formato_eje(a, 0.4)
+                a.set_xticks([6, 18, 30, 42])
+                a.tick_params(axis="x", length=2, labelsize=6.5)
+                a.tick_params(axis="y", labelsize=6.5)
+                a.text(0.97, 0.04, f"$p$ = {r.p_conjunta:.2f}",
+                       transform=a.transAxes, ha="right", va="bottom",
+                       fontsize=6.5)
+                if j:
+                    a.set_yticklabels([])
+                else:
+                    a.set_ylabel(nombre, fontsize=8)
+                if fila_ == 0:
+                    a.set_title(lab.replace("\n", ", ") + "\n" + nom,
+                                fontsize=7, pad=3, linespacing=1.1)
+        f.text(0.53, 0.01, "Age at the earthquake (months); affected minus "
+               "unaffected, centered (SD)", ha="center", va="bottom",
+               fontsize=7.5)
+        guarda(f, "olas_perfiles.pdf")
 
 
 def datos_elpi():
@@ -1226,10 +1284,12 @@ def datos_elpi():
     qué edad tenían los niños de la muestra (edad al terremoto, 6-49 meses;
     2012, 2-6 años; 2017, 8-12; 2024, 14-18). Rondas equiespaciadas."""
     rondas = [(2010, "Baseline,\nafter 27-F", "6–49 months on 27-F", OCRE),
-              (2012, "Maternal stress\nand breastfeeding", "Ages 2–6", ACC),
-              (2017, "Home and school", "Ages 8–12", ACC),
-              (2024, "Mental health, PHQ-4", "Ages 14–18", ACC)]
-    f = plt.figure(figsize=(144 * MM, 36 * MM))
+              (2012, "CBCL, caregiver;\nmaternal stress,\nbreastfeeding",
+               "Ages 2–6", ACC),
+              (2017, "CBCL, caregiver;\nown report", "Ages 8–12", ACC),
+              (2024, "PHQ-4, own report;\nCBCL, caregiver", "Ages 14–18",
+               ACC)]
+    f = plt.figure(figsize=(144 * MM, 38 * MM))
     ax = f.add_axes([0.02, 0.02, 0.96, 0.96])
     ax.axis("off")
     ax.plot([-0.45, 3.45], [0, 0], color=EJE, lw=1.2, zorder=1,
@@ -1240,10 +1300,10 @@ def datos_elpi():
                 fontweight="semibold", color=INK)
         ax.text(x, -0.35, que, ha="center", va="top", fontsize=8.5,
                 color=INK, linespacing=1.15)
-        ax.text(x, -1.25, edad, ha="center", va="top", fontsize=8.5,
+        ax.text(x, -1.4, edad, ha="center", va="top", fontsize=8.5,
                 color=MUTED)
     ax.set_xlim(-0.55, 3.55)
-    ax.set_ylim(-1.75, 1.0)
+    ax.set_ylim(-1.9, 1.0)
     guarda(f, "datos_elpi.pdf")
 
 def _modulo(nombre, archivo):
@@ -1363,10 +1423,12 @@ def main():
     regeneran."""
     mapa()
     datos_elpi()
-    salud_mental()
+    perfil()
+    niveles()
+    tres_olas()
+    olas_perfiles()
     canal_hogar()
     diada()
-    chicos()
     phq4_hist()
     mapa_pga()
 
