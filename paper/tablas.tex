@@ -49,9 +49,9 @@
 
 %---- Frases unicas, reutilizadas por las notas de todas las tablas ----------
 \newcommand{\starnote}{*** Significant at the 1 percent level. ** Significant at the 5 percent level. * Significant at the 10 percent level.}
-\newcommand{\bindef}{Exposure-age groups give the child's age when the earthquake struck, defined in months of age as 0--11 (before age 1, the omitted group), 12--23 (age 1), 24--35 (age 2) and 36--59 (ages 3--4). Each coefficient compares the gap between the age group in the row and the omitted group in affected municipalities with the same gap in unaffected municipalities.}
+\newcommand{\bindef}{Exposure-age groups give the child's age when the earthquake struck, in months: 6--11, 12--23 (1--2 years), 24--35 (2--3 years) and 36--49 (3--4 years); the 2024 wave follows the children born between January 2006 and August 2009, so the youngest were six months old. Each coefficient compares the gap between the age group in the row and its comparison group in affected municipalities with the same gap in unaffected municipalities.}
 \newcommand{\zonedef}{The affected zone comprises the six regions where the official intensity study records destructive shaking (V, VI, VII, VIII, IX and Metropolitan; Astroza et al.\ 2010).}
-\newcommand{\specdef}{Column 1 includes exposure-age, municipality-of-selection and birth-cohort fixed effects; column 2 adds pre-earthquake controls (sex, age in months, and the 2010 household baseline: mother's education and age, household size, rurality); column 3 adds 2012 controls (number of children of the mother, family history of mental illness), with missing-value indicators; column 4 estimates column 3 without the Metropolitan Region. Estimates use the 2024 sampling weights.}
+\newcommand{\specdef}{Column 1 includes exposure-age, municipality-of-selection and birth-year fixed effects; column 2 adds 2010 baseline controls, measured one to nine months after the earthquake (sex, a linear trend in month of birth, mother's education and age, household size, rurality); column 3 adds 2012 controls (number of children of the mother, family history of mental illness), with missing-value indicators; column 4 estimates column 3 without the Metropolitan Region. Estimates use the 2024 sampling weights.}
 \newcommand{\phqdef}{The PHQ-4 is a four-item screener (two depression, two anxiety items) answered by the adolescent in private, scored 0--12 and standardized within age in years; a positive PHQ-2 (GAD-2) screen is a depression (anxiety) subscore of three or more, and coefficients for these outcomes are probabilities.}
 \newcommand{\cbcldef}{The CBCL internalizing score is reported by the main caregiver, in T units, standardized within age.}
 \newcommand{\clusternote}{Standard errors clustered by municipality of selection in parentheses.}
@@ -319,17 +319,18 @@ the 2024 sampling weights.
 \FloatBarrier
 
 \begin{figure}[htbp]\centering
-  \includegraphics[width=0.9\textwidth]{f1_gradiente_u.pdf}
-  \caption{Estimates by Age at Exposure}
+  \includegraphics[width=0.9\textwidth]{f1_niveles.pdf}
+  \caption{PHQ-4 by Age at Exposure and Zone}
   \label{fig:ushape}
   \begin{fignotes}[0.9\textwidth]
-\textit{Notes:} Each marker is a $\beta_a$ coefficient of equation~(1) with the
-controls of column 3 of Table~\ref{tab:main}, with its 95 percent confidence
-interval. The reference group, drawn at zero by construction, are the children
-struck at 0--11 months --- already born; children in utero during the
-earthquake are not in the 2024 wave, which follows only the cohort born
-2006--2009. The PHQ-4 is in standard deviations and the GAD-2 screen in
-probability units. \clusternote
+\textit{Notes:} Weighted mean of the standardized PHQ-4 index at ages 14--18 by
+age at the earthquake, in affected and unaffected municipalities, with 95
+percent confidence intervals. In unaffected municipalities, the girls exposed
+at 2--3 years score unusually high, which inflates any comparison against that
+group; Table~\ref{tab:main} therefore compares the children exposed at 6--11
+months with all other exposure ages. Children exposed at 0--5 months or in
+utero are not in the 2024 wave, which follows only the children born between
+January 2006 and August 2009. \clusternote
   \end{fignotes}
 \end{figure}
 \FloatBarrier

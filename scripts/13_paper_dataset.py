@@ -157,8 +157,12 @@ def frame_atricion():
     base = (base.merge(ent.drop_duplicates("folio"), on="folio", how="left")
                 .merge(ev.drop_duplicates("folio"), on="folio", how="left")
                 .join(madre, on="folio"))
-    # fecha de nacimiento: exacta si el folio llega a 2017/2024; si no,
-    # aproximada con la edad en la evaluación 2010 (campo ~sep-2010).
+    # fecha de nacimiento: exacta si el folio llega a 2017/2024; si no, la
+    # edad en la evaluación de 2010 menos el mes mediano de evaluación de su
+    # región, calculado con quienes tienen la fecha exacta. Suponer que todos
+    # se evaluaron en septiembre de 2010 hacía a quienes salen unos cuatro
+    # meses más jóvenes de lo que eran, y más en la zona no afectada
+    # (scripts/42_balance_atricion.py).
     ad = pd.read_pickle(OUT / "paper_adolescentes.pkl")[["folio", "birth_ym"]]
     ro, _ = pyreadstat.read_sav(
         str(INT / "2017/Base Cuidador Principal ELPI III (SPSS).sav"),
@@ -169,8 +173,11 @@ def frame_atricion():
     bd17["birth_ym17"] = b.dt.year * 12 + (b.dt.month - 1)
     base = (base.merge(ad, on="folio", how="left")
                 .merge(bd17[["folio", "birth_ym17"]], on="folio", how="left"))
-    aprox = (2010 * 12 + 8) - num(base.edad_meses)
-    base["birth_ym"] = base.birth_ym.fillna(base.birth_ym17).fillna(aprox)
+    exacta = base.birth_ym.fillna(base.birth_ym17)
+    reg = num(base.region)
+    mes = (exacta + num(base.edad_meses)).groupby(reg).median()
+    aprox = reg.map(mes) - num(base.edad_meses)
+    base["birth_ym"] = exacta.fillna(aprox)
     base["edadq_m"] = (2010 * 12 + 1) - base.birth_ym
     base = base[base.edadq_m.between(0, 59)]
     base["bin"] = pd.cut(base.edadq_m, [0, 12, 24, 36, 60], right=False,

@@ -3,44 +3,32 @@
 \caption{Caregiver-Reported Outcomes}
 \label{tab:caregiver}
 \begin{threeparttable}
-\begin{tabular}{@{}p{182pt}*{4}{>{\centering\arraybackslash}p{64pt}}@{}}
+\begin{tabular}{@{}p{174pt}*{4}{>{\centering\arraybackslash}p{64pt}}@{}}
 \toprule
  & (1) & (2) & (3) & (4) \\
 \midrule
 \panel{5}{Panel A. CBCL internalizing score in 2024: caregiver checklist (T, z)}
-Exposed at age 1 & $-$0.057 & $-$0.047 & $-$0.055 & $-$0.024 \\
- & (0.099) & (0.096) & (0.095) & (0.100) \\
-\addlinespace[3pt]
-Exposed at age 2 & $-$0.121 & $-$0.121 & $-$0.109 & $-$0.131 \\
- & (0.074) & (0.075) & (0.075) & (0.084) \\
-\addlinespace[3pt]
-Exposed at ages 3--4 & $-$0.086 & $-$0.084 & $-$0.077 & $-$0.069 \\
- & (0.069) & (0.068) & (0.069) & (0.074) \\
+Exposed at 6--11 months & 0.088 & 0.084 & 0.080 & 0.074 \\
+ & (0.072) & (0.071) & (0.071) & (0.076) \\
 \addlinespace
 \hspace{1em}Observations & 9,970 & 9,970 & 9,970 & 6,412 \\
 \addlinespace
 \panel{5}{Panel B. Within-child change in the same CBCL score, 2017 to 2024 (z by wave)}
-Exposed at age 1 & $-$0.030 & $-$0.011 & $-$0.012 & $-$0.020 \\
- & (0.131) & (0.125) & (0.124) & (0.128) \\
-\addlinespace[3pt]
-Exposed at age 2 & $-$0.009 & $-$0.004 & $-$0.002 & $-$0.045 \\
- & (0.104) & (0.102) & (0.102) & (0.110) \\
-\addlinespace[3pt]
-Exposed at ages 3--4 & $-$0.040 & $-$0.049 & $-$0.050 & $-$0.093 \\
- & (0.109) & (0.106) & (0.106) & (0.112) \\
+Exposed at 6--11 months & 0.027 & 0.022 & 0.022 & 0.054 \\
+ & (0.104) & (0.100) & (0.099) & (0.106) \\
 \addlinespace
 \hspace{1em}Observations & 7,169 & 7,169 & 7,169 & 4,901 \\
 \midrule
 Municipality fixed effects & Yes & Yes & Yes & Yes \\
-Birth-cohort fixed effects & Yes & Yes & Yes & Yes \\
-Pre-earthquake controls & No & Yes & Yes & Yes \\
+Birth-year fixed effects & Yes & Yes & Yes & Yes \\
+2010 baseline controls & No & Yes & Yes & Yes \\
 2012 controls & No & No & Yes & Yes \\
 Excludes the Metropolitan Region & No & No & No & Yes \\
 Selection municipalities (clusters) & 116 & 116 & 116 & 67 \\
 \bottomrule
 \end{tabular}
 \begin{wpnotes}
-\textit{Notes:} Same design and specifications as Table~\ref{tab:main}, with the caregiver's report of the child as the outcome. \cbcldef{} Panel B uses the change between the 2017 measurement (ages 8--12) and the 2024 measurement (ages 15--18) of the same child, each standardized within its wave and age; with two periods this is equivalent to a child fixed-effects estimate. Neither panel shows an exposure-age gradient: the scar of Table~\ref{tab:main} appears only in what adolescents report in private. \bindef{} \specdef{} \clusternote{} \starnote
+\textit{Notes:} Same design and specifications as Panel A of Table~\ref{tab:main}, with the caregiver's report of the child as the outcome: each coefficient compares the children exposed at 6--11 months with all other exposure ages. \cbcldef{} Panel B uses the change between the 2017 measurement (ages 8--12) and the 2024 measurement (ages 14--18) of the same child, each standardized within its wave and age; with two periods this is equivalent to a child fixed-effects estimate. \bindef{} \specdef{} \clusternote{} \starnote
 \end{wpnotes}
 \end{threeparttable}
 \end{table}

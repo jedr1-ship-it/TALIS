@@ -40,6 +40,12 @@ ROWLAB = {"12-23m": "Exposed at age 1",
           "24-35m": "Exposed at age 2",
           "36-59m": "Exposed at ages 3--4"}
 CONTRLAB = "Contrast: ages 3--4 $-$ age 2"
+# la comparación principal (la de la presentación): 6-11 meses frente a todas
+# las demás edades; y el perfil completo frente a los de 2-3 años
+MAINLAB = "Exposed at 6--11 months"
+ROWLAB2 = {"0-11m": "Exposed at 6--11 months",
+           "12-23m": "Exposed at 1--2 years",
+           "36-59m": "Exposed at 3--4 years"}
 X_PRE = ["mujer", "edad_meses", "edad_madre10", "educ_madre10",
          "tot_per10", "rural10"]
 X_POST = ["n_hijos", "mh_madre", "mh_padre", "mh_ofam", "mh_miss"]
@@ -161,7 +167,11 @@ def xt(d, xs):
 
 
 def fit(d0, y, col=3, dose="EQ", sample=None, weights=True, extra_x=None,
-        keep_model=False):
+        keep_model=False, solo=False):
+    """Ecuación (1). Con solo=True, una única interacción, 6-11 meses x zona
+    (la comparación con todas las demás edades), con los mismos efectos
+    fijos de grupo de edad; sin ella, además del perfil frente a 0-11 meses
+    devuelve en "b2" el mismo perfil frente a los de 2-3 años."""
     d = d0.copy()
     if sample is not None:
         d = d[sample(d)]
@@ -172,9 +182,14 @@ def fit(d0, y, col=3, dose="EQ", sample=None, weights=True, extra_x=None,
     d["est"] = d.estrato.astype(int).astype(str)
     d["coh"] = d.cohorte.astype(int).astype(str)
     dd = num(d[dose]) if dose != "EQ" else d.EQ
-    for lab, v in IV.items():
-        d[v] = (d.bin == lab).astype(float) * dd
-    rhs = " + ".join(list(IV.values()) + ["C(bin)", "C(est)", "C(coh)"])
+    if solo:
+        d["I_0"] = (d.bin == "0-11m").astype(float) * dd
+        ivs = ["I_0"]
+    else:
+        for lab, v in IV.items():
+            d[v] = (d.bin == lab).astype(float) * dd
+        ivs = list(IV.values())
+    rhs = " + ".join(ivs + ["C(bin)", "C(est)", "C(coh)"])
     if col >= 2:
         rhs += " + " + " + ".join(xt(d, X_PRE))
     if col >= 3:
@@ -184,13 +199,22 @@ def fit(d0, y, col=3, dose="EQ", sample=None, weights=True, extra_x=None,
     w = d.w if weights else pd.Series(1.0, index=d.index)
     r = smf.wls(f"{y} ~ {rhs}", data=d, weights=w).fit(
         cov_type="cluster", cov_kwds={"groups": d.est})
-    ct = r.t_test(CONTR)
-    out = {"n": int(r.nobs), "ncl": d.est.nunique(),
-           "b": {k: (r.params[v], r.bse[v], r.pvalues[v])
-                 for k, v in IV.items()},
-           "contr": (float(np.ravel(ct.effect)[0]),
-                     float(np.ravel(ct.sd)[0]),
-                     float(np.ravel(ct.pvalue)[0]))}
+
+    def tt(c, signo=1.0):
+        t = r.t_test(c)
+        return (signo * float(np.ravel(t.effect)[0]),
+                float(np.ravel(t.sd)[0]), float(np.ravel(t.pvalue)[0]))
+    if solo:
+        out = {"n": int(r.nobs), "ncl": d.est.nunique(),
+               "b": {"0-11m": tt("I_0 = 0")}}
+    else:
+        out = {"n": int(r.nobs), "ncl": d.est.nunique(),
+               "b": {k: (r.params[v], r.bse[v], r.pvalues[v])
+                     for k, v in IV.items()},
+               "contr": tt(CONTR),
+               "b2": {"0-11m": tt("I_24 = 0", -1.0),
+                      "12-23m": tt("I_12 - I_24 = 0"),
+                      "36-59m": tt("I_36 - I_24 = 0")}}
     if keep_model:
         out["_d"], out["_f"], out["_w"] = d, f"{y} ~ {rhs}", w
     return out
@@ -353,8 +377,8 @@ COLHEAD4 = [" & (1) & (2) & (3) & (4) \\\\"]
 
 def ticks4():
     return ["Municipality fixed effects & Yes & Yes & Yes & Yes \\\\",
-            "Birth-cohort fixed effects & Yes & Yes & Yes & Yes \\\\",
-            "Pre-earthquake controls & No & Yes & Yes & Yes \\\\",
+            "Birth-year fixed effects & Yes & Yes & Yes & Yes \\\\",
+            "2010 baseline controls & No & Yes & Yes & Yes \\\\",
             "2012 controls & No & No & Yes & Yes \\\\",
             "Excludes the Metropolitan Region & No & No & No & Yes \\\\"]
 
@@ -362,8 +386,8 @@ def ticks4():
 def ticks_col3(n):
     yes = " & ".join("Yes" for _ in range(n))
     return [f"Municipality fixed effects & {yes} \\\\",
-            f"Birth-cohort fixed effects & {yes} \\\\",
-            f"Pre-earthquake controls & {yes} \\\\",
+            f"Birth-year fixed effects & {yes} \\\\",
+            f"2010 baseline controls & {yes} \\\\",
             f"2012 controls & {yes} \\\\"]
 
 
@@ -432,9 +456,10 @@ def t1_descriptivos(d):
         "\\textit{Notes}: ELPI uses sampling weight at national level. "
         "The sample are the 10,003 adolescents of the 2024 wave, born "
         "January 2006--August 2009, aged 6 to 49 months on the day of "
-        "the earthquake and 15 to 18 at the 2024 interview. Sex and "
-        "ages are fixed at birth and the 2010 rows come from the "
-        "pre-earthquake baseline; the 2012 rows are the family size "
+        "the earthquake and 14 to 18 at the 2024 interview. Sex and "
+        "ages are fixed at birth and the 2010 rows come from the 2010 "
+        "baseline, collected one to nine months after the earthquake; "
+        "the 2012 rows are the family size "
         "and the lifetime conditions reported in the 2012 wave, the "
         "controls of the main specification, and are missing for "
         "adolescents without that interview. Mental health rows mark "
@@ -533,7 +558,7 @@ def t2_lp():
         "files gives $-$0.160 for Peabody and $-$0.103 for CBCL2. "
         "Columns 3 and 4 estimate the same two specifications on the "
         "2024 wave: the same exposed children measured fourteen years "
-        "later, at ages 15--18, against the comparison group conceived "
+        "later, at ages 14--18, against the comparison group conceived "
         "after the earthquake and measured in 2017; pooling the two "
         "waves adds survey-wave fixed effects, as in Gillmore's "
         "short-term table. Standard errors clustered at the municipal "
@@ -577,38 +602,50 @@ def t2_lp():
 
 
 def t3_main(d):
-    panels = [("z_phq4", "Panel A. Mental health: PHQ-4 index, four questions on low mood, loss of interest, nervousness and worry (0--12, z)", 3),
-              ("gad2_bin", "Panel B. The anxiety half of the index: positive GAD-2 screen (its two anxiety questions, subscore of 3 or more)", 3),
-              ("phq2_bin", "Panel C. The depression half of the index: positive PHQ-2 screen (its two depression questions, subscore of 3 or more)", 3)]
-    body = []
-    res3 = None
-    for y, plab, dec in panels:
-        res = [fit(d, y, c) for c in (1, 2, 3, 4)]
-        if y == "z_phq4":
-            res3 = res
-        body.append(f"\\panel{{5}}{{{plab}}}")
-        body += bins_block(res, 4, dec)
-        body.append("\\addlinespace")
-        log(f"T3 {y} col3:",
-            {k: f"{v[0]:+.3f}{stars(v[2])}" for k, v in res[2]["b"].items()},
-            "contr", f"{res[2]['contr'][0]:+.3f}{stars(res[2]['contr'][2])}")
+    """Panel A: 6-11 meses frente a todas las demás edades, en el PHQ-4 y sus
+    dos mitades. Panel B: el perfil del PHQ-4 frente a los de 2-3 años, la
+    referencia en la que el grupo de control tiene un PHQ-4 alto."""
+    outs = [("z_phq4", "PHQ-4 index (z)", 3),
+            ("gad2_bin", "Anxiety, positive GAD-2 screen", 3),
+            ("phq2_bin", "Depression, positive PHQ-2 screen", 3)]
+    body = ["\\panel{5}{Panel A. Exposed at 6--11 months, relative to all "
+            "other ages}"]
+    for y, lab, dec in outs:
+        res = [fit(d, y, c, solo=True) for c in (1, 2, 3, 4)]
+        body += coef2(lab, [r["b"]["0-11m"] for r in res], dec)
+        body.append("\\addlinespace[3pt]")
+        log(f"T3 {y} 6-11 frente al resto, col3:",
+            f"{res[2]['b']['0-11m'][0]:+.3f}{stars(res[2]['b']['0-11m'][2])}")
+    body += ["\\addlinespace[3pt]",
+             "\\panel{5}{Panel B. PHQ-4 index (z), relative to ages 2--3}"]
+    res3 = [fit(d, "z_phq4", c) for c in (1, 2, 3, 4)]
+    for k, lab in ROWLAB2.items():
+        body += coef2(lab, [r["b2"][k] for r in res3])
+        body.append("\\addlinespace[3pt]")
+    log("T3 perfil frente a 2-3 años, col3:",
+        {k: f"{v[0]:+.3f}{stars(v[2])}" for k, v in res3[2]["b2"].items()})
     body = body[:-1]
     body += ["\\midrule"] + ticks4() + foot_block(res3)
-    notes = ("Ordinary least squares estimates of equation~(1) on the "
-             "adolescents of the 2024 ELPI wave; seven of the 10,003 "
-             "adolescents of Table~\\ref{tab:sample} drop for "
-             "incomplete PHQ-4 answers. Panels B and C disaggregate the Panel A "
-             "index into its two pairs of questions, expressed as "
-             "clinical screens; Appendix Table~\\ref{tab:a_mh} lists "
-             "every question verbatim. \\bindef{} "
-             "\\zonedef{} \\specdef{} The sample is the same in every "
-             "panel; column 4 has 6,430 adolescents in 67 municipalities. "
+    notes = ("Ordinary least squares estimates on the adolescents of the "
+             "2024 ELPI wave; seven of the 10,003 adolescents of "
+             "Table~\\ref{tab:sample} drop for incomplete PHQ-4 answers. "
+             "Panel A replaces the exposure-age interactions of "
+             "equation~(1) with a single one, exposure at 6--11 months "
+             "times the affected zone, and keeps the exposure-age fixed "
+             "effects, so its coefficient compares the youngest children "
+             "with all other exposure ages. Panel B reports every "
+             "exposure-age group against the children exposed at ages "
+             "2--3. The GAD-2 and PHQ-2 screens split the PHQ-4 index into "
+             "its two pairs of questions, and their coefficients are "
+             "probabilities; Appendix Table~\\ref{tab:a_mh} lists every "
+             "question verbatim. \\bindef{} \\zonedef{} \\specdef{} "
+             "Column 4 has 6,430 adolescents in 67 municipalities. "
              "\\clusternote{} \\starnote")
     table_env("t3_main",
               "Age at Exposure to the Earthquake and Self-Reported Mental "
-              "Health at Ages 15--18",
+              "Health at Ages 14--18",
               "tab:main",
-              "@{}p{182pt}" + numcols(4, 64) + "@{}",
+              "@{}p{174pt}" + numcols(4, 64) + "@{}",
               COLHEAD4, body, notes,
               extra_pre="\\footnotesize"
                         "\\renewcommand{\\arraystretch}{0.95}")
@@ -621,34 +658,35 @@ def t4_informante(d):
                      "Panel A. CBCL internalizing score in 2024: caregiver checklist (T, z)"),
                     ("d_cbcl",
                      "Panel B. Within-child change in the same CBCL score, 2017 to 2024 (z by wave)")]:
-        res = [fit(d, y, c) for c in (1, 2, 3, 4)]
+        res = [fit(d, y, c, solo=True) for c in (1, 2, 3, 4)]
         if resA is None:
             resA = res
         body.append(f"\\panel{{5}}{{{plab}}}")
-        body += bins_block(res, 4)
+        body += coef2(MAINLAB, [r["b"]["0-11m"] for r in res])
         body.append("\\addlinespace")
         body.append("\\hspace{1em}Observations & "
                     + " & ".join(f"{r['n']:,}" for r in res) + " \\\\")
         body.append("\\addlinespace")
+        log(f"T4 {y} 6-11 frente al resto, col3:",
+            f"{res[2]['b']['0-11m'][0]:+.3f}{stars(res[2]['b']['0-11m'][2])}")
     body = body[:-1]
     body += ["\\midrule"] + ticks4() + [
              "Selection municipalities (clusters) & "
              + " & ".join(str(r["ncl"]) for r in resA) + " \\\\"]
-    notes = ("Same design and specifications as Table~\\ref{tab:main}, "
-             "with the caregiver's report of the child as the outcome. "
+    notes = ("Same design and specifications as Panel A of "
+             "Table~\\ref{tab:main}, with the caregiver's report of the "
+             "child as the outcome: each coefficient compares the children "
+             "exposed at 6--11 months with all other exposure ages. "
              "\\cbcldef{} Panel B uses the change between the 2017 "
              "measurement (ages 8--12) and the 2024 measurement (ages "
-             "15--18) of the same child, each standardized within its "
+             "14--18) of the same child, each standardized within its "
              "wave and age; with two periods this is equivalent to a "
-             "child fixed-effects estimate. Neither panel shows an "
-             "exposure-age gradient: the scar of "
-             "Table~\\ref{tab:main} appears only in what adolescents "
-             "report in private. \\bindef{} \\specdef{} \\clusternote{} "
-             "\\starnote")
+             "child fixed-effects estimate. \\bindef{} \\specdef{} "
+             "\\clusternote{} \\starnote")
     table_env("t4_informante",
               "Caregiver-Reported Outcomes",
               "tab:caregiver",
-              "@{}p{182pt}" + numcols(4, 64) + "@{}",
+              "@{}p{174pt}" + numcols(4, 64) + "@{}",
               COLHEAD4, body, notes)
 
 
@@ -716,7 +754,7 @@ def t6_placebo(d):
     body += ["\\midrule",
              f"Municipality fixed effects & {yes5} \\\\",
              f"Birth-cohort fixed effects & {yes5} \\\\",
-             f"Pre-earthquake controls & {yes5} \\\\",
+             f"2010 baseline controls & {yes5} \\\\",
              "Observations & " + " & ".join(f"{res[y]['n']:,}"
                                             for y, _ in outs) + " \\\\"]
     for y, _ in outs:
@@ -1007,57 +1045,43 @@ def t12_heterogeneidad(d):
     panels = [("z_phq4", "Panel A: PHQ-4 index"),
               ("gad2_bin", "Panel B: Anxiety, positive GAD-2 screen"),
               ("phq2_bin", "Panel C: Depression, positive PHQ-2 screen")]
-    sexo = {}
     L = []
     for y, plab in panels:
         res = []
         for lab, sel in cols:
-            guarda = y == "z_phq4" and lab in ("Girls", "Boys")
-            r = fit(d, y, 3, sample=sel, keep_model=guarda)
-            if guarda:
-                sexo[lab] = (r["_w"].sum(), r["b"]["24-35m"][0],
-                             r["contr"][0])
+            r = fit(d, y, 3, sample=sel, solo=True)
             res.append(r)
-            b24 = r["b"]["24-35m"]
-            log("T12", y, lab, f"{b24[0]:+.3f}{stars(b24[2])}",
-                f"contr {r['contr'][0]:+.3f}{stars(r['contr'][2])}")
+            b0 = r["b"]["0-11m"]
+            log("T12", y, lab, f"6-11 frente al resto {b0[0]:+.3f}"
+                f"{stars(b0[2])}")
         L += [f"\\multicolumn{{7}}{{@{{}}l}}{{\\textbf{{\\textit{{{plab}}}}}}} \\\\",
-              "Exposed at age 2 & "
-              + " & ".join(bcell(r["b"]["24-35m"][0], r["b"]["24-35m"][2])
+              MAINLAB + " & "
+              + " & ".join(bcell(r["b"]["0-11m"][0], r["b"]["0-11m"][2])
                            for r in res) + " \\\\",
-              " & " + " & ".join(secell(r["b"]["24-35m"][1]) for r in res)
+              " & " + " & ".join(secell(r["b"]["0-11m"][1]) for r in res)
               + " \\\\",
               "\\addlinespace[6pt]",
               "Observations & " + " & ".join(f"{r['n']:,}" for r in res)
               + " \\\\",
               "\\addlinespace[9pt]"]
-    wg = sexo["Girls"][0] / (sexo["Girls"][0] + sexo["Boys"][0])
-    pct = []
-    for k in (1, 2):
-        cg, cb = wg * sexo["Girls"][k], (1 - wg) * sexo["Boys"][k]
-        pct.append(100 * cg / (cg + cb))
-    log("T12 cuota de las chicas:", f"{pct[0]:.0f}% del coef. edad 2,",
-        f"{pct[1]:.0f}% de 3-4 frente a 2")
     tick = " & ".join(["\\checkmark"] * 6) + " \\\\"
     L += ["Municipality FE & " + tick,
-          "Birth Cohort FE & " + tick,
-          "Pre-earthquake controls & " + tick,
+          "Birth-year FE & " + tick,
+          "2010 baseline controls & " + tick,
           "2012 controls & " + tick]
     notes = (
         "\\textit{Notes}: Each column represents a separate regression of "
         "equation~(1) with the controls of column 3 of "
         "Table~\\ref{tab:main}, estimated on the subsample named in the "
         "column heading. The coefficient reported is the effect of "
-        "exposure at age two in an affected municipality, relative to "
-        "exposure at 0--11 months. The PHQ-4 index is measured in "
+        "exposure at 6--11 months in an affected municipality, relative to "
+        "all other exposure ages (Panel A of Table~\\ref{tab:main}). The "
+        "PHQ-4 index is measured in "
         "standard deviations; the GAD-2 and PHQ-2 screens equal one for "
         "a subscore of three or more on the corresponding pair of "
         "questions. Mother's education is measured in 2010, and "
-        "secondary means twelve years of schooling or less. Weighting "
-        "girls and boys by their shares of the sample, girls account "
-        f"for {pct[0]:.0f} percent of the age-two coefficient and for "
-        f"{pct[1]:.0f} percent of the gap between exposure at ages 3--4 "
-        "and at age two. The PHQ-4 index averages 4.88 points for girls "
+        "secondary means twelve years of schooling or less. "
+        "The PHQ-4 index averages 4.88 points for girls "
         "and 3.76 for boys. Standard errors clustered by municipality of "
         "selection appear in parentheses. The estimates use sampling "
         "weights. * p $<$ 0.1, ** p $<$ 0.05, *** p $<$ 0.01.")
@@ -1065,9 +1089,9 @@ def t12_heterogeneidad(d):
     lines = (["% ---- begin paper/tables/t12_heterogeneidad.tex",
               "\\begin{table}[htbp]\\centering",
               f"\\begin{{minipage}}{{{W}}}",
-              "\\caption{The effect of exposure at age two on adolescent "
-              "mental health, by sex, mother's education and area of "
-              "residence.}",
+              "\\caption{The effect of exposure at 6--11 months on "
+              "adolescent mental health, by sex, mother's education and "
+              "area of residence.}",
               "\\label{tab:het}",
               "{\\small",
               f"\\begin{{tabular*}}{{{W}}}"
@@ -1101,31 +1125,43 @@ def figuras(d):
     INK, BLUE, GRID = "#0B0B0B", "#2A78D6", "#C9C9C9"
     x = np.arange(4)
     xt_lab = ["$<$1\n(reference)", "Age 1", "Age 2", "Ages 3–4"]
-    fig, ax = plt.subplots(figsize=(6.3, 3.6))
-    for y, colr, lab, off in [
-            ("z_phq4", INK, "PHQ-4 mental-health index (z)", -0.07),
-            ("gad2_bin", BLUE,
-             "Positive anxiety screen, GAD-2 (probability)", 0.07)]:
-        r = fit(d, y, 3)
-        bs = [0.0] + [r["b"][b][0] for b in IV]
-        ses = [0.0] + [r["b"][b][1] for b in IV]
-        ax.errorbar(x + off, bs, yerr=[1.96 * s for s in ses], fmt="o",
-                    color=colr, ecolor=colr, elinewidth=1.4, capsize=0,
-                    markersize=5, label=lab)
-    ax.axhline(0, color=GRID, lw=1, zorder=0)
-    ax.set_xticks(x, xt_lab)
-    ax.set_xlabel("Age when the earthquake struck")
-    ax.set_ylabel("Effect relative to children\nstruck before age 1")
-    ax.legend(frameon=False, fontsize=9, loc="lower left")
-    for s in ("top", "right"):
-        ax.spines[s].set_visible(False)
-    ax.spines["left"].set_color(GRID)
-    ax.spines["bottom"].set_color(GRID)
-    ax.tick_params(color=GRID)
+    # Figure 1: el PHQ-4 en niveles por edad al terremoto y zona, chicas y
+    # chicos. Muestra de dónde sale la forma de U del perfil: en la zona no
+    # afectada, las chicas expuestas a los 2-3 años tienen un PHQ-4 alto.
+    e = d[d.z_phq4.notna() & (d.w > 0)].copy()
+    e["est"] = e.estrato.astype(int).astype(str)
+    e["cel"] = e.bin.astype(str) + "_" + e.EQ.astype(int).astype(str)
+    fig, axes = plt.subplots(1, 2, figsize=(6.5, 3.2), sharey=True)
+    for ax, (nombre, sx) in zip(axes, (("Girls", 1), ("Boys", 0))):
+        z = e[e.mujer == sx]
+        r = smf.wls("z_phq4 ~ 0 + C(cel)", data=z, weights=z.w).fit(
+            cov_type="cluster", cov_kwds={"groups": z.est})
+        for zona, colr, mfc, lab, off in ((1, INK, INK, "Affected zone",
+                                           -0.06),
+                                          (0, "#8C8C8C", "white",
+                                           "Unaffected zone", 0.06)):
+            ks = [f"C(cel)[{b}_{zona}]" for b in BINS]
+            bs = [r.params[k] for k in ks]
+            ses = [r.bse[k] for k in ks]
+            ax.plot(x + off, bs, color=colr, lw=1, zorder=2)
+            ax.errorbar(x + off, bs, yerr=[1.96 * v for v in ses], fmt="o",
+                        color=colr, mfc=mfc, ecolor=colr, elinewidth=1.2,
+                        capsize=0, markersize=5, label=lab, zorder=3)
+        ax.set_xticks(x, ["6–11\nmonths", "1–2\nyears", "2–3\nyears",
+                          "3–4\nyears"])
+        ax.set_title(nombre, fontsize=10)
+        for sp in ("top", "right"):
+            ax.spines[sp].set_visible(False)
+        ax.spines["left"].set_color(GRID)
+        ax.spines["bottom"].set_color(GRID)
+        ax.tick_params(color=GRID)
+    axes[0].set_ylabel("PHQ-4 index at ages 14–18 (z)")
+    axes[0].legend(frameon=False, fontsize=8, loc="lower left")
+    fig.supxlabel("Age when the earthquake struck", fontsize=10)
     fig.tight_layout()
-    fig.savefig(FIG / "f1_gradiente_u.pdf")
+    fig.savefig(FIG / "f1_niveles.pdf")
     plt.close(fig)
-    log("-> paper/figures/f1_gradiente_u.pdf")
+    log("-> paper/figures/f1_niveles.pdf")
     if "pga_z" in d and not d.pga_z.isna().all():
         fig, ax = plt.subplots(figsize=(6.3, 3.6))
         r = fit(d, "z_phq4", 3, dose="pga_z")
