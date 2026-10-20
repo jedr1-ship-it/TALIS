@@ -23,6 +23,11 @@ Lectura: nada antes y algo en 2024 sería emergencia en la adolescencia; lo
 mismo ya en 2012 o 2017, persistencia; perfiles sin relación entre rondas,
 ruido.
 
+Además, la ventana ancha que sugiere el perfil de 2024 (los primeros 18
+meses, 6-17): frente al resto, frente a 3-4 años y frente a 18-35 meses, en
+el PHQ-4 de 2024 y en el autorreporte de 2017, y sin cada región de control.
+Se eligió después de ver el perfil: es exploratoria.
+
 Salida: reports/tres_olas.md, reports/tres_olas.csv y reports/tres_olas.png
 Uso:    python3 scripts/48_tres_olas.py
 """
@@ -84,6 +89,37 @@ def carga():
                      axis=1)
     d["malestar17"] = zz(tres.mean(axis=1).where(tres.notna().all(axis=1)))
     return d
+
+
+def ventana18(d):
+    """6-17 meses x zona, con efectos fijos de tramo de seis meses."""
+    def est(x, y, muestra=None, grupos="est"):
+        x = x.dropna(subset=[y]).copy()
+        if muestra is not None:
+            x = x[muestra(x)]
+        x["D"] = (x.edadq_m < 18).astype(float) * x.EQ
+        r = p47.wls(x, ["D", "C(b6)", "C(est)", "C(coh)"]
+                    + p47.controles(x), y=y, grupos=grupos)
+        return (float(r.params["D"]), float(r.bse["D"]),
+                float(r.pvalues["D"])), int(r.nobs)
+    ch = d[d.mujer == 1]
+    log("\n## La ventana de los primeros 18 meses (exploratoria), chicas")
+    for y, lab in (("z_phq4", "2024, PHQ-4"), ("malestar17",
+                                               "2017, autorreporte")):
+        for txt, kw in (("frente al resto", {}),
+                        ("frente al resto, EE por región",
+                         {"grupos": "reg"}),
+                        ("frente a 3-4 años (36-49)",
+                         {"muestra": lambda x: (x.edadq_m < 18)
+                          | (x.edadq_m >= 36)}),
+                        ("frente a 18-35 meses",
+                         {"muestra": lambda x: x.edadq_m < 36})):
+            r, n = est(ch, y, **kw)
+            log(f"- {lab}, 6-17 meses {txt}: {p47.fmt(*r)}; N={n:,}")
+    log("- 2024, PHQ-4, 6-17 frente al resto, sin cada región de control: "
+        + " | ".join(
+            f"{r_}: {est(ch, 'z_phq4', muestra=lambda x, r_=r_: x.reg != r_)[0][0]:+.3f}"
+            for r_ in sorted(ch[ch.EQ == 0].reg.unique())))
 
 
 def figura(perf):
@@ -156,6 +192,7 @@ def main():
         log(f"- {g}: " + " | ".join(
             f"{y} {np.corrcoef(base, [perf[(g, y)][t][0] for t in p47.SEIS[1]])[0, 1]:+.2f}"
             for y, _, _ in MEDIDAS[:-1]))
+    ventana18(d)
     figura(perf)
     pd.DataFrame(FILAS).to_csv("reports/tres_olas.csv", index=False)
     Path("reports/tres_olas.md").write_text("\n".join(OUT) + "\n",

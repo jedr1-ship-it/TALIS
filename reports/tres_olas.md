@@ -36,3 +36,14 @@ Muestra balanceada (las cinco medidas): 5,697 (2,817 chicas)
 ## ¿Se parecen los perfiles entre rondas? Correlación de los siete tramos centrados con el del PHQ-4 de 2024
 - chicas: z_int12 +0.30 | z_int17 +0.04 | malestar17 +0.57 | z_cbcl +0.14
 - chicos: z_int12 +0.13 | z_int17 +0.56 | malestar17 +0.51 | z_cbcl +0.16
+
+## La ventana de los primeros 18 meses (exploratoria), chicas
+- 2024, PHQ-4, 6-17 meses frente al resto: +0.206*** (ee 0.075, p=0.006); N=4,961
+- 2024, PHQ-4, 6-17 meses frente al resto, EE por región: +0.206** (ee 0.087, p=0.018); N=4,961
+- 2024, PHQ-4, 6-17 meses frente a 3-4 años (36-49): +0.103 (ee 0.087, p=0.237); N=2,937
+- 2024, PHQ-4, 6-17 meses frente a 18-35 meses: +0.272*** (ee 0.080, p=0.001); N=3,433
+- 2017, autorreporte, 6-17 meses frente al resto: +0.150 (ee 0.123, p=0.222); N=3,510
+- 2017, autorreporte, 6-17 meses frente al resto, EE por región: +0.150 (ee 0.104, p=0.149); N=3,510
+- 2017, autorreporte, 6-17 meses frente a 3-4 años (36-49): +0.195 (ee 0.135, p=0.148); N=2,061
+- 2017, autorreporte, 6-17 meses frente a 18-35 meses: +0.129 (ee 0.126, p=0.303); N=2,419
+- 2024, PHQ-4, 6-17 frente al resto, sin cada región de control: 1: +0.229 | 2: +0.198 | 3: +0.194 | 4: +0.275 | 10: +0.178 | 11: +0.202 | 12: +0.178 | 14: +0.216 | 15: +0.186
